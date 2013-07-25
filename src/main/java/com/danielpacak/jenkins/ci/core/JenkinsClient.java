@@ -1,8 +1,9 @@
-package com.danielpacak.jenkins.ci.client;
+package com.danielpacak.jenkins.ci.core;
 
 import java.io.InputStream;
 import java.util.Map;
 
+@Deprecated
 public interface JenkinsClient {
 
 	void createJob(String jobName, InputStream jobDefinitionXml)

@@ -5,8 +5,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.danielpacak.jenkins.ci.client.JenkinsClient;
-import com.danielpacak.jenkins.ci.client.JenkinsXmlClient;
+import com.danielpacak.jenkins.ci.core.JenkinsClient;
 
 public class LearningTest {
 

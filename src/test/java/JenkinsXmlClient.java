@@ -1,4 +1,4 @@
-package com.danielpacak.jenkins.ci.client;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -19,6 +18,8 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.util.EncodingUtil;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.danielpacak.jenkins.ci.core.JenkinsClient;
+@Deprecated
 public class JenkinsXmlClient implements JenkinsClient {
 
 	private String host;
