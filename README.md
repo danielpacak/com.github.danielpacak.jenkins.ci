@@ -53,7 +53,7 @@ Job job = null; // I assume that you know how to create a job (see the previous 
 jobService.triggerBuild(job);
 ```
 
-### Triggerring a build and waiting for completion
+### Triggerring a build and waiting for its completion
 The following example triggers a build of a given job and blocks until the build has completed.
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
@@ -72,6 +72,19 @@ try {
   System.err.println("Sorry guys but I cannot wait for so long...");
 }
 ```
+
+### Decorating JobConfiguration classes
+Once you start creating more useful Jenkins jobs, you'll find the `VariableSubstitutorJobConfiguration`
+class handy.
+```java
+Map<String, Object> values = new HashMap<>();
+values.put("cloneUrl", "https://github.com/user/repo.git");
+JobConfiguration config = new VariableSubstitutorJobConfiguration(
+    new ClassPathJobConfiguration("job/template/maven3-project.xml"), values
+);
+```
+The class substitutes all the variables within the job configuration returned by the decored
+`JobConfiguration` (the `ClassPathJobConfiguration` in our case).
 
 ## Packages
 The library is composed of 3 main packages.
