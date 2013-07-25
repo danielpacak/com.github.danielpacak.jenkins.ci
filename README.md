@@ -16,7 +16,7 @@ JenkinsClient client = new JenkinsClient("localhost", 8080);
 client.setOAuth2Token("SlAV32hkKG");
 ```
 
-### Create a job
+### Creating a simple job
 The following example creates a new job called `release.and.deploy.jenkins.ci.client` using an XML configuration
 template stored as a class path resource file `job/template/free-style-project.xml`.
 ```java
@@ -44,13 +44,33 @@ The `job/template/free-style-project.xml` configuration template may look as fol
 </project>
 ```
 
-### Trigger a build
+### Triggerring a build
 The following example triggers a build of a given job.
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
 Job job = null; // I assume that you know how to create a job (see the previous examples)
 jobService.triggerBuild(job);
+```
+
+### Triggerring a build and waiting for completion
+The following example triggers a build of a given job and blocks until the build has completed.
+```java
+JenkinsClient client = new JenkinsClient("localhost", 8080);
+JobService jobService = new JobService(client);
+Job job = null; // I assume that you know how to create a job (see the previous examples)
+Build build = jobService.triggerBuildAndWait(job);
+System.out.printtf("Build status: %s%n", build.getStatus());
+```
+It's also possible to limit the time of waiting for the completion of the build by specifying
+the timeout. In the example below the method will throw the `InterruptedException` exception
+if the build hasn't completed in less than 30 seconds.
+```java
+try {
+  Build build = jobService.triggerBuildAndWait(job, 30, TimeUnit.SECONDS);
+} catch (InterruptedException e) {
+  System.err.println("Sorry guys but I cannot wait for so long...");
+}
 ```
 
 ## Packages
