@@ -1,4 +1,4 @@
-# Jenkins Java API (com.danielpacak.jenkins.ci.client)
+# Jenkins Java API (com.danielpacak.jenkins.ci.core)
 
 This project is a Java library for communicating with the [Jenkins REST API](https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API).
 
