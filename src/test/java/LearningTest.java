@@ -3,10 +3,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.danielpacak.jenkins.ci.core.JenkinsClient;
-
+@Ignore
 public class LearningTest {
 
 	@Test

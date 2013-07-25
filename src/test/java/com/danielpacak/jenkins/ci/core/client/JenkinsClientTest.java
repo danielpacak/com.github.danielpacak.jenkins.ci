@@ -1,5 +1,6 @@
 package com.danielpacak.jenkins.ci.core.client;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.danielpacak.jenkins.ci.core.ClassPathJobConfiguration;
@@ -10,6 +11,7 @@ import com.danielpacak.jenkins.ci.core.service.JobService;
 /**
  * Tests for {@link JenkinsClient}.
  */
+@Ignore
 public class JenkinsClientTest {
 
 	@Test
