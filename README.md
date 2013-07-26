@@ -2,6 +2,16 @@
 
 This project is a Java library for communicating with the [Jenkins REST API](https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API).
 
+## TOC
+
+* [Examples](#Examples)
+ * [Creating a job](#creating-a-job)
+ * [Triggering a build](#triggering-a-build)
+ * [Triggering a build and waiting for its completion](#triggering a build and waiting for its completion)
+ * [Deleting a job](#deleting-a-job)
+* [Packages](#Packages)
+* [Using Jenkins Java API in Your Build](#using-jenkins-java-api-in-your-build)
+
 ## Examples
 
 ### Authenticating
