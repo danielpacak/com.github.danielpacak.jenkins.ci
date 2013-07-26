@@ -5,15 +5,13 @@ import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.danielpacak.jenkins.ci.core.JenkinsClient;
 @Ignore
 public class LearningTest {
 
 	@Test
 	public void go() throws Exception {
 
-		JenkinsClient jenkinsApi = new JenkinsXmlClient("localhost", 8080);
+		JenkinsXmlClient jenkinsApi = new JenkinsXmlClient("localhost", 8080);
 
 		String jobName = "customComponent" + new Date().getTime();
 		InputStream jobDefinition = getJobDefinitionXml();

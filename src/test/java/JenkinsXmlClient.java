@@ -17,10 +17,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.util.EncodingUtil;
 import org.codehaus.jackson.map.ObjectMapper;
-
-import com.danielpacak.jenkins.ci.core.JenkinsClient;
 @Deprecated
-public class JenkinsXmlClient implements JenkinsClient {
+public class JenkinsXmlClient {
 
 	private String host;
 	private Integer port;

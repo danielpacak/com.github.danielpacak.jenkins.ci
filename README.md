@@ -16,7 +16,7 @@ JenkinsClient client = new JenkinsClient("localhost", 8080);
 client.setOAuth2Token("SlAV32hkKG");
 ```
 
-### Creating a simple job
+### Creating a job
 The following example creates a new job called `release.and.deploy.jenkins.ci.client` using an XML configuration
 template stored as a class path resource file `job/template/free-style-project.xml`.
 ```java
@@ -44,7 +44,7 @@ The `job/template/free-style-project.xml` configuration template may look as fol
 </project>
 ```
 
-### Triggerring a build
+### Triggering a build
 The following example triggers a build of a given job.
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
@@ -53,14 +53,14 @@ Job job = null; // I assume that you know how to create a job (see the previous 
 jobService.triggerBuild(job);
 ```
 
-### Triggerring a build and waiting for its completion
+### Triggering a build and waiting for its completion
 The following example triggers a build of a given job and blocks until the build has completed.
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
 Job job = null; // I assume that you know how to create a job (see the previous examples)
 Build build = jobService.triggerBuildAndWait(job);
-System.out.printtf("Build status: %s%n", build.getStatus());
+System.out.printf("Build status: %s%n", build.getStatus());
 ```
 It's also possible to limit the time of waiting for the completion of the build by specifying
 the timeout. In the example below the method will throw the `InterruptedException` exception
@@ -69,11 +69,18 @@ if the build hasn't completed in less than 30 seconds.
 try {
   Build build = jobService.triggerBuildAndWait(job, 30, TimeUnit.SECONDS);
 } catch (InterruptedException e) {
-  System.err.println("Sorry guys but I cannot wait for so long...");
+  System.err.println("Sorry guys but I cannot wait so long...");
 }
 ```
+### Deleting a job
+The following example deletes a job with a given name.
+```java
+JenkinsClient client = new JenkinsClient("localhost", 8080);
+JobService jobService = new JobService(client);
+jobService.deleteJob("job-to-be-deleted");
+```
 
-### Decorating JobConfiguration classes
+### Using the `VariableSubstitutorJobConfiguration` class
 Once you start creating more useful Jenkins jobs, you'll find the `VariableSubstitutorJobConfiguration`
 class handy.
 ```java
@@ -83,8 +90,10 @@ JobConfiguration config = new VariableSubstitutorJobConfiguration(
     new ClassPathJobConfiguration("job/template/maven3-project.xml"), values
 );
 ```
-The class substitutes all the variables within the job configuration returned by the decored
-`JobConfiguration` (the `ClassPathJobConfiguration` in our case).
+The class substitutes all the variables within the job configuration returned by the decorated
+`JobConfiguration` (the `ClassPathJobConfiguration` class in our case).
+
+### 
 
 ## Packages
 The library is composed of 3 main packages.
@@ -103,3 +112,21 @@ generating request exceptions based on HTTP status codes.
 This package contains the classes that invoke the API and return model classes representing resources
 that were created, read, updated, or deleted. Service classes are defined for the resources they
 interact with such as `JobService`.
+
+## Using Jenkins Java API in Your Build
+Developers may use several different kinds of build system to compile/package their code.
+The library can be used with any of them. For any code snippet below, please substitute the version
+given with the version of Jenkins Java API you wish to use.
+
+### Maven
+The library is not yet deployed to the maven central repository, so to use it, you need to fetch the
+source code, install it into your local maven repository (`~/.m2/repository`) and add the following
+snippet to the `<dependencies />` section of the project's `pom.xml` file.
+
+```xml
+<dependency>
+	<groupId>com.danielpacak.jenkins.ci</groupId>
+	<artifactId>com.danielpacak.jenkins.ci.core</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+</dependency>
+```

@@ -8,7 +8,6 @@ public class JenkinsClient {
 	private final Integer port;
 
 	public JenkinsClient(String host, Integer port) {
-
 		this.host = checkArgumentNotNull(host, "Host cannot be null");
 		this.port = checkArgumentNotNull(port, "Port cannot be null");
 	}
