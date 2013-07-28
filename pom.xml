@@ -30,7 +30,13 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Private-Package>com.danielpacak.jenkins.ci.core.util</Private-Package>
+						<Export-Package>
+							com.danielpacak.jenkins.ci.core;version="${project.version}",
+							com.danielpacak.jenkins.ci.core.client;version="${project.version}",
+							com.danielpacak.jenkins.ci.core.service;version="${project.version}"
+						</Export-Package>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Vendor>Daniel Pacak</Bundle-Vendor>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -52,27 +58,17 @@
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.7</version>
-		</dependency>
 		<!-- Testing -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>1.8.5</version>
+			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

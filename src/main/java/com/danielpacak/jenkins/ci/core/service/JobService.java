@@ -1,19 +1,22 @@
 package com.danielpacak.jenkins.ci.core.service;
 
+import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.CREATE_ITEM_SEGMENT;
+import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.DO_DELETE_SEGMENT;
+import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.HEADER_CONTENT_TYPE;
+import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.JOB_SEGMENT;
+import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.SEGMENT_API_XML;
 import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgumentNotNull;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PostMethod;
+import java.util.Map;
 
 import com.danielpacak.jenkins.ci.core.Build;
 import com.danielpacak.jenkins.ci.core.Job;
 import com.danielpacak.jenkins.ci.core.JobConfiguration;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
+import com.danielpacak.jenkins.ci.core.client.JenkinsResponse;
 import com.danielpacak.jenkins.ci.core.util.XmlResponse;
 
 /**
@@ -21,15 +24,14 @@ import com.danielpacak.jenkins.ci.core.util.XmlResponse;
  * 
  * @since 1.0.0
  */
-public class JobService {
+public class JobService extends AbstractService {
 
-	private final JenkinsClient client;
-	private final HttpClient httpClient;
+	public JobService() {
+		super();
+	}
 
 	public JobService(JenkinsClient client) {
-		this.client = checkArgumentNotNull(client,
-				"JenkinsClient cannot be null");
-		this.httpClient = new HttpClient();
+		super(client);
 	}
 
 	public List<Job> getJobs() throws IOException {
@@ -46,26 +48,14 @@ public class JobService {
 	 * @return the job that has been created
 	 * @since 1.0.0
 	 **/
-	public Job createJob(String name, JobConfiguration configuration)
-			throws IOException {
-		checkArgumentNotNull(name, "Name cannot be null");
-		checkArgumentNotNull(configuration, "Configuration cannot be null");
-		String url = "http://" + client.getHost() + ":" + client.getPort()
-				+ "/createItem?name=" + name;
-
-		PostMethod post = new PostMethod(url);
-		post.setRequestHeader("Content-Type", "application/xml");
-		post.setRequestEntity(new InputStreamRequestEntity(configuration
-				.getInputStream(), "application/xml"));
-
-		int responseCode = httpClient.executeMethod(post);
-		if (responseCode == 200) {
-			Job created = new Job();
-			created.setName(name);
-			return created;
-		}
-		throw new IllegalStateException("Error while creating job " + name
-				+ ". " + post.getResponseBodyAsString());
+	public Job createJob(Job job, JobConfiguration configuration) throws IOException {
+		checkArgumentNotNull(job, "Job cannot be null");
+		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
+		checkArgumentNotNull(configuration, "JobConfiguration cannot be null");
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put(HEADER_CONTENT_TYPE, "application/xml");
+		client.post(CREATE_ITEM_SEGMENT + "?name=" + job.getName(), headers, configuration.getInputStream());
+		return getJob(job.getName());
 	}
 
 	/**
@@ -79,11 +69,7 @@ public class JobService {
 	public void deleteJob(Job job) throws IOException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
-		String url = "http://" + client.getHost() + ":" + client.getPort()
-				+ "/job/" + job.getName() + "/doDelete";
-		PostMethod post = new PostMethod(url);
-		int responseCode = httpClient.executeMethod(post);
-		// TODO CHECK RESPONSE CODE
+		client.post(JOB_SEGMENT + "/" + job.getName() + DO_DELETE_SEGMENT);
 	}
 
 	/**
@@ -91,13 +77,14 @@ public class JobService {
 	 * 
 	 * @param name
 	 *            the name of the job
-	 * @return job model class or <code>null</code> a job with the given name
-	 *         doesn't exist
+	 * @return job model class or <code>null</code> a job with the given name doesn't exist
 	 * @throws IOException
 	 * @since 1.0.0
 	 */
 	public Job getJob(String name) throws IOException {
-		throw new IllegalStateException("Not implemented yet");
+		checkArgumentNotNull(name, "Name cannot be null");
+		JenkinsResponse response = client.get(JOB_SEGMENT + "/" + name + SEGMENT_API_XML);
+		return response.getModel(new JobResponseMapper());
 	}
 
 	/**
@@ -109,15 +96,8 @@ public class JobService {
 	 */
 	public void triggerBuild(Job job) throws IOException {
 		checkArgumentNotNull(job, "Job cannot be null");
-		String url = "http://" + client.getHost() + ":" + client.getPort()
-				+ "/job/" + job.getName() + "/build?delay=0sec";
-		GetMethod get = new GetMethod(url);
-		int responseCode = httpClient.executeMethod(get);
-		System.out.println(responseCode);
-		if (responseCode != 201) {
-			throw new IllegalStateException("Error while triggerring build of "
-					+ job.getName() + ". " + get.getResponseBodyAsString());
-		}
+		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
+		client.get(JOB_SEGMENT + "/" + job.getName() + "/build?delay=0sec");
 	}
 
 	/**
@@ -127,37 +107,32 @@ public class JobService {
 	 *            job
 	 * @param numbe
 	 *            build number
-	 * @return the build model or <code>null</code> if the build wasn't
-	 *         triggered yet
+	 * @return the build model or <code>null</code> if the build wasn't triggered yet
 	 * @since 1.0.0
 	 */
 	public Build getBuild(Job job, Long number) throws IOException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(number, "Number cannot be null");
-		String url = "http://" + client.getHost() + ":" + client.getPort()
-				+ "/job/" + job.getName() + "/" + number + "/api/xml";
-		GetMethod get = new GetMethod(url);
-		int responseCode = httpClient.executeMethod(get);
+		JenkinsResponse response = client.get(JOB_SEGMENT + "/" + job.getName() + "/" + number + "/api/xml");
+		return response.getModel(new BuildConverter());
+	}
 
-		if (responseCode == 200) {
-			XmlResponse xmlResponse = new XmlResponse(
-					get.getResponseBodyAsStream());
+	// XmlResponseMapper or ResponseMapper -> maps xml respone to an instance of a model class
+	private class BuildConverter implements ResponseMapper<Build> {
+		@Override
+		public Build map(XmlResponse xmlResponse) {
 			Build build = new Build();
-			build.setNumber(number);
+			build.setNumber(new Long(3));
 
-			Boolean building = xmlResponse
-					.evaluateAsBoolean("//building/text()");
+			Boolean building = xmlResponse.evaluateAsBoolean("//building/text()");
 			if (building) {
 				build.setStatus(Build.Status.PENDING);
 			} else {
-				build.setStatus(Build.Status.valueOf(xmlResponse
-						.evaluateAsString("//result/text()")));
+				build.setStatus(Build.Status.valueOf(xmlResponse.evaluateAsString("//result/text()")));
 			}
 
 			return build;
-
 		}
-		throw new IllegalStateException("Error while getting build " + number);
 	}
 
 }

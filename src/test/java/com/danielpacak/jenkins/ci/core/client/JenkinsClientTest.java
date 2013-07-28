@@ -27,22 +27,21 @@ public class JenkinsClientTest {
 	@Ignore
 	@Test
 	public void testTriggerBuild() throws Exception {
-		JobConfiguration config = new ClassPathJobConfiguration(
-				"job/definition/free-style-job-definition.xml");
+		JobConfiguration config = new ClassPathJobConfiguration("job/definition/free-style-job-definition.xml");
 
-		Job job = jobService.createJob("release.and.deploy.jenkins.ci.client",
-				config);
+		Job job = jobService.createJob(new Job().setName("release.and.deploy.jenkins.ci.client"), config);
 		jobService.triggerBuild(job);
 	}
 
+	@Ignore
 	@Test
 	public void testGetBuild() throws Exception {
 		Job job = new Job();
 		job.setName("versioned-component-release");
 		Build build = jobService.getBuild(job, new Long(7));
 		System.out.println("Build status: " + build.getStatus());
-		//Assert.assertEquals(new Long(6), build.getNumber());
-		//Assert.assertEquals(Build.Status.SUCCESS, build.getStatus());
+		// Assert.assertEquals(new Long(6), build.getNumber());
+		// Assert.assertEquals(Build.Status.SUCCESS, build.getStatus());
 	}
 
 }
