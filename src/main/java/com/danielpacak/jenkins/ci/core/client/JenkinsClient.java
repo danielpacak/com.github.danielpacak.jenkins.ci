@@ -19,14 +19,14 @@ import com.danielpacak.jenkins.ci.core.util.XmlResponse;
  */
 public class JenkinsClient {
 
-	protected static final String HEADER_ACCEPT = "Accept";
+	public static final String HEADER_ACCEPT = "Accept";
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
-	protected static final String HEADER_AUTHORIZATION = "Authorization";
-	protected static final String HEADER_USER_AGENT = "User-Agent";
+	public static final String HEADER_AUTHORIZATION = "Authorization";
+	public static final String HEADER_USER_AGENT = "User-Agent";
 
-	protected static final String METHOD_POST = "POST";
-	protected static final String METHOD_GET = "GET";
+	public static final String METHOD_POST = "POST";
+	public static final String METHOD_GET = "GET";
 
 	public static final String JOB_SEGMENT = "/job";
 	public static final String CREATE_ITEM_SEGMENT = "/createItem";
@@ -50,7 +50,7 @@ public class JenkinsClient {
 	}
 
 	/**
-	 * Create client for host, port, and scheme
+	 * Create client for scheme, host, port, and prefix. {scheme}://{host}:{port}/{prefix} http://localhost:8080/jenkins
 	 * 
 	 * @param hostname
 	 * @param port
@@ -60,94 +60,84 @@ public class JenkinsClient {
 		checkArgumentNotNull(scheme, "Scheme cannot be null");
 		checkArgumentNotNull(host, "Host cannot be null");
 		checkArgumentNotNull(port, "Port cannot be null");
-		StringBuilder uri = new StringBuilder(scheme);
-		uri.append("://");
-		uri.append(host);
-		uri.append(':').append(port);
-		if (prefix != null) {
-			uri.append(prefix);
-		}
-		baseUri = uri.toString();
-	}
-
-	public JenkinsResponse post(String uri, Map<String, String> headers, InputStream payload) throws IOException {
-		URL connectionUrl = new URL(baseUri + uri);
-		HttpURLConnection connection = (HttpURLConnection) connectionUrl.openConnection();
-		connection.setRequestMethod(METHOD_POST);
-		connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
-		connection.setRequestProperty(HEADER_ACCEPT, "application/xml");
-
-		for (Map.Entry<String, String> header : headers.entrySet()) {
-			connection.setRequestProperty(header.getKey(), header.getValue());
-		}
-
-		connection.setDoOutput(true);
-		OutputStream outputStream = connection.getOutputStream();
-		Streams.copy(payload, outputStream);
-
-		int responseCode = connection.getResponseCode();
-		if (isOk(responseCode)) {
-			return createJenkinsResponse(connection);
-		} else {
-			throw new IllegalStateException("Faild this post man: " + responseCode);
-		}
-
-	}
-
-	public JenkinsResponse createJenkinsResponse(HttpURLConnection connection) throws IOException {
-		XmlResponse xmlResponse = null;
-		try {
-			xmlResponse = new XmlResponse(connection.getInputStream());
-		} catch (Exception e) {
-			// ignore
-			System.out.println("not parsable response??");
-		}
-		return new JenkinsResponse(xmlResponse);
-
+		// @formatter:off
+		StringBuilder uri = new StringBuilder()
+			.append(scheme)
+			.append("://")
+			.append(host)
+			.append(':')
+			.append(port);
+		// @formatter:on
+		baseUri = prefix != null ? uri.append(prefix).toString() : uri.toString();
 	}
 
 	public JenkinsResponse get(String uri) throws IOException {
 		URL connectionUrl = new URL(baseUri + uri);
 		HttpURLConnection connection = (HttpURLConnection) connectionUrl.openConnection();
 		connection.setRequestMethod(METHOD_GET);
-		connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
-		connection.setRequestProperty(HEADER_ACCEPT, "application/xml");
+		setCommonHeaders(connection);
+		return createJenkinsResponse(connection);
+	}
 
-		int responseCode = connection.getResponseCode();
-		System.out.println("response code: " + responseCode);
-		if (isOk(responseCode)) {
-			return createJenkinsResponse(connection);
-		} else {
-			// prepare and throw exception
-			throw new IllegalStateException("error with this request: " + responseCode);
+	public JenkinsResponse post(String uri, Map<String, String> headers, InputStream payload) throws IOException {
+		URL connectionUrl = new URL(baseUri + uri);
+		HttpURLConnection connection = (HttpURLConnection) connectionUrl.openConnection();
+		connection.setRequestMethod(METHOD_POST);
+		setCommonHeaders(connection);
+		setRequestSpecificHeaders(connection, headers);
+
+		connection.setDoOutput(true);
+		OutputStream outputStream = connection.getOutputStream();
+		Streams.copy(payload, outputStream);
+
+		return createJenkinsResponse(connection);
+	}
+
+	private void setRequestSpecificHeaders(HttpURLConnection connection, Map<String, String> headers) {
+		for (Map.Entry<String, String> header : headers.entrySet()) {
+			connection.setRequestProperty(header.getKey(), header.getValue());
 		}
 	}
 
 	public JenkinsResponse post(String uri) throws IOException {
 		URL connectionUrl = new URL(baseUri + uri);
-		System.out.println("Posting to: " + connectionUrl.toString());
 		HttpURLConnection connection = (HttpURLConnection) connectionUrl.openConnection();
-		HttpURLConnection.setFollowRedirects(false);
 		connection.setRequestMethod(METHOD_POST);
+		setCommonHeaders(connection);
+		return createJenkinsResponse(connection);
+	}
+
+	private void setCommonHeaders(HttpURLConnection connection) {
 		connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
 		connection.setRequestProperty(HEADER_ACCEPT, "application/xml");
+	}
 
-		// not content this time
-		connection.setDoOutput(true);
-		connection.setFixedLengthStreamingMode(0);
-		connection.setRequestProperty(HEADER_CONTENT_LENGTH, "0");
-
+	private JenkinsResponse createJenkinsResponse(HttpURLConnection connection) throws IOException {
 		int responseCode = connection.getResponseCode();
-		// System.out.println("headers: " +connection.getRequestProperties());
-		System.out.println("send or not send?" + responseCode);
-		return new JenkinsResponse(new XmlResponse(connection.getInputStream()));
+		if (isOk(responseCode)) {
+			XmlResponse xmlResponse = createXmlResponse(connection);
+			return new JenkinsResponse(xmlResponse);
+		}
+		throw new IllegalStateException("There was an error calling the API");
+	}
+
+	private XmlResponse createXmlResponse(HttpURLConnection connection) throws IOException {
+		String contentType = connection.getHeaderField(HEADER_CONTENT_TYPE);
+		String contentLength = connection.getHeaderField(HEADER_CONTENT_LENGTH);
+
+		boolean validContentType = contentType != null && contentType.startsWith("application/xml");
+		boolean validContentLength = contentLength == null || Long.valueOf(contentLength) > 0;
+
+		if (validContentType && validContentLength) {
+			return new XmlResponse(connection.getInputStream());
+		}
+		return null;
 	}
 
 	private boolean isOk(int responseCode) {
 		switch (responseCode) {
 		case HttpURLConnection.HTTP_OK:
 		case HttpURLConnection.HTTP_CREATED:
-		case HttpURLConnection.HTTP_MOVED_TEMP: // for example for doDelete requests
 			return true;
 		default:
 			return false;

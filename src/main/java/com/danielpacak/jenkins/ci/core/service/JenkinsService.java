@@ -1,5 +1,7 @@
 package com.danielpacak.jenkins.ci.core.service;
 
+import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.SEGMENT_API_XML;
+
 import java.io.IOException;
 
 import com.danielpacak.jenkins.ci.core.Jenkins;
@@ -28,7 +30,7 @@ public class JenkinsService extends AbstractService {
 	 * @since 1.0.0
 	 */
 	public Jenkins getJenkins() throws IOException {
-		JenkinsResponse response = client.get("/api/xml");
+		JenkinsResponse response = client.get(SEGMENT_API_XML);
 		return response.getModel(new JenkinsConverter());
 	}
 

@@ -17,7 +17,6 @@ import com.danielpacak.jenkins.ci.core.Job;
 import com.danielpacak.jenkins.ci.core.JobConfiguration;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
 import com.danielpacak.jenkins.ci.core.client.JenkinsResponse;
-import com.danielpacak.jenkins.ci.core.util.XmlResponse;
 
 /**
  * Job service class.
@@ -26,16 +25,32 @@ import com.danielpacak.jenkins.ci.core.util.XmlResponse;
  */
 public class JobService extends AbstractService {
 
+	/**
+	 * Create job service for the default client.
+	 */
 	public JobService() {
 		super();
 	}
 
+	/**
+	 * Create job service for the given client.
+	 * 
+	 * @param client
+	 */
 	public JobService(JenkinsClient client) {
 		super(client);
 	}
 
+	/**
+	 * Get all jobs.
+	 * 
+	 * @return list of jobs
+	 * @throws IOException
+	 * @since 1.0.0
+	 */
 	public List<Job> getJobs() throws IOException {
-		throw new IllegalStateException("Not implemented yet");
+		JenkinsResponse response = client.get(SEGMENT_API_XML + "?depth=2");
+		return response.getModel(new JobListResponseMapper());
 	}
 
 	/**
@@ -46,6 +61,8 @@ public class JobService extends AbstractService {
 	 * @param configuration
 	 *            the configuration of the job
 	 * @return the job that has been created
+	 * @throws IOException
+	 *             if an error occurred connecting to the server
 	 * @since 1.0.0
 	 **/
 	public Job createJob(Job job, JobConfiguration configuration) throws IOException {
@@ -114,25 +131,7 @@ public class JobService extends AbstractService {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(number, "Number cannot be null");
 		JenkinsResponse response = client.get(JOB_SEGMENT + "/" + job.getName() + "/" + number + "/api/xml");
-		return response.getModel(new BuildConverter());
-	}
-
-	// XmlResponseMapper or ResponseMapper -> maps xml respone to an instance of a model class
-	private class BuildConverter implements ResponseMapper<Build> {
-		@Override
-		public Build map(XmlResponse xmlResponse) {
-			Build build = new Build();
-			build.setNumber(new Long(3));
-
-			Boolean building = xmlResponse.evaluateAsBoolean("//building/text()");
-			if (building) {
-				build.setStatus(Build.Status.PENDING);
-			} else {
-				build.setStatus(Build.Status.valueOf(xmlResponse.evaluateAsString("//result/text()")));
-			}
-
-			return build;
-		}
+		return response.getModel(new BuildResponseMapper());
 	}
 
 }

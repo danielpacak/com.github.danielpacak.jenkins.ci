@@ -75,8 +75,9 @@ public class Plugin implements Serializable {
 		return enabled;
 	}
 
-	public void setEnabled(Boolean enabled) {
+	public Plugin setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+		return this;
 	}
 
 	public Boolean getHasUpdate() {
@@ -91,8 +92,9 @@ public class Plugin implements Serializable {
 		return longName;
 	}
 
-	public void setLongName(String longName) {
+	public Plugin setLongName(String longName) {
 		this.longName = longName;
+		return this;
 	}
 
 	public Boolean getPinned() {
@@ -107,8 +109,9 @@ public class Plugin implements Serializable {
 		return shortName;
 	}
 
-	public void setShortName(String shortName) {
+	public Plugin setShortName(String shortName) {
 		this.shortName = shortName;
+		return this;
 	}
 
 	public DynamicLoad getSupportsDynamicLoad() {
@@ -123,16 +126,18 @@ public class Plugin implements Serializable {
 		return url;
 	}
 
-	public void setUrl(String url) {
+	public Plugin setUrl(String url) {
 		this.url = url;
+		return this;
 	}
 
 	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(String version) {
+	public Plugin setVersion(String version) {
 		this.version = version;
+		return this;
 	}
 
 	public static enum DynamicLoad {
