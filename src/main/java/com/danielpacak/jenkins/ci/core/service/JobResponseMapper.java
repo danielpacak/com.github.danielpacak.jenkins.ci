@@ -16,7 +16,8 @@ public class JobResponseMapper implements ResponseMapper<Job> {
 			.setDisplayName(response.evaluateAsString("//displayName/text()"))
 			.setUrl(response.evaluateAsString("//url/text()"))
 			.setBuildable(response.evaluateAsBoolean("//buildable/text()"))
-			.setInQueue(response.evaluateAsBoolean("//inQueue/text()"));
+			.setInQueue(response.evaluateAsBoolean("//inQueue/text()"))
+			.setNextBuildNumber(response.evaluateAsLong("//nextBuildNumber"));
 		// @formatter:on
 	}
 

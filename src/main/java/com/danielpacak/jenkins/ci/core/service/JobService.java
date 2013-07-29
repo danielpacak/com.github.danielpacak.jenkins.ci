@@ -111,10 +111,11 @@ public class JobService extends AbstractService {
 	 *            the job to be built.
 	 * @since 1.0.0
 	 */
-	public void triggerBuild(Job job) throws IOException {
+	public Long triggerBuild(Job job) throws IOException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		client.get(JOB_SEGMENT + "/" + job.getName() + "/build?delay=0sec");
+		return job.getNextBuildNumber();
 	}
 
 	/**

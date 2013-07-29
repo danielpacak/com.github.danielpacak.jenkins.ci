@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -43,6 +44,7 @@ public class JobServiceTest {
 	}
 
 	@Test
+	@Ignore
 	public void testCreateJob() throws Exception {
 		Job job = new Job().setName("j");
 		JobConfiguration jobConfiguration = new TestJobConfiguration();

@@ -16,7 +16,7 @@ public class Job implements Serializable {
 	private String url;
 	private Boolean buildable;
 	private Boolean inQueue;
-	private Integer nextBuildNumber;
+	private Long nextBuildNumber;
 
 	public String getName() {
 		return name;
@@ -67,11 +67,11 @@ public class Job implements Serializable {
 		return this;
 	}
 
-	public Integer getNextBuildNumber() {
+	public Long getNextBuildNumber() {
 		return nextBuildNumber;
 	}
 
-	public Job setNextBuildNumber(Integer nextBuildNumber) {
+	public Job setNextBuildNumber(Long nextBuildNumber) {
 		this.nextBuildNumber = nextBuildNumber;
 		return this;
 	}

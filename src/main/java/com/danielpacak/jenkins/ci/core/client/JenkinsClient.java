@@ -118,7 +118,7 @@ public class JenkinsClient {
 			XmlResponse xmlResponse = createXmlResponse(connection);
 			return new JenkinsResponse(xmlResponse);
 		}
-		throw new IllegalStateException("There was an error calling the API");
+		throw new IllegalStateException("There was an error calling the API" + connection.getURL());
 	}
 
 	private XmlResponse createXmlResponse(HttpURLConnection connection) throws IOException {

@@ -1,5 +1,6 @@
 package com.danielpacak.jenkins.ci.core;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -9,6 +10,6 @@ import java.io.InputStream;
  */
 public interface JobConfiguration {
 
-	InputStream getInputStream();
+	InputStream getInputStream() throws IOException;
 
 }

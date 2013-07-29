@@ -53,14 +53,11 @@ public class XmlResponse {
 	 * @throws Exception
 	 */
 	public String evaluateAsString(String expression) {
-		Preconditions.checkArgumentNotNull(expression,
-				"Expression cannot be null");
+		Preconditions.checkArgumentNotNull(expression, "Expression cannot be null");
 		try {
 			XPathExpression expr = xPath.compile(expression);
-			String rawResult = (String) expr.evaluate(document,
-					XPathConstants.STRING);
-			return (rawResult != null && !"".equals(rawResult)) ? rawResult
-					: null;
+			String rawResult = (String) expr.evaluate(document, XPathConstants.STRING);
+			return (rawResult != null && !"".equals(rawResult)) ? rawResult : null;
 		} catch (XPathExpressionException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -74,6 +71,11 @@ public class XmlResponse {
 	public Integer evaluateAsInteger(String expression) {
 		String rawResult = evaluateAsString(expression);
 		return rawResult != null ? Integer.valueOf(rawResult) : null;
+	}
+
+	public Long evaluateAsLong(String expression) {
+		String rawResult = evaluateAsString(expression);
+		return rawResult != null ? Long.valueOf(rawResult) : null;
 	}
 
 }

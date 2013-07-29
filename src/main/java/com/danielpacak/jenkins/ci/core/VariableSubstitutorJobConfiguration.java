@@ -2,6 +2,7 @@ package com.danielpacak.jenkins.ci.core;
 
 import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgumentNotNull;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public class VariableSubstitutorJobConfiguration implements JobConfiguration {
 	}
 	
 	@Override
-	public InputStream getInputStream() {
+	public InputStream getInputStream() throws IOException {
 		return decorated.getInputStream();
 	}
 

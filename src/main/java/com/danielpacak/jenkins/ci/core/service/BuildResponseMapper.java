@@ -11,13 +11,13 @@ public class BuildResponseMapper implements ResponseMapper<Build> {
 	@Override
 	public Build map(XmlResponse xmlResponse) {
 		Build build = new Build();
-		build.setNumber(new Long(3));
+		build.setNumber(xmlResponse.evaluateAsLong("//number"));
 
-		Boolean building = xmlResponse.evaluateAsBoolean("//building/text()");
+		Boolean building = xmlResponse.evaluateAsBoolean("//building");
 		if (building) {
 			build.setStatus(Build.Status.PENDING);
 		} else {
-			build.setStatus(Build.Status.valueOf(xmlResponse.evaluateAsString("//result/text()")));
+			build.setStatus(Build.Status.valueOf(xmlResponse.evaluateAsString("//result")));
 		}
 
 		return build;
