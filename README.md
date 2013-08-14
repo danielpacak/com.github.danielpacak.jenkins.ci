@@ -3,7 +3,7 @@
 This project is a Java library for communicating with the [Jenkins REST API](https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API).
 
 * [Examples](#examples)
- * [Creating a job](#creating-a-job)
+ * [Creating a job and launching a build](#creating-a-job-and-launching-a-build)
  * [Triggering a build](#triggering-a-build)
  * [Triggering a build and waiting for its completion](#triggering-a-build-and-waiting-for-its-completion)
  * [Deleting a job](#deleting-a-job)
@@ -25,16 +25,16 @@ JenkinsClient client = new JenkinsClient("localhost", 8080);
 client.setOAuth2Token("SlAV32hkKG");
 ```
 
-### Creating a job
-The following example creates a new job called `release.and.deploy.jenkins.ci.client` using an XML configuration
-template stored as a class path resource file `job/template/free-style-project.xml`.
+### Creating a job and launching a build
+The following example creates a new job called `vacuum.my.room` using an XML configuration
+template stored as a class path resource file `job/config/free-style.xml`.
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
-JobConfiguration config = new ClassPathJobConfiguration("job/template/free-style-project.xml");
-Job job = jobService.createJob("release.and.deploy.jenkins.ci.client", config); 
+JobConfiguration jobConfig = new ClassPathJobConfiguration("job/config/free-style.xml");
+Job job = jobService.createJob("vacuum.my.room", jobConfig); 
 ```
-The `job/template/free-style-project.xml` configuration template may look as follows:
+The `job/template/free-style.xml` configuration template may look as follows:
 ```xml
 <?xml version='1.0' encoding='UTF-8'?>
 <project>
@@ -52,14 +52,16 @@ The `job/template/free-style-project.xml` configuration template may look as fol
 	<buildWrappers />
 </project>
 ```
-
-### Triggering a build
-The following example triggers a build of a given job.
+To launch a build call the `triggerBuild()` method of the `JobService` class:
 ```java
-JenkinsClient client = new JenkinsClient("localhost", 8080);
-JobService jobService = new JobService(client);
-Job job = null; // I assume that you know how to create a job (see the previous examples)
-jobService.triggerBuild(job);
+Long buildNumber = jobService.triggerBuild(job);
+```
+If your project is [parameterized](https://wiki.jenkins-ci.org/display/JENKINS/Parameterized+Build)
+you would rather call the `triggerBuild()` method of the `JobService` class with an additional parameter
+which is a map of parameters values:
+```java
+Map<String, String> parameters = mapOf("FIRST_NAME", "Daniel", "LAST_NAME", "Pacak");
+Long buildNumber = jobService.triggerBuild(job, parameters);
 ```
 
 ### Triggering a build and waiting for its completion
@@ -129,13 +131,13 @@ given with the version of Jenkins Java API you wish to use.
 
 ### Maven
 The library is not yet deployed to the maven central repository, so to use it, you need to fetch the
-source code, install it into your local maven repository (`~/.m2/repository`) and add the following
+source code, install it into your local maven cache (usually `~/.m2/repository`) and add the following
 snippet to the `<dependencies />` section of the project's `pom.xml` file.
 
 ```xml
 <dependency>
-	<groupId>com.danielpacak.jenkins.ci</groupId>
-	<artifactId>com.danielpacak.jenkins.ci.core</artifactId>
+	<groupId>com.danielpacak</groupId>
+	<artifactId>jenkins.ci.core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
