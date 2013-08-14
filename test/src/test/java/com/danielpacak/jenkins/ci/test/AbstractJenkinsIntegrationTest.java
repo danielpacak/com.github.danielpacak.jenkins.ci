@@ -1,19 +1,19 @@
 package com.danielpacak.jenkins.ci.test;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 import com.danielpacak.jenkins.ci.core.Job;
 
 public abstract class AbstractJenkinsIntegrationTest {
 
-	@Before
-	public void beforeTest() {
+	@BeforeClass
+	public static void beforeClass() {
 		System.out.println("Starting Jenkins CI...");
 	}
 
-	@After
-	public void afterTest() {
+	@AfterClass
+	public static void afterClass() {
 		System.out.println("Stopping Jenkins CI...");
 	}
 

@@ -1,21 +1,31 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project>
 	<actions />
-	<description />
+	<description></description>
 	<keepDependencies>false</keepDependencies>
 	<properties>
 		<hudson.model.ParametersDefinitionProperty>
 			<parameterDefinitions>
 				<hudson.model.StringParameterDefinition>
 					<name>FIRST_NAME</name>
-					<description />
+					<description></description>
 					<defaultValue>Daniel</defaultValue>
 				</hudson.model.StringParameterDefinition>
 				<hudson.model.StringParameterDefinition>
 					<name>LAST_NAME</name>
-					<description />
+					<description></description>
 					<defaultValue>Pacak</defaultValue>
 				</hudson.model.StringParameterDefinition>
+				<hudson.model.BooleanParameterDefinition>
+					<name>IS_SMART</name>
+					<description></description>
+					<defaultValue>true</defaultValue>
+				</hudson.model.BooleanParameterDefinition>
+				<hudson.model.PasswordParameterDefinition>
+					<name>SECRET_PASSWORD</name>
+					<description></description>
+					<defaultValue>D+ug18M/zLBNdF+SEEOSMA==</defaultValue>
+				</hudson.model.PasswordParameterDefinition>
 			</parameterDefinitions>
 		</hudson.model.ParametersDefinitionProperty>
 	</properties>
@@ -29,7 +39,7 @@
 	<concurrentBuild>false</concurrentBuild>
 	<builders>
 		<hudson.tasks.BatchFile>
-			<command>echo %FIRST_NAME% %LAST_NAME%</command>
+			<command>echo %FIRST_NAME% %LAST_NAME% %IS_SMART% %SECRET_PASSWORD% </command>
 		</hudson.tasks.BatchFile>
 	</builders>
 	<publishers />
