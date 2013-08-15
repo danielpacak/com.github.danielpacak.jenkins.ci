@@ -30,11 +30,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import com.danielpacak.jenkins.ci.core.Build;
 import com.danielpacak.jenkins.ci.core.Job;
 import com.danielpacak.jenkins.ci.core.JobConfiguration;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
+import com.danielpacak.jenkins.ci.core.client.JenkinsClientException;
 
 /**
  * Job service class.
@@ -182,6 +189,53 @@ public class JobService extends AbstractService {
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		client.post(JOB_SEGMENT + "/" + job.getName() + "/buildWithParameters" + "?" + toQueryParams(parameters));
 		return job.getNextBuildNumber();
+	}
+
+	/**
+	 * Trigger a build of the given job and wait for its completion.
+	 * 
+	 * @param job
+	 *            the job to be built
+	 * @return build
+	 * @throws IOException
+	 *             if an error occurred connecting to Jenkins
+	 * @since 1.0.0
+	 */
+	public Build triggerBuildAndWait(final Job job) throws IOException {
+		final Long buildNumber = triggerBuild(job);
+		PollBuildStatus poll = new PollBuildStatus(job, buildNumber);
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Future<Build> build = executor.submit(poll);
+		try {
+			return build.get();
+		} catch (InterruptedException e) {
+			throw new JenkinsClientException(e);
+		} catch (ExecutionException e) {
+			throw new JenkinsClientException(e);
+		}
+	}
+
+	private class PollBuildStatus implements Callable<Build> {
+
+		private final Job job;
+
+		private final Long buildNumber;
+
+		private PollBuildStatus(Job job, Long buildNumber) {
+			this.job = job;
+			this.buildNumber = buildNumber;
+		}
+
+		@Override
+		public Build call() throws Exception {
+			Build build = null;
+			do {
+				TimeUnit.SECONDS.sleep(1);
+				build = getBuild(job, buildNumber);
+				System.out.println("Got build: " + build);
+			} while (build.getStatus() == Build.Status.PENDING);
+			return build;
+		}
 	}
 
 	/**

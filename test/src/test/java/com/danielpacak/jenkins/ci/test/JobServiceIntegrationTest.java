@@ -64,6 +64,16 @@ public class JobServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
 		Assert.assertEquals(buildNumber, build.getNumber());
 		jobService.deleteJob(job);
 	}
+	
+	@Test
+	public void testTriggerBuildAndWait() throws Exception {
+		Job job = newJobWithRandomName();
+		JobConfiguration config = new ClassPathJobConfiguration("job/config/free-style.xml");
+		job = jobService.createJob(job, config);
+		
+		Build build = jobService.triggerBuildAndWait(job);
+		Assert.assertEquals(Build.Status.SUCCESS, build.getStatus());
+	}
 
 	@Test
 	public void testCreateParameterizedJobAndTriggerBuild() throws Exception {

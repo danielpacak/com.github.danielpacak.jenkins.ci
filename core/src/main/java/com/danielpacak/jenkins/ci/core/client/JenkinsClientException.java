@@ -31,4 +31,8 @@ public class JenkinsClientException extends RuntimeException {
 				.toString());
 	}
 
+	public JenkinsClientException(Throwable cause) {
+		super(cause);
+	}
+
 }
