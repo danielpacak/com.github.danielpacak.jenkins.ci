@@ -19,36 +19,26 @@
  */
 package com.danielpacak.jenkins.ci.test;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import com.danielpacak.jenkins.ci.core.Plugin;
+import com.danielpacak.jenkins.ci.core.Jenkins;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
-import com.danielpacak.jenkins.ci.core.service.PluginService;
+import com.danielpacak.jenkins.ci.core.service.JenkinsService;
 
-/**
- * Integration tests for {@link PluginService}.
- */
-public class PluginServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
+public class JenkinsServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
 
 	@Test
-	public void testGetPlugins() throws Exception {
+	public void testGetJenkins() throws Exception {
 		JenkinsClient client = new JenkinsClient("localhost", 8080);
-		PluginService service = new PluginService(client);
-		List<Plugin> plugins = service.getPlugins();
-		for (Plugin plugin : plugins) {
-			print(plugin);
-		}
-	}
-
-	private void print(Plugin plugin) {
-		System.out.println("Plugin.shortName: " + plugin.getShortName());
-		System.out.println("Plugin.longName: " + plugin.getLongName());
-		System.out.println("Plugin.url: " + plugin.getUrl());
-		System.out.println("Plugin.version: " + plugin.getVersion());
-		System.out.println("Plugin.enabled: " + plugin.getEnabled());
-
+		JenkinsService service = new JenkinsService(client);
+		Jenkins jenkins = service.getJenkins();
+		assertEquals(Jenkins.MODE.NORMAL, jenkins.getMode());
+		assertEquals(new Integer(2), jenkins.getNumExecutors());
+		assertEquals("the master Jenkins node", jenkins.getNodeDescription());
+		assertNull(jenkins.getNodeName());
 	}
 
 }

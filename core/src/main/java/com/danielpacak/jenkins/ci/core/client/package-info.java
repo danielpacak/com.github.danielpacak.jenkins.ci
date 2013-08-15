@@ -17,22 +17,9 @@
  * limitations under the License.
  * #L%
  */
+/**
+ * This package contains classes which communicate with the Jenkins REST API over HTTP(S). The client package is also
+ * responsible for converting XML responses to appropriate Java model classes as well as generating request exceptions
+ * based on HTTP status codes.
+ */
 package com.danielpacak.jenkins.ci.core.client;
-
-import com.danielpacak.jenkins.ci.core.service.ResponseMapper;
-import com.danielpacak.jenkins.ci.core.util.XmlResponse;
-
-public class JenkinsResponse {
-
-	private XmlResponse content;
-
-	// nullable
-	public JenkinsResponse(XmlResponse content) {
-		this.content = content;
-	}
-
-	public <T> T getModel(ResponseMapper<T> converter) {
-		return converter.map(content);
-	}
-
-}

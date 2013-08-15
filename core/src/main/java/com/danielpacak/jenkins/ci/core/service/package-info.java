@@ -17,22 +17,10 @@
  * limitations under the License.
  * #L%
  */
-package com.danielpacak.jenkins.ci.core.client;
+/**
+ * This package contains the classes that invoke the API and return model classes representing resources
+ * that were created, read, updated, or deleted. Service classes are defined for the resources they interact
+ * with such as {@link com.danielpacak.jenkins.ci.core.service.JobService}.
+ */
+package com.danielpacak.jenkins.ci.core.service;
 
-import com.danielpacak.jenkins.ci.core.service.ResponseMapper;
-import com.danielpacak.jenkins.ci.core.util.XmlResponse;
-
-public class JenkinsResponse {
-
-	private XmlResponse content;
-
-	// nullable
-	public JenkinsResponse(XmlResponse content) {
-		this.content = content;
-	}
-
-	public <T> T getModel(ResponseMapper<T> converter) {
-		return converter.map(content);
-	}
-
-}

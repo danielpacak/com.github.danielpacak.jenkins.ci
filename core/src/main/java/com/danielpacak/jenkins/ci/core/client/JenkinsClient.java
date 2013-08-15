@@ -1,3 +1,22 @@
+/*
+ * #%L
+ * Jenkins Java API
+ * %%
+ * Copyright (C) 2013 Daniel Pacak
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package com.danielpacak.jenkins.ci.core.client;
 
 import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgumentNotNull;
@@ -9,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
+import com.danielpacak.jenkins.ci.core.util.Base64;
 import com.danielpacak.jenkins.ci.core.util.Streams;
 import com.danielpacak.jenkins.ci.core.util.XmlResponse;
 
@@ -40,6 +60,8 @@ public class JenkinsClient {
 
 	private String baseUri;
 	private String userAgent = USER_AGENT;
+
+	private String credentials;
 
 	public JenkinsClient() {
 		this("localhost", 8080);
@@ -108,6 +130,10 @@ public class JenkinsClient {
 	}
 
 	private void setCommonHeaders(HttpURLConnection connection) {
+		if (credentials != null) {
+			connection.setRequestProperty(HEADER_AUTHORIZATION, credentials);
+		}
+
 		connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
 		connection.setRequestProperty(HEADER_ACCEPT, "application/xml");
 	}
@@ -117,6 +143,8 @@ public class JenkinsClient {
 		if (isOk(responseCode)) {
 			XmlResponse xmlResponse = createXmlResponse(connection);
 			return new JenkinsResponse(xmlResponse);
+		}
+		if (connection.getErrorStream() != null) {
 		}
 		throw new IllegalStateException("There was an error calling the API" + connection.getURL());
 	}
@@ -129,7 +157,8 @@ public class JenkinsClient {
 		boolean validContentLength = contentLength == null || Long.valueOf(contentLength) > 0;
 
 		if (validContentType && validContentLength) {
-			return new XmlResponse(connection.getInputStream());
+			String resp = Streams.toString(connection.getInputStream());
+			return new XmlResponse(resp);
 		}
 		return null;
 	}
@@ -142,6 +171,51 @@ public class JenkinsClient {
 		default:
 			return false;
 		}
+	}
+
+	/**
+	 * Set credentials for the basic access authentication.
+	 * <p>
+	 * The credentials are sent as the {@value #HEADER_AUTHORIZATION} HTTP request header. The header is constructed as
+	 * follows:
+	 * <ul>
+	 * <li>User and password are combined into a string "user:password"</li>
+	 * <li>The resulting string is encoded using Base64</li>
+	 * <li>The authorization method and a space i.e. "Basic " is then put before the encoded string.</li>
+	 * </ul>
+	 * For example, if the user is 'dpacak' and the password is 'passw0rd' then the header is formed as follows:
+	 * 
+	 * <pre>
+	 * {@code Authentication: Basic ZHBhY2FrOnBhc3N3MHJk}
+	 * </pre>
+	 * 
+	 * The basic access authentication mechanism provides <b>no confidentiality protection</b> for the transmitted
+	 * credentials. They are merely encoded with Base64 in transit, but not encrypted or hashed in any way. It is,
+	 * therefore, typically used over HTTPS.
+	 * 
+	 * @param user
+	 * @param password
+	 * @return this client
+	 * @throws IllegalArgumentException
+	 *             if user or password is {@code null}
+	 * @see <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">Basic access authentication</a>
+	 * @since 1.0.0
+	 */
+	public JenkinsClient setCredentials(String user, String password) {
+		checkArgumentNotNull(user, "User cannot be null");
+		checkArgumentNotNull(password, "Password cannot be null");
+		this.credentials = "Basic " + Base64.encodeString(user + ':' + password);
+		return this;
+	}
+
+	/**
+	 * Set OAuth2 token.
+	 * 
+	 * @param token
+	 * @return this client
+	 */
+	public JenkinsClient setOAuth2Token(String token) {
+		throw new UnsupportedOperationException("The OAuth2 authentication mechanism is not yet implemented");
 	}
 
 }

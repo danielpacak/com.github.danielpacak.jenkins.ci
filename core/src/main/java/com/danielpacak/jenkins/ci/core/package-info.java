@@ -17,22 +17,9 @@
  * limitations under the License.
  * #L%
  */
-package com.danielpacak.jenkins.ci.core.client;
-
-import com.danielpacak.jenkins.ci.core.service.ResponseMapper;
-import com.danielpacak.jenkins.ci.core.util.XmlResponse;
-
-public class JenkinsResponse {
-
-	private XmlResponse content;
-
-	// nullable
-	public JenkinsResponse(XmlResponse content) {
-		this.content = content;
-	}
-
-	public <T> T getModel(ResponseMapper<T> converter) {
-		return converter.map(content);
-	}
-
-}
+/**
+ * This package contains all the model classes representing the resources available through the API such as
+ * jobs, builds, and configurations. The model classes contain getters and setters for all the elements
+ * present in the Jenkins REST API XML response.
+ */
+package com.danielpacak.jenkins.ci.core;

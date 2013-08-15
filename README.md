@@ -58,7 +58,7 @@ Long buildNumber = jobService.triggerBuild(job);
 ```
 If your project is [parameterized](https://wiki.jenkins-ci.org/display/JENKINS/Parameterized+Build)
 you would rather call the `triggerBuild()` method of the `JobService` class with an additional parameter
-which is a map of parameters values:
+which is a map of parameters/values:
 ```java
 Map<String, String> parameters = mapOf("FIRST_NAME", "Daniel", "LAST_NAME", "Pacak");
 Long buildNumber = jobService.triggerBuild(job, parameters);
@@ -90,21 +90,6 @@ JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
 jobService.deleteJob("job-to-be-deleted");
 ```
-
-### Using the `VariableSubstitutorJobConfiguration` class
-Once you start creating more useful Jenkins jobs, you'll find the `VariableSubstitutorJobConfiguration`
-class handy.
-```java
-Map<String, Object> values = new HashMap<>();
-values.put("cloneUrl", "https://github.com/user/repo.git");
-JobConfiguration config = new VariableSubstitutorJobConfiguration(
-    new ClassPathJobConfiguration("job/template/maven3-project.xml"), values
-);
-```
-The class substitutes all the variables within the job configuration returned by the decorated
-`JobConfiguration` (the `ClassPathJobConfiguration` class in our case).
-
-### 
 
 ## Packages
 The library is composed of 3 main packages.
