@@ -17,22 +17,20 @@
  * limitations under the License.
  * #L%
  */
-package com.danielpacak.jenkins.ci.core.client;
+package com.danielpacak.jenkins.ci.core.http;
 
-import com.danielpacak.jenkins.ci.core.service.ResponseMapper;
-import com.danielpacak.jenkins.ci.core.util.XmlResponse;
+/**
+ * The base interface for HTTP request and response messages.
+ * 
+ * @since 1.0.0
+ */
+public interface HttpMessage {
 
-public class JenkinsResponse {
-
-	private XmlResponse content;
-
-	// nullable
-	public JenkinsResponse(XmlResponse content) {
-		this.content = content;
-	}
-
-	public <T> T getModel(ResponseMapper<T> converter) {
-		return converter.map(content);
-	}
+	/**
+	 * Get headers of this message.
+	 * 
+	 * @return headers
+	 */
+	HttpHeaders getHeaders();
 
 }

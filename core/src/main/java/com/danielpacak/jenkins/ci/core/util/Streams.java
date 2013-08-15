@@ -20,6 +20,7 @@
 package com.danielpacak.jenkins.ci.core.util;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -101,6 +102,14 @@ public final class Streams {
 			count += n;
 		}
 		return count;
+	}
+
+	public static int copy(byte[] input, OutputStream output) throws IOException {
+		return copy(new ByteArrayInputStream(input), output);
+	}
+
+	public static int copy(String input, OutputStream output) throws IOException {
+		return copy(input.getBytes(), output);
 	}
 
 }

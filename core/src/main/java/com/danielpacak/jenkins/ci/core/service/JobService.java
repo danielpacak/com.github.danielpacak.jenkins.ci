@@ -21,13 +21,12 @@ package com.danielpacak.jenkins.ci.core.service;
 
 import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.CREATE_ITEM_SEGMENT;
 import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.DO_DELETE_SEGMENT;
-import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.HEADER_CONTENT_TYPE;
 import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.JOB_SEGMENT;
 import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.SEGMENT_API_XML;
 import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgumentNotNull;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,7 +35,6 @@ import com.danielpacak.jenkins.ci.core.Build;
 import com.danielpacak.jenkins.ci.core.Job;
 import com.danielpacak.jenkins.ci.core.JobConfiguration;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
-import com.danielpacak.jenkins.ci.core.client.JenkinsResponse;
 
 /**
  * Job service class.
@@ -74,8 +72,7 @@ public class JobService extends AbstractService {
 	 * @since 1.0.0
 	 */
 	public List<Job> getJobs() throws IOException {
-		JenkinsResponse response = client.get(SEGMENT_API_XML + "?depth=2");
-		return response.getModel(new JobListResponseMapper());
+		return Arrays.asList(client.getForObject(SEGMENT_API_XML + "?depth=2", Job[].class));
 	}
 
 	/**
@@ -96,9 +93,7 @@ public class JobService extends AbstractService {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		checkArgumentNotNull(configuration, "JobConfiguration cannot be null");
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put(HEADER_CONTENT_TYPE, "application/xml");
-		client.post(CREATE_ITEM_SEGMENT + "?name=" + job.getName(), headers, configuration.getInputStream());
+		client.post(CREATE_ITEM_SEGMENT + "?name=" + job.getName(), configuration);
 		return getJob(job.getName());
 	}
 
@@ -130,9 +125,7 @@ public class JobService extends AbstractService {
 	 * @since 1.0.0
 	 */
 	public Job getJob(String name) throws IOException {
-		checkArgumentNotNull(name, "Name cannot be null");
-		JenkinsResponse response = client.get(JOB_SEGMENT + "/" + name + SEGMENT_API_XML);
-		return response.getModel(new JobResponseMapper());
+		return client.getForObject(JOB_SEGMENT + "/" + name + SEGMENT_API_XML, Job.class);
 	}
 
 	/**
@@ -148,9 +141,9 @@ public class JobService extends AbstractService {
 	 * @since 1.0.0
 	 */
 	public JobConfiguration getJobConfiguration(Job job) throws IOException {
-		JenkinsResponse response = client.get(JOB_SEGMENT + "/" + job.getName() + "/" + "config.xml");
-		// i need something that allows me to get raw bytes
-		return null;
+		checkArgumentNotNull(job, "Job cannot be null");
+		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
+		return client.getForObject(JOB_SEGMENT + "/" + job.getName() + "/" + "config.xml", JobConfiguration.class);
 	}
 
 	/**
@@ -209,10 +202,10 @@ public class JobService extends AbstractService {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		checkArgumentNotNull(number, "Number cannot be null");
-		JenkinsResponse response = client.get(JOB_SEGMENT + "/" + job.getName() + "/" + number + "/api/xml");
-		return response.getModel(new BuildResponseMapper());
+		return client.getForObject(JOB_SEGMENT + "/" + job.getName() + "/" + number + "/api/xml", Build.class);
 	}
 
+	// TODO Parameters need to be encoded properly!
 	private String toQueryParams(Map<String, String> parameters) {
 		StringBuilder queryParams = new StringBuilder();
 		for (Entry<String, String> entry : parameters.entrySet()) {

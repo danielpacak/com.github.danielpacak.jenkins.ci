@@ -20,7 +20,6 @@
 package com.danielpacak.jenkins.ci.test;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -93,7 +92,7 @@ public class JobServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
 
 	@Test
 	public void testGetJobs() throws Exception {
-		List<Job> jobs = jobService.getJobs();
+		jobService.getJobs();
 	}
 
 }

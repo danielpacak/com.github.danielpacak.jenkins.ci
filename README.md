@@ -34,7 +34,7 @@ JobService jobService = new JobService(client);
 JobConfiguration jobConfig = new ClassPathJobConfiguration("job/config/free-style.xml");
 Job job = jobService.createJob("vacuum.my.room", jobConfig); 
 ```
-The `job/template/free-style.xml` configuration template may look as follows:
+The `job/config/free-style.xml` configuration template may look as follows:
 ```xml
 <?xml version='1.0' encoding='UTF-8'?>
 <project>

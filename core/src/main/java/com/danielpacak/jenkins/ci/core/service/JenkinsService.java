@@ -25,8 +25,6 @@ import java.io.IOException;
 
 import com.danielpacak.jenkins.ci.core.Jenkins;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
-import com.danielpacak.jenkins.ci.core.client.JenkinsResponse;
-import com.danielpacak.jenkins.ci.core.util.XmlResponse;
 
 /**
  * Jenkins class service.
@@ -35,10 +33,22 @@ import com.danielpacak.jenkins.ci.core.util.XmlResponse;
  */
 public class JenkinsService extends AbstractService {
 
+	/**
+	 * Create job service for the default client.
+	 * 
+	 * @since 1.0.0
+	 */
 	public JenkinsService() {
 		super();
 	}
 
+	/**
+	 * Create job service for the given client.
+	 * 
+	 * @param client
+	 *            client
+	 * @since 1.0.0
+	 */
 	public JenkinsService(JenkinsClient client) {
 		super(client);
 	}
@@ -49,21 +59,7 @@ public class JenkinsService extends AbstractService {
 	 * @since 1.0.0
 	 */
 	public Jenkins getJenkins() throws IOException {
-		JenkinsResponse response = client.get(SEGMENT_API_XML);
-		return response.getModel(new JenkinsConverter());
-	}
-
-	private class JenkinsConverter implements ResponseMapper<Jenkins> {
-		@Override
-		public Jenkins map(XmlResponse xmlResponse) {
-			// @formatter:off
-			return new Jenkins()
-				.setMode(Jenkins.MODE.valueOf(xmlResponse.evaluateAsString("//mode/text()")))
-				.setNodeDescription(xmlResponse.evaluateAsString("//nodeDescription/text()"))
-				.setNodeName(xmlResponse.evaluateAsString("//nodeName/text()"))
-				.setNumExecutors(xmlResponse.evaluateAsInteger("//numExecutors/text()"));
-			// @formatter:on
-		}
+		return client.getForObject(SEGMENT_API_XML, Jenkins.class);
 	}
 
 }

@@ -22,15 +22,27 @@ package com.danielpacak.jenkins.ci.core.client;
 import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgumentNotNull;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Map;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
+import com.danielpacak.jenkins.ci.core.http.HttpHeaders;
+import com.danielpacak.jenkins.ci.core.http.HttpMethod;
+import com.danielpacak.jenkins.ci.core.http.client.ClientHttpRequest;
+import com.danielpacak.jenkins.ci.core.http.client.ClientHttpRequestFactory;
+import com.danielpacak.jenkins.ci.core.http.client.ClientHttpResponse;
+import com.danielpacak.jenkins.ci.core.http.client.SimpleClientHttpRequestFactory;
+import com.danielpacak.jenkins.ci.core.http.converter.BuildHttpMessageConverter;
+import com.danielpacak.jenkins.ci.core.http.converter.HttpMessageConverter;
+import com.danielpacak.jenkins.ci.core.http.converter.JenkinsHttpMessageConverter;
+import com.danielpacak.jenkins.ci.core.http.converter.JobArrayHttpMessageConverter;
+import com.danielpacak.jenkins.ci.core.http.converter.JobConfigurationHttpMessageConverter;
+import com.danielpacak.jenkins.ci.core.http.converter.JobHttpMessageConverter;
+import com.danielpacak.jenkins.ci.core.http.converter.PluginArrayHttpMessageConverter;
 import com.danielpacak.jenkins.ci.core.util.Base64;
-import com.danielpacak.jenkins.ci.core.util.Streams;
-import com.danielpacak.jenkins.ci.core.util.XmlResponse;
 
 /**
  * Client class for interacting with the Jenkins HTTP/XML API.
@@ -56,12 +68,17 @@ public class JenkinsClient {
 	/**
 	 * Default user agent request header value
 	 */
-	protected static final String USER_AGENT = "JenkinsJavaAPI/${version}";
+	protected static final String USER_AGENT = "JenkinsJavaAPI";
 
 	private String baseUri;
+
 	private String userAgent = USER_AGENT;
 
 	private String credentials;
+
+	private ClientHttpRequestFactory httpRequestFactory;
+
+	private List<HttpMessageConverter<?>> messageConverters = new LinkedList<HttpMessageConverter<?>>();
 
 	public JenkinsClient() {
 		this("localhost", 8080);
@@ -90,83 +107,100 @@ public class JenkinsClient {
 			.append(':')
 			.append(port);
 		// @formatter:on
-		baseUri = prefix != null ? uri.append(prefix).toString() : uri.toString();
+		this.baseUri = prefix != null ? uri.append(prefix).toString() : uri.toString();
+		this.httpRequestFactory = new SimpleClientHttpRequestFactory();
+		this.messageConverters.add(new JobHttpMessageConverter());
+		this.messageConverters.add(new JobArrayHttpMessageConverter());
+		this.messageConverters.add(new JobConfigurationHttpMessageConverter());
+		this.messageConverters.add(new JenkinsHttpMessageConverter());
+		this.messageConverters.add(new PluginArrayHttpMessageConverter());
+		this.messageConverters.add(new BuildHttpMessageConverter());
 	}
 
-	public JenkinsResponse get(String uri) throws IOException {
-		URL connectionUrl = new URL(baseUri + uri);
-		HttpURLConnection connection = (HttpURLConnection) connectionUrl.openConnection();
-		connection.setRequestMethod(METHOD_GET);
-		setCommonHeaders(connection);
-		return createJenkinsResponse(connection);
+	public void setClientHttpRequestFactory(ClientHttpRequestFactory httpRequestFactory) {
+		this.httpRequestFactory = httpRequestFactory;
 	}
 
-	public JenkinsResponse post(String uri, Map<String, String> headers, InputStream payload) throws IOException {
-		URL connectionUrl = new URL(baseUri + uri);
-		HttpURLConnection connection = (HttpURLConnection) connectionUrl.openConnection();
-		connection.setRequestMethod(METHOD_POST);
-		setCommonHeaders(connection);
-		setRequestSpecificHeaders(connection, headers);
-
-		connection.setDoOutput(true);
-		OutputStream outputStream = connection.getOutputStream();
-		Streams.copy(payload, outputStream);
-
-		return createJenkinsResponse(connection);
+	public ClientHttpRequestFactory getClientHttpRequestFactory() {
+		return httpRequestFactory;
 	}
 
-	private void setRequestSpecificHeaders(HttpURLConnection connection, Map<String, String> headers) {
-		for (Map.Entry<String, String> header : headers.entrySet()) {
-			connection.setRequestProperty(header.getKey(), header.getValue());
+	public <T> T getForObject(String uri, Class<T> clazz) throws IOException {
+		ClientHttpRequest httpRequest = httpRequestFactory.createRequest(newURI(baseUri + uri), HttpMethod.GET);
+		ClientHttpResponse httpResponse = httpRequest.execute();
+		HttpMessageConverter<T> converter = findReadConverter(clazz);
+		return converter.read(clazz, httpResponse);
+	}
+
+	private <T> HttpMessageConverter<T> findReadConverter(Class<T> clazz) {
+		Iterator<HttpMessageConverter<?>> iterator = messageConverters.iterator();
+		while (iterator.hasNext()) {
+			HttpMessageConverter<?> converter = iterator.next();
+			if (converter.canRead(clazz)) {
+				return (HttpMessageConverter<T>) converter;
+			}
+		}
+		throw new IllegalArgumentException("Cannot find message converter for class [" + clazz + "]");
+	}
+
+	private <T> HttpMessageConverter<T> findWriteConverter(Class<T> clazz) {
+		Iterator<HttpMessageConverter<?>> iterator = messageConverters.iterator();
+		while (iterator.hasNext()) {
+			HttpMessageConverter<?> converter = iterator.next();
+			if (converter.canWrite(clazz)) {
+				return (HttpMessageConverter<T>) converter;
+			}
+		}
+		throw new IllegalArgumentException("Cannot find message converter for class [" + clazz + "]");
+	}
+
+	private URI newURI(String uri) {
+		try {
+			return new URI(uri);
+		} catch (URISyntaxException e) {
+			throw new IllegalArgumentException("Invalid uri [" + uri + "]", e);
 		}
 	}
 
-	public JenkinsResponse post(String uri) throws IOException {
-		URL connectionUrl = new URL(baseUri + uri);
-		HttpURLConnection connection = (HttpURLConnection) connectionUrl.openConnection();
-		connection.setRequestMethod(METHOD_POST);
-		setCommonHeaders(connection);
-		return createJenkinsResponse(connection);
+	public void post(String uri) throws IOException {
+		ClientHttpRequest httpRequest = httpRequestFactory.createRequest(newURI(baseUri + uri), HttpMethod.POST);
+		setImplicitHeaders(httpRequest);
+		ClientHttpResponse httpResponse = httpRequest.execute();
+		validateHttpResponse(httpResponse);
 	}
 
-	private void setCommonHeaders(HttpURLConnection connection) {
+	public void post(String uri, Object request) throws IOException {
+		ClientHttpRequest httpRequest = httpRequestFactory.createRequest(newURI(baseUri + uri), HttpMethod.POST);
+		setImplicitHeaders(httpRequest);
+		HttpMessageConverter converter = findWriteConverter(request.getClass());
+		converter.write(request, null, httpRequest);
+		ClientHttpResponse httpResponse = httpRequest.execute();
+		validateHttpResponse(httpResponse);
+	}
+
+	// it can be a strategy for validating HTTP response
+	private void validateHttpResponse(ClientHttpResponse httpResponse) throws IOException {
+		// TODO In case of errors throw a JenkinsClientException exception with as much info as possible!
+		// TODO Distinguish between client / server error codes and use appropriate exception subclass
+		if (!isOk(httpResponse.getRawStatusCode())) {
+			throw new JenkinsClientException(httpResponse.getStatusCode(), httpResponse.getStatusText(),
+					httpResponse.getHeaders());
+		}
+	}
+
+	private void setImplicitHeaders(ClientHttpRequest httpRequest) {
+		HttpHeaders headers = httpRequest.getHeaders();
+		headers.setUserAgent(userAgent);
 		if (credentials != null) {
-			connection.setRequestProperty(HEADER_AUTHORIZATION, credentials);
+			headers.setAuthorization(credentials);
 		}
-
-		connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
-		connection.setRequestProperty(HEADER_ACCEPT, "application/xml");
-	}
-
-	private JenkinsResponse createJenkinsResponse(HttpURLConnection connection) throws IOException {
-		int responseCode = connection.getResponseCode();
-		if (isOk(responseCode)) {
-			XmlResponse xmlResponse = createXmlResponse(connection);
-			return new JenkinsResponse(xmlResponse);
-		}
-		if (connection.getErrorStream() != null) {
-		}
-		throw new IllegalStateException("There was an error calling the API" + connection.getURL());
-	}
-
-	private XmlResponse createXmlResponse(HttpURLConnection connection) throws IOException {
-		String contentType = connection.getHeaderField(HEADER_CONTENT_TYPE);
-		String contentLength = connection.getHeaderField(HEADER_CONTENT_LENGTH);
-
-		boolean validContentType = contentType != null && contentType.startsWith("application/xml");
-		boolean validContentLength = contentLength == null || Long.valueOf(contentLength) > 0;
-
-		if (validContentType && validContentLength) {
-			String resp = Streams.toString(connection.getInputStream());
-			return new XmlResponse(resp);
-		}
-		return null;
 	}
 
 	private boolean isOk(int responseCode) {
 		switch (responseCode) {
 		case HttpURLConnection.HTTP_OK:
 		case HttpURLConnection.HTTP_CREATED:
+		case HttpURLConnection.HTTP_MOVED_TEMP:
 			return true;
 		default:
 			return false;

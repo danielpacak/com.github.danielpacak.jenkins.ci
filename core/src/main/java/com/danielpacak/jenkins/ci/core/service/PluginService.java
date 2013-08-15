@@ -20,11 +20,11 @@
 package com.danielpacak.jenkins.ci.core.service;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import com.danielpacak.jenkins.ci.core.Plugin;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
-import com.danielpacak.jenkins.ci.core.client.JenkinsResponse;
 
 /**
  * Plugin service class.
@@ -58,8 +58,7 @@ public class PluginService extends AbstractService {
 	 * @since 1.0.0
 	 */
 	public List<Plugin> getPlugins() throws IOException {
-		JenkinsResponse response = client.get("/pluginManager/api/xml?depth=1");
-		return response.getModel(new PluginListResponseMapper());
+		return Arrays.asList(client.getForObject("/pluginManager/api/xml?depth=1", Plugin[].class));
 	}
 
 }

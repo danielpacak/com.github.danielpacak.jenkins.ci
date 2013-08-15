@@ -17,18 +17,10 @@
  * limitations under the License.
  * #L%
  */
-package com.danielpacak.jenkins.ci.core.service;
+package com.danielpacak.jenkins.ci.core.http;
 
-import com.danielpacak.jenkins.ci.core.util.XmlResponse;
+public enum HttpMethod {
 
-/**
- * Strategy for mapping an {@link XmlResponse} to an instance of a model class.
- * 
- * @param <T>
- *            type of the model class
- */
-public interface ResponseMapper<T> {
-
-	T map(XmlResponse response);
+	GET, POST, PUT, DELETE, PATCH
 
 }

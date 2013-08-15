@@ -23,11 +23,8 @@ import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -63,14 +60,11 @@ public class JobServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void testCreateJob() throws Exception {
-		Job job = new Job().setName("j");
+		Job job = new Job().setName("vacuum.my.room");
 		JobConfiguration jobConfiguration = new TestJobConfiguration();
 		service.createJob(job, jobConfiguration);
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("Content-Type", "application/xml");
-		verify(client).post("/createItem?name=j", headers, TestJobConfiguration.RETURNED_INPUT_STREAM);
+		verify(client).post("/createItem?name=vacuum.my.room", jobConfiguration);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
