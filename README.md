@@ -111,14 +111,14 @@ interact with such as `JobService`.
 
 ### Downloading
 The library has not yet been deployed to the [maven central repository](http://repo1.maven.org/maven/),
-so to use it, you need to fetch the source code, install it into your local maven cache (usually `~/.m2/repository`)
+so to use it, you need to fetch the source code, install it into your [local maven repository](http://maven.apache.org/guides/introduction/introduction-to-repositories.html),
 and add the following snippet to the `<dependencies />` section of your project's `pom.xml` file.
 
 ```xml
 <dependency>
 	<groupId>com.danielpacak</groupId>
 	<artifactId>jenkins.ci.core</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
 Alternatively, you can use the latest build deployed to my private [snapshots](http://repository-pacak-daniel.forge.cloudbees.com/snapshot)
