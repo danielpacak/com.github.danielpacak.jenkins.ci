@@ -27,7 +27,7 @@ import com.danielpacak.jenkins.ci.core.http.HttpStatus;
 /**
  * Represents a client-side HTTP response. Obtained via an calling of the {@link ClientHttpRequest#execute()} method.
  * <p>
- * A {@link ClientHttpResponse} must be closed, typically in a finally block.
+ * A {@link ClientHttpResponse} must be closed, typically in a {@code finally} block.
  */
 public interface ClientHttpResponse extends HttpInputMessage {
 

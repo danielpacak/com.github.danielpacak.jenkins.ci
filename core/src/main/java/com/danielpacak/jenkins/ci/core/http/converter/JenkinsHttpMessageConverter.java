@@ -43,10 +43,11 @@ public class JenkinsHttpMessageConverter implements HttpMessageConverter<Jenkins
 		XmlResponse xmlResponse = new XmlResponse(inputMessage.getBody());
 		// @formatter:off
 		return new Jenkins()
-			.setMode(Jenkins.MODE.valueOf(xmlResponse.evaluateAsString("//mode/text()")))
-			.setNodeDescription(xmlResponse.evaluateAsString("//nodeDescription/text()"))
-			.setNodeName(xmlResponse.evaluateAsString("//nodeName/text()"))
-			.setNumExecutors(xmlResponse.evaluateAsInteger("//numExecutors/text()"));
+			.setMode(Jenkins.MODE.valueOf(xmlResponse.evaluateAsString("/*/mode")))
+			.setNodeDescription(xmlResponse.evaluateAsString("/*/nodeDescription"))
+			.setNodeName(xmlResponse.evaluateAsString("/*/nodeName"))
+			.setNumExecutors(xmlResponse.evaluateAsInteger("/*/numExecutors"))
+			.setUseSecurity(xmlResponse.evaluateAsBoolean("/*/useSecurity"));
 		// @formatter:on
 	}
 

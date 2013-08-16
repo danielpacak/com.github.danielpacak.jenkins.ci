@@ -29,6 +29,7 @@ import com.danielpacak.jenkins.ci.core.http.HttpStatus;
 public class SimpleClientHttpResponse implements ClientHttpResponse {
 
 	private HttpHeaders headers;
+
 	private final HttpURLConnection connection;
 
 	public SimpleClientHttpResponse(HttpURLConnection connection) {

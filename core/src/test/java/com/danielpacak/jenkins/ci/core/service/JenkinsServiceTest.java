@@ -19,9 +19,9 @@
  */
 package com.danielpacak.jenkins.ci.core.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,15 +43,15 @@ public class JenkinsServiceTest {
 	private JenkinsService service;
 
 	@Before
-	public void before() throws Exception {
+	public void beforeTest() throws Exception {
 		service = new JenkinsService(client);
 	}
 
 	@Test
-	public void testGetJenkins() throws Exception {
+	public void getJenkins() throws Exception {
 		Jenkins jenkins = new Jenkins();
 		when(client.getForObject("/api/xml", Jenkins.class)).thenReturn(jenkins);
-		Assert.assertEquals(jenkins, service.getJenkins());
+		assertEquals(jenkins, service.getJenkins());
 	}
 
 }

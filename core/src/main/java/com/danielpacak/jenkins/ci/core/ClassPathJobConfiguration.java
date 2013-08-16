@@ -19,9 +19,10 @@
  */
 package com.danielpacak.jenkins.ci.core;
 
-import java.io.InputStream;
+import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgument;
+import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgumentNotNull;
 
-import com.danielpacak.jenkins.ci.core.util.Preconditions;
+import java.io.InputStream;
 
 /**
  * Job configuration stored as a class path resource.
@@ -33,7 +34,8 @@ public class ClassPathJobConfiguration implements JobConfiguration {
 	private final String path;
 
 	public ClassPathJobConfiguration(String path) {
-		this.path = Preconditions.checkArgumentNotNull(path, "Path cannot be null");
+		this.path = checkArgumentNotNull(path, "Path cannot be null");
+		checkArgument(getClass().getResource("/" + path) != null, "Class path resource [%s] does not exist", path);
 	}
 
 	@Override

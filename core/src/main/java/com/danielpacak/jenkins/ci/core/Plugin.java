@@ -86,8 +86,9 @@ public class Plugin implements Serializable {
 		return downgradable;
 	}
 
-	public void setDowngradable(Boolean downgradable) {
+	public Plugin setDowngradable(Boolean downgradable) {
 		this.downgradable = downgradable;
+		return this;
 	}
 
 	public Boolean getEnabled() {
@@ -103,8 +104,9 @@ public class Plugin implements Serializable {
 		return hasUpdate;
 	}
 
-	public void setHasUpdate(Boolean hasUpdate) {
+	public Plugin setHasUpdate(Boolean hasUpdate) {
 		this.hasUpdate = hasUpdate;
+		return this;
 	}
 
 	public String getLongName() {
@@ -120,8 +122,9 @@ public class Plugin implements Serializable {
 		return pinned;
 	}
 
-	public void setPinned(Boolean pinned) {
+	public Plugin setPinned(Boolean pinned) {
 		this.pinned = pinned;
+		return this;
 	}
 
 	public String getShortName() {

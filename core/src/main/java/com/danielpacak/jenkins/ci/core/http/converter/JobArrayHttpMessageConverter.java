@@ -41,14 +41,18 @@ public class JobArrayHttpMessageConverter implements HttpMessageConverter<Job[]>
 	@Override
 	public Job[] read(Class<? extends Job[]> clazz, HttpInputMessage inputMessage) throws IOException {
 		XmlResponse response = new XmlResponse(inputMessage.getBody());
-		Integer count = response.evaluateAsInteger("count(//hudson/job)");
+		Integer count = response.evaluateAsInteger("count(/hudson/job)");
 		Job[] jobs = new Job[count];
 		for (int i = 0; i < count; i++) {
-			String prefix = "//hudson/job[" + i + "]";
+			String prefix = "/hudson/job[" + (i + 1) + "]";
 			// @formatter:off
 			jobs[i] = new Job()
 				.setName(response.evaluateAsString(prefix + "/name"))
-				.setDisplayName(response.evaluateAsString(prefix + "/displayName"));
+				.setDisplayName(response.evaluateAsString(prefix + "/displayName"))
+				.setUrl(response.evaluateAsString(prefix + "/url"))
+				.setBuildable(response.evaluateAsBoolean(prefix + "/buildable"))
+				.setInQueue(response.evaluateAsBoolean(prefix + "/inQueue"))
+				.setNextBuildNumber(response.evaluateAsLong(prefix + "/nextBuildNumber"));
 			// @formatter:on
 		}
 		return jobs;

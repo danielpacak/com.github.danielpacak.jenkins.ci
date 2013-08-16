@@ -1,5 +1,6 @@
 # Jenkins Java API (com.danielpacak.jenkins.ci.core)
 
+[![Build Status](https://buildhive.cloudbees.com/job/danielpacak/job/jenkins-ci-client/badge/icon)](https://buildhive.cloudbees.com/job/danielpacak/job/jenkins-ci-client/)
 This project is a Java library for communicating with the [Jenkins REST API](https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API).
 
 * [Examples](#examples)
@@ -8,8 +9,7 @@ This project is a Java library for communicating with the [Jenkins REST API](htt
  * [Triggering a build and waiting for its completion](#triggering-a-build-and-waiting-for-its-completion)
  * [Deleting a job](#deleting-a-job)
 * [Packages](#packages)
-* [Using Jenkins Java API in Your Build](#using-jenkins-java-api-in-your-build)
- * [Maven](#maven)
+* [Downloading](#downloading)
 
 ## Examples
 
@@ -109,12 +109,7 @@ This package contains the classes that invoke the API and return model classes r
 that were created, read, updated, or deleted. Service classes are defined for the resources they
 interact with such as `JobService`.
 
-## Using Jenkins Java API in Your Build
-Developers may use several different kinds of build system to compile/package their code.
-The library can be used with any of them. For any code snippet below, please substitute the version
-given with the version of Jenkins Java API you wish to use.
-
-### Maven
+### Downloading
 The library is not yet deployed to the maven central repository, so to use it, you need to fetch the
 source code, install it into your local maven cache (usually `~/.m2/repository`) and add the following
 snippet to the `<dependencies />` section of the project's `pom.xml` file.
@@ -126,3 +121,14 @@ snippet to the `<dependencies />` section of the project's `pom.xml` file.
 	<version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
+Alternatively you can use the latest build deployed to my private snapshots repository hosted on
+[CloudBees](http://repository-pacak-daniel.forge.cloudbees.com/snapshot). Remember to add remote
+repository details in the project's `pom.xml` file.
+```
+<repositories>
+	<repository>
+		<id>daniel.pacak.snapshots</id>
+		<url>http://repository-pacak-daniel.forge.cloudbees.com/snapshot</url>
+	</repository>
+</repositories>
+``` 

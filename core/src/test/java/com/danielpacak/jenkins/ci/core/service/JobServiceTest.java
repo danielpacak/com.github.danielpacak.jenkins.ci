@@ -19,10 +19,13 @@
  */
 package com.danielpacak.jenkins.ci.core.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +33,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.danielpacak.jenkins.ci.core.Build;
 import com.danielpacak.jenkins.ci.core.Job;
 import com.danielpacak.jenkins.ci.core.JobConfiguration;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
@@ -42,55 +46,142 @@ public class JobServiceTest {
 
 	@Mock
 	private JenkinsClient client;
+	@Mock
+	private JobConfiguration jobConfiguration;
+
 	private JobService service;
 
 	@Before
-	public void before() throws Exception {
+	public void beforeTest() throws Exception {
 		service = new JobService(client);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testCreateJobWithNullJob() throws Exception {
-		service.createJob(null, new TestJobConfiguration());
+	public void createJob_WithNullJob_ThrowsException() throws Exception {
+		service.createJob(null, jobConfiguration);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testCreateJobWithNullJobConfiguration() throws Exception {
-		service.createJob(new Job().setName("j"), null);
+	public void createJob_WithNullJobConfiguration_ThrowsException() throws Exception {
+		service.createJob(new Job().setName("vacuum.my.room"), null);
 	}
 
 	@Test
-	public void testCreateJob() throws Exception {
+	public void createJob() throws Exception {
 		Job job = new Job().setName("vacuum.my.room");
-		JobConfiguration jobConfiguration = new TestJobConfiguration();
 		service.createJob(job, jobConfiguration);
 		verify(client).post("/createItem?name=vacuum.my.room", jobConfiguration);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testDeleteJobWithNullJob() throws Exception {
+	public void deleteJob_WithNullJob_ThrowsException() throws Exception {
 		service.deleteJob(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testDeleteJobWithNullJobName() throws Exception {
+	public void deleteJob_WithNullJobName_ThrowsException() throws Exception {
 		service.deleteJob(new Job());
 	}
 
 	@Test
-	public void testDeleteJob() throws Exception {
+	public void deleteJob() throws Exception {
 		Job job = new Job().setName("j");
 		service.deleteJob(job);
 		verify(client).post("/job/j/doDelete");
 	}
 
-	static class TestJobConfiguration implements JobConfiguration {
-		static final InputStream RETURNED_INPUT_STREAM = new ByteArrayInputStream(new byte[0]);
+	@Test
+	public void getJobs() throws Exception {
+		Job[] someJobs = new Job[] {};
+		when(client.getForObject("/api/xml?depth=2", Job[].class)).thenReturn(someJobs);
+		assertEquals(Arrays.asList(someJobs), service.getJobs());
+	}
 
-		@Override
-		public InputStream getInputStream() {
-			return RETURNED_INPUT_STREAM;
-		}
+	@Test(expected = IllegalArgumentException.class)
+	public void getJobConfiguration_WithNullJob_ThrowsException() throws Exception {
+		service.getJobConfiguration(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void getJobConfiguration_WithNullJobName_ThrowsException() throws Exception {
+		service.getJobConfiguration(new Job());
+	}
+
+	@Test
+	public void getJobConfiguration() throws Exception {
+		Job job = new Job().setName("vacuum.my.room");
+		when(client.getForObject("/job/vacuum.my.room/config.xml", JobConfiguration.class))
+				.thenReturn(jobConfiguration);
+		assertEquals(jobConfiguration, service.getJobConfiguration(job));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void triggerBuild_WithNullJob_ThrowsException() throws Exception {
+		service.triggerBuild(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void triggerbuild_WithNullJobName_ThrowsException() throws Exception {
+		service.triggerBuild(new Job());
+	}
+
+	@Test
+	public void triggerBuild() throws Exception {
+		Job job = new Job().setName("vacuum.my.room").setNextBuildNumber(new Long(23));
+		Long buildNumber = service.triggerBuild(job);
+		verify(client).post("/job/vacuum.my.room/build");
+		assertEquals(new Long(23), buildNumber);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void triggerParameterizedBuild_withNullJob_throwsException() throws Exception {
+		service.triggerBuild(null, new HashMap<String, String>());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void triggerParameterizedBuild_withNullJobName_throwsException() throws Exception {
+		service.triggerBuild(new Job(), new HashMap<String, String>());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void triggerParameterizedBuild_withNullParameters_throwsException() throws Exception {
+		service.triggerBuild(new Job().setName("vacuum.my.room"), null);
+	}
+
+	@Test
+	public void triggerParameterizedBuild() throws Exception {
+		Job job = new Job().setName("vacuum.my.room").setNextBuildNumber(new Long(69));
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("param1", "value1");
+		parameters.put("param2", "value2");
+
+		Long buildNumber = service.triggerBuild(job, parameters);
+
+		verify(client).post("/job/vacuum.my.room/buildWithParameters?param1=value1&param2=value2");
+		assertEquals(new Long(69), buildNumber);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void getBuild_WithNullJob_ThrowsException() throws Exception {
+		service.getBuild(null, new Long(76));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void getBuild_WithNullJobName_ThrowsException() throws Exception {
+		service.getBuild(new Job(), new Long(76));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void getBuild_WithNullBuildNumber_ThrowsException() throws Exception {
+		service.getBuild(new Job().setName("vacuum.my.room"), null);
+	}
+
+	@Test
+	public void getBuild() throws Exception {
+		Job job = new Job().setName("vacuum.my.room");
+		Build someBuild = new Build();
+		when(client.getForObject("/job/vacuum.my.room/69/api/xml", Build.class)).thenReturn(someBuild);
+		assertEquals(someBuild, service.getBuild(job, new Long(69)));
 	}
 
 }

@@ -41,16 +41,23 @@ public class PluginArrayHttpMessageConverter implements HttpMessageConverter<Plu
 	@Override
 	public Plugin[] read(Class<? extends Plugin[]> clazz, HttpInputMessage inputMessage) throws IOException {
 		XmlResponse xml = new XmlResponse(inputMessage.getBody());
-		Integer count = xml.evaluateAsInteger("count(//plugin)");
+		final Integer count = xml.evaluateAsInteger("count(//plugin)");
 		Plugin[] plugins = new Plugin[count];
 		for (int i = 0; i < count; i++) {
+			final String prefix = "/*/plugin[" + (i + 1) + "]";
 			// @formatter:off
 			plugins[i] = new Plugin()
-				.setShortName(xml.evaluateAsString("//plugin[" + i + "]/shortName"))
-				.setLongName(xml.evaluateAsString("//plugin[" + i + "]/longName"))
-				.setVersion(xml.evaluateAsString("//plugin[" + i + "]/version"))
-				.setUrl(xml.evaluateAsString("//plugin[" + i + "]/url"))
-				.setEnabled(xml.evaluateAsBoolean("//plugin[" + i + "]/enabled"));
+				.setActive(xml.evaluateAsBoolean(prefix + "/active"))
+				.setBundled(xml.evaluateAsBoolean(prefix + "/bundled"))
+				.setDeleted(xml.evaluateAsBoolean(prefix + "/deleted"))
+				.setDowngradable(xml.evaluateAsBoolean(prefix + "/downgradable"))
+				.setEnabled(xml.evaluateAsBoolean(prefix + "/enabled"))
+				.setHasUpdate(xml.evaluateAsBoolean(prefix + "/hasUpdate"))
+				.setPinned(xml.evaluateAsBoolean(prefix + "/pinned"))
+				.setShortName(xml.evaluateAsString(prefix + "/shortName"))
+				.setLongName(xml.evaluateAsString(prefix + "/longName"))
+				.setUrl(xml.evaluateAsString(prefix +"/url"))
+				.setVersion(xml.evaluateAsString(prefix + "/version"));
 			// @formatter:on
 		}
 

@@ -19,12 +19,11 @@
   -->
 <project>
 	<keepDependencies>false</keepDependencies>
-	properties />
+	<properties />
 	<scm class="hudson.scm.NullSCM" />
 	<canRoam>false</canRoam>
 	<disabled>false</disabled>
-	<blockBuildWhenDownstreamBuilding>false
-	</blockBuildWhenDownstreamBuilding>
+	<blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
 	<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
 	<triggers />
 	<concurrentBuild>false</concurrentBuild>

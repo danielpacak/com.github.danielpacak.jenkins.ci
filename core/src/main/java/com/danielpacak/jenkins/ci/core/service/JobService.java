@@ -187,6 +187,7 @@ public class JobService extends AbstractService {
 	public Long triggerBuild(Job job, Map<String, String> parameters) throws IOException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
+		checkArgumentNotNull(parameters, "Parameters cannot be null");
 		client.post(JOB_SEGMENT + "/" + job.getName() + "/buildWithParameters" + "?" + toQueryParams(parameters));
 		return job.getNextBuildNumber();
 	}

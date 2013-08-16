@@ -96,8 +96,9 @@ public class Jenkins implements Serializable {
 		return useSecurity;
 	}
 
-	public void setUseSecurity(Boolean useSecurity) {
+	public Jenkins setUseSecurity(Boolean useSecurity) {
 		this.useSecurity = useSecurity;
+		return this;
 	}
 
 	public static enum MODE {

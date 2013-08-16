@@ -19,11 +19,11 @@
  */
 package com.danielpacak.jenkins.ci.core.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,15 +45,15 @@ public class PluginServiceTest {
 	private PluginService service;
 
 	@Before
-	public void before() throws Exception {
+	public void beforeTest() throws Exception {
 		service = new PluginService(client);
 	}
 
 	@Test
-	public void testGetPlugins() throws Exception {
+	public void getPlugins() throws Exception {
 		Plugin[] somePlugins = new Plugin[] {};
 		when(client.getForObject("/pluginManager/api/xml?depth=1", Plugin[].class)).thenReturn(somePlugins);
-		Assert.assertEquals(Arrays.asList(somePlugins), service.getPlugins());
+		assertEquals(Arrays.asList(somePlugins), service.getPlugins());
 	}
 
 }

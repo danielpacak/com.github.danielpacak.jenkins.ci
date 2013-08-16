@@ -37,6 +37,12 @@ public final class Preconditions {
 		return argument;
 	}
 
+	public static void checkArgument(boolean condition, String messageFormat, Object... args) {
+		if (!condition) {
+			throw new IllegalArgumentException(String.format(messageFormat, args));
+		}
+	}
+
 	public static void checkState(boolean expression, String errorMessage) {
 		if (!expression) {
 			throw new IllegalStateException(errorMessage);

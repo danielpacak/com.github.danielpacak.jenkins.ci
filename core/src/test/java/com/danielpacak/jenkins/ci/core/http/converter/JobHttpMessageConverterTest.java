@@ -20,18 +20,15 @@
 package com.danielpacak.jenkins.ci.core.http.converter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.danielpacak.jenkins.ci.core.Job;
-import com.danielpacak.jenkins.ci.core.http.HttpHeaders;
 import com.danielpacak.jenkins.ci.core.http.HttpInputMessage;
-import com.danielpacak.jenkins.ci.core.http.converter.JobHttpMessageConverter;
 
 /**
  * Tests for {@link JobHttpMessageConverter}.
@@ -46,12 +43,31 @@ public class JobHttpMessageConverterTest {
 	}
 
 	@Test
-	public void testRead() throws Exception {
+	public void canRead() throws Exception {
+		Assert.assertTrue(converter.canRead(Job.class));
+		Assert.assertFalse(converter.canRead(String.class));
+		Assert.assertFalse(converter.canRead(Object.class));
+		Assert.assertFalse(converter.canRead(Job[].class));
+	}
+
+	@Test
+	public void canWrite() throws Exception {
+		Assert.assertFalse(converter.canWrite(Job.class));
+		Assert.assertFalse(converter.canWrite(Job[].class));
+		Assert.assertFalse(converter.canWrite(Object.class));
+	}
+
+	@Test
+	public void read_SimpleJob() throws Exception {
 		// @formatter:off
-		HttpInputMessage inputMessage = new TestInputMessage(""
+		HttpInputMessage inputMessage = new TestHttpInputMessage(""
 			+	"<freeStyleProject>"
 			+		"<name>vacuum.my.room</name>"
 			+		"<displayName>Vacuum my room</displayName>"
+			+		"<url>http://localhost:8080/job/vacuum.my.room</url>"
+			+		"<buildable>true</buildable>"
+			+		"<nextBuildNumber>23</nextBuildNumber>"
+			+		"<inQueue>false</inQueue>"
 			+	"</freeStyleProject>");
 		// @formatter:on
 
@@ -59,12 +75,16 @@ public class JobHttpMessageConverterTest {
 
 		assertEquals("vacuum.my.room", job.getName());
 		assertEquals("Vacuum my room", job.getDisplayName());
+		assertEquals("http://localhost:8080/job/vacuum.my.room", job.getUrl());
+		assertTrue(job.getBuildable());
+		assertEquals(new Long(23), job.getNextBuildNumber());
+		assertFalse(job.getInQueue());
 	}
 
 	@Test
-	public void testReadWithParameters() throws Exception {
+	public void read_JobWithParameters() throws Exception {
 		// @formatter:off
-		HttpInputMessage inputMessage = new TestInputMessage(""
+		HttpInputMessage inputMessage = new TestHttpInputMessage(""
 			+	"<freeStyleProject>"
 			+		"<action>"
 			+			"<parameterDefinition>"
@@ -86,23 +106,9 @@ public class JobHttpMessageConverterTest {
 		assertEquals("Vacuum my room", job.getDisplayName());
 	}
 
-	class TestInputMessage implements HttpInputMessage {
-
-		String xml;
-
-		TestInputMessage(String xml) {
-			this.xml = xml;
-		}
-
-		@Override
-		public HttpHeaders getHeaders() {
-			return new HttpHeaders();
-		}
-
-		@Override
-		public InputStream getBody() throws IOException {
-			return new ByteArrayInputStream(xml.getBytes());
-		}
+	@Test(expected = UnsupportedOperationException.class)
+	public void write() throws Exception {
+		converter.write(new Job(), null, null);
 	}
 
 }

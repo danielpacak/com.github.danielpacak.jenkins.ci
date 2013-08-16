@@ -43,12 +43,12 @@ public class JobHttpMessageConverter implements HttpMessageConverter<Job> {
 		XmlResponse response = new XmlResponse(inputMessage.getBody());
 		// @formatter:off
 		return new Job()
-			.setName(response.evaluateAsString("/*/name/text()"))
-			.setDisplayName(response.evaluateAsString("//displayName/text()"))
-			.setUrl(response.evaluateAsString("//url/text()"))
-			.setBuildable(response.evaluateAsBoolean("//buildable/text()"))
-			.setInQueue(response.evaluateAsBoolean("//inQueue/text()"))
-			.setNextBuildNumber(response.evaluateAsLong("//nextBuildNumber"));
+			.setName(response.evaluateAsString("/*/name"))
+			.setDisplayName(response.evaluateAsString("/*/displayName/text()"))
+			.setUrl(response.evaluateAsString("/*/url"))
+			.setBuildable(response.evaluateAsBoolean("/*/buildable"))
+			.setInQueue(response.evaluateAsBoolean("/*/inQueue"))
+			.setNextBuildNumber(response.evaluateAsLong("/*/nextBuildNumber"));
 		// @formatter:on
 	}
 
