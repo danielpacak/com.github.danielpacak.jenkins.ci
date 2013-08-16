@@ -110,9 +110,9 @@ that were created, read, updated, or deleted. Service classes are defined for th
 interact with such as `JobService`.
 
 ### Downloading
-The library is not yet deployed to the maven central repository, so to use it, you need to fetch the
-source code, install it into your local maven cache (usually `~/.m2/repository`) and add the following
-snippet to the `<dependencies />` section of the project's `pom.xml` file.
+The library has not yet been deployed to the [maven central repository](http://repo1.maven.org/maven/),
+so to use it, you need to fetch the source code, install it into your local maven cache (usually `~/.m2/repository`)
+and add the following snippet to the `<dependencies />` section of your project's `pom.xml` file.
 
 ```xml
 <dependency>
@@ -121,14 +121,13 @@ snippet to the `<dependencies />` section of the project's `pom.xml` file.
 	<version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
-Alternatively you can use the latest build deployed to my private snapshots repository hosted on
-[CloudBees](http://repository-pacak-daniel.forge.cloudbees.com/snapshot). Remember to add remote
-repository details in the project's `pom.xml` file.
-```
+Alternatively, you can use the latest build deployed to my private [snapshots](http://repository-pacak-daniel.forge.cloudbees.com/snapshot)
+repository. Just remember to reference this repository in your project's `pom.xml` file.
+```xml
 <repositories>
 	<repository>
 		<id>daniel.pacak.snapshots</id>
 		<url>http://repository-pacak-daniel.forge.cloudbees.com/snapshot</url>
 	</repository>
 </repositories>
-``` 
+```
