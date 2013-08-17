@@ -59,7 +59,7 @@ public class JobConfigurationHttpMessageConverterTest {
 
 	@Test
 	public void read() throws Exception {
-		HttpInputMessage inputMessage = new TestHttpInputMessage("<freeStyleProject></freeStyleProject>");
+		HttpInputMessage inputMessage = new MockHttpInputMessage("<freeStyleProject></freeStyleProject>");
 		JobConfiguration jobConfiguration = converter.read(JobConfiguration.class, inputMessage);
 		Assert.assertEquals("<freeStyleProject></freeStyleProject>",
 				Streams.toString(jobConfiguration.getInputStream()));

@@ -5,9 +5,10 @@ This project is a Java library for communicating with the [Jenkins REST API](htt
 
 * [Examples](#examples)
  * [Creating a job and launching a build](#creating-a-job-and-launching-a-build)
- * [Triggering a build](#triggering-a-build)
- * [Triggering a build and waiting for its completion](#triggering-a-build-and-waiting-for-its-completion)
- * [Deleting a job](#deleting-a-job)
+ * [Getting all jobs](#listing-all-jobs)
+ * [Getting a job with the given name](#getting-a-job-with-the-given-name)
+ * [Getting the configuration of the given job](#getting-the-configuration-of-the-given-job)
+ * [Deleting a job with the given name](#deleting-a-job-with-the-given-name)
 * [Packages](#packages)
 * [Downloading](#downloading)
 
@@ -19,11 +20,6 @@ This project is a Java library for communicating with the [Jenkins REST API](htt
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 client.setCredentials("user", "passw0rd");
 ```
-```java
-// OAuth2 token authentication
-JenkinsClient client = new JenkinsClient("localhost", 8080);
-client.setOAuth2Token("SlAV32hkKG");
-```
 
 ### Creating a job and launching a build
 The following example creates a new job called `vacuum.my.room` using an XML configuration
@@ -34,7 +30,7 @@ JobService jobService = new JobService(client);
 JobConfiguration jobConfig = new ClassPathJobConfiguration("job/config/free-style.xml");
 Job job = jobService.createJob("vacuum.my.room", jobConfig); 
 ```
-The `job/config/free-style.xml` configuration template may look as follows:
+The `job/config/free-style.xml` configuration template may look as follows.
 ```xml
 <?xml version='1.0' encoding='UTF-8'?>
 <project>
@@ -52,43 +48,52 @@ The `job/config/free-style.xml` configuration template may look as follows:
 	<buildWrappers />
 </project>
 ```
-To launch a build call the `triggerBuild()` method of the `JobService` class:
+To launch a build call the `triggerBuild()` method of the `JobService` class.
 ```java
 Long buildNumber = jobService.triggerBuild(job);
 ```
 If your project is [parameterized](https://wiki.jenkins-ci.org/display/JENKINS/Parameterized+Build)
 you would rather call the `triggerBuild()` method of the `JobService` class with an additional parameter
-which is a map of parameters/values:
+which is a map of parameters/values.
 ```java
 Map<String, String> parameters = mapOf("FIRST_NAME", "Daniel", "LAST_NAME", "Pacak");
 Long buildNumber = jobService.triggerBuild(job, parameters);
 ```
 
-### Triggering a build and waiting for its completion
-The following example triggers a build of a given job and blocks until the build has completed.
+### Getting all jobs
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
-Job job = null; // I assume that you know how to create a job (see the previous examples)
-Build build = jobService.triggerBuildAndWait(job);
-System.out.printf("Build status: %s%n", build.getStatus());
-```
-It's also possible to limit the time of waiting for the completion of the build by specifying
-the timeout. In the example below the method will throw the `InterruptedException` exception
-if the build hasn't completed in less than 30 seconds.
-```java
-try {
-  Build build = jobService.triggerBuildAndWait(job, 30, TimeUnit.SECONDS);
-} catch (InterruptedException e) {
-  System.err.println("Sorry guys but I cannot wait so long...");
+List<Job> jobs = jobService.getJobs();
+
+for (Job job : jobs) {
+	System.out.printf("%s%n", job.getName());
 }
 ```
-### Deleting a job
-The following example deletes a job with a given name.
+
+### Getting a job with the given name
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
-jobService.deleteJob("job-to-be-deleted");
+Job vacuumMyRoom = jobService.getJob('vacuum.my.room');
+```
+
+### Getting the configuration of the given job
+```java
+JenkinsClient client = new JenkinsClient("localhost", 8080);
+JobService jobService = new JobService(client);
+Job vacuumMyRoom = jobService.getJob('vacuum.my.room');
+JobConfiguration vacuumMyRoomConfig = jobService.getJobConfiguration(vacuumMyRoom);
+
+System.out.println(Streams.toString(vacuumMyRoomConfig.getInputStream());
+```
+
+### Deleting a job with the given name
+The following example deletes a job with the given name.
+```java
+JenkinsClient client = new JenkinsClient("localhost", 8080);
+JobService jobService = new JobService(client);
+jobService.deleteJob("job.to.be.deleted");
 ```
 
 ## Packages
@@ -105,9 +110,9 @@ package is also responsible for converting XML responses to appropriate Java mod
 generating request exceptions based on HTTP status codes.
 
 ### Service (com.danielpacak.jenkins.ci.core.service)
-This package contains the classes that invoke the API and return model classes representing resources
+This package contains classes that invoke the API and return model classes representing resources
 that were created, read, updated, or deleted. Service classes are defined for the resources they
-interact with such as `JobService`.
+interact with. For example, the `JobService` class interacts with the `Job` resource.
 
 ### Downloading
 The library has not yet been deployed to the [maven central repository](http://repo1.maven.org/maven/),

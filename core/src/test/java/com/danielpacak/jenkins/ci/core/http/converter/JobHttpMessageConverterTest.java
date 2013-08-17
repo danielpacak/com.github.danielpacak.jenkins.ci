@@ -60,7 +60,7 @@ public class JobHttpMessageConverterTest {
 	@Test
 	public void read_SimpleJob() throws Exception {
 		// @formatter:off
-		HttpInputMessage inputMessage = new TestHttpInputMessage(""
+		HttpInputMessage inputMessage = new MockHttpInputMessage(""
 			+	"<freeStyleProject>"
 			+		"<name>vacuum.my.room</name>"
 			+		"<displayName>Vacuum my room</displayName>"
@@ -84,7 +84,7 @@ public class JobHttpMessageConverterTest {
 	@Test
 	public void read_JobWithParameters() throws Exception {
 		// @formatter:off
-		HttpInputMessage inputMessage = new TestHttpInputMessage(""
+		HttpInputMessage inputMessage = new MockHttpInputMessage(""
 			+	"<freeStyleProject>"
 			+		"<action>"
 			+			"<parameterDefinition>"

@@ -58,7 +58,7 @@ public class PluginArrayHttpMessageConverterTest {
 	@Test
 	public void read() throws Exception {
 		// @formatter:off
-		HttpInputMessage inputMessage = new TestHttpInputMessage(""
+		HttpInputMessage inputMessage = new MockHttpInputMessage(""
 			+	"<localPluginManager>"
 			+		"<plugin>"
 			+			"<active>true</active>"

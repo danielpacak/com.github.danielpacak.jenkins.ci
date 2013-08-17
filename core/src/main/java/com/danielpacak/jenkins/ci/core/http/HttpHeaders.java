@@ -23,9 +23,22 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Represents HTTP request and response headers, mapping string header names to list of string values.
+ */
 public class HttpHeaders extends HashMap<String, List<String>> {
 
 	private static final long serialVersionUID = 4258600664539135240L;
+
+	public static final String ACCEPT = "Accept";
+
+	public static final String CONTENT_TYPE = "Content-Type";
+
+	public static final String CONTENT_LENGTH = "Content-Length";
+
+	public static final String AUTHORIZATION = "Authorization";
+
+	public static final String USER_AGENT = "User-Agent";
 
 	public void add(String headerName, String headerValue) {
 		if (!containsKey(headerName)) {
@@ -35,11 +48,11 @@ public class HttpHeaders extends HashMap<String, List<String>> {
 	}
 
 	public void setContentType(String mediaType) {
-		add("Content-Type", mediaType);
+		add(CONTENT_TYPE, mediaType);
 	}
 
 	public void setUserAgent(String userAgent) {
-		add("User-Agent", userAgent);
+		add(USER_AGENT, userAgent);
 	}
 
 	public String getContentType() {
@@ -52,7 +65,7 @@ public class HttpHeaders extends HashMap<String, List<String>> {
 	}
 
 	public void setAuthorization(String authorization) {
-		add("Authorization", authorization);
+		add(AUTHORIZATION, authorization);
 	}
 
 	public Long getContentLength() {

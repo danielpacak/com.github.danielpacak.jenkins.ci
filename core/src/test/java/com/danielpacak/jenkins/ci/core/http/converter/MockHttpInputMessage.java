@@ -26,11 +26,11 @@ import java.io.InputStream;
 import com.danielpacak.jenkins.ci.core.http.HttpHeaders;
 import com.danielpacak.jenkins.ci.core.http.HttpInputMessage;
 
-public class TestHttpInputMessage implements HttpInputMessage {
+public class MockHttpInputMessage implements HttpInputMessage {
 
 	private String xml;
 
-	public TestHttpInputMessage(String xml) {
+	public MockHttpInputMessage(String xml) {
 		this.xml = xml;
 	}
 

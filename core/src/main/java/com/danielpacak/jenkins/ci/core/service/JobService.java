@@ -19,10 +19,10 @@
  */
 package com.danielpacak.jenkins.ci.core.service;
 
-import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.CREATE_ITEM_SEGMENT;
-import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.DO_DELETE_SEGMENT;
-import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.JOB_SEGMENT;
 import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.SEGMENT_API_XML;
+import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.SEGMENT_CREATE_ITEM;
+import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.SEGMENT_DO_DELETE;
+import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.SEGMENT_JOB;
 import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgumentNotNull;
 
 import java.io.IOException;
@@ -30,18 +30,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import com.danielpacak.jenkins.ci.core.Build;
 import com.danielpacak.jenkins.ci.core.Job;
 import com.danielpacak.jenkins.ci.core.JobConfiguration;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
-import com.danielpacak.jenkins.ci.core.client.JenkinsClientException;
 
 /**
  * Job service class.
@@ -100,7 +93,7 @@ public class JobService extends AbstractService {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		checkArgumentNotNull(configuration, "JobConfiguration cannot be null");
-		client.post(CREATE_ITEM_SEGMENT + "?name=" + job.getName(), configuration);
+		client.post(SEGMENT_CREATE_ITEM + "?name=" + job.getName(), configuration);
 		return getJob(job.getName());
 	}
 
@@ -116,7 +109,7 @@ public class JobService extends AbstractService {
 	public void deleteJob(Job job) throws IOException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
-		client.post(JOB_SEGMENT + "/" + job.getName() + DO_DELETE_SEGMENT);
+		client.post(SEGMENT_JOB + "/" + job.getName() + SEGMENT_DO_DELETE);
 	}
 
 	/**
@@ -132,7 +125,7 @@ public class JobService extends AbstractService {
 	 * @since 1.0.0
 	 */
 	public Job getJob(String name) throws IOException {
-		return client.getForObject(JOB_SEGMENT + "/" + name + SEGMENT_API_XML, Job.class);
+		return client.getForObject(SEGMENT_JOB + "/" + name + SEGMENT_API_XML, Job.class);
 	}
 
 	/**
@@ -150,7 +143,7 @@ public class JobService extends AbstractService {
 	public JobConfiguration getJobConfiguration(Job job) throws IOException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
-		return client.getForObject(JOB_SEGMENT + "/" + job.getName() + "/" + "config.xml", JobConfiguration.class);
+		return client.getForObject(SEGMENT_JOB + "/" + job.getName() + "/" + "config.xml", JobConfiguration.class);
 	}
 
 	/**
@@ -168,7 +161,7 @@ public class JobService extends AbstractService {
 	public Long triggerBuild(Job job) throws IOException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
-		client.post(JOB_SEGMENT + "/" + job.getName() + "/build");
+		client.post(SEGMENT_JOB + "/" + job.getName() + "/build");
 		return job.getNextBuildNumber();
 	}
 
@@ -188,55 +181,8 @@ public class JobService extends AbstractService {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		checkArgumentNotNull(parameters, "Parameters cannot be null");
-		client.post(JOB_SEGMENT + "/" + job.getName() + "/buildWithParameters" + "?" + toQueryParams(parameters));
+		client.post(SEGMENT_JOB + "/" + job.getName() + "/buildWithParameters" + "?" + toQueryParams(parameters));
 		return job.getNextBuildNumber();
-	}
-
-	/**
-	 * Trigger a build of the given job and wait for its completion.
-	 * 
-	 * @param job
-	 *            the job to be built
-	 * @return build
-	 * @throws IOException
-	 *             if an error occurred connecting to Jenkins
-	 * @since 1.0.0
-	 */
-	public Build triggerBuildAndWait(final Job job) throws IOException {
-		final Long buildNumber = triggerBuild(job);
-		PollBuildStatus poll = new PollBuildStatus(job, buildNumber);
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		Future<Build> build = executor.submit(poll);
-		try {
-			return build.get();
-		} catch (InterruptedException e) {
-			throw new JenkinsClientException(e);
-		} catch (ExecutionException e) {
-			throw new JenkinsClientException(e);
-		}
-	}
-
-	private class PollBuildStatus implements Callable<Build> {
-
-		private final Job job;
-
-		private final Long buildNumber;
-
-		private PollBuildStatus(Job job, Long buildNumber) {
-			this.job = job;
-			this.buildNumber = buildNumber;
-		}
-
-		@Override
-		public Build call() throws Exception {
-			Build build = null;
-			do {
-				TimeUnit.SECONDS.sleep(1);
-				build = getBuild(job, buildNumber);
-				System.out.println("Got build: " + build);
-			} while (build.getStatus() == Build.Status.PENDING);
-			return build;
-		}
 	}
 
 	/**
@@ -257,7 +203,7 @@ public class JobService extends AbstractService {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		checkArgumentNotNull(number, "Number cannot be null");
-		return client.getForObject(JOB_SEGMENT + "/" + job.getName() + "/" + number + "/api/xml", Build.class);
+		return client.getForObject(SEGMENT_JOB + "/" + job.getName() + "/" + number + "/api/xml", Build.class);
 	}
 
 	// TODO Parameters need to be encoded properly!

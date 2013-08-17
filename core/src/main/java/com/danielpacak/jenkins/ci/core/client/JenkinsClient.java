@@ -22,7 +22,6 @@ package com.danielpacak.jenkins.ci.core.client;
 import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgumentNotNull;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
@@ -34,6 +33,8 @@ import com.danielpacak.jenkins.ci.core.http.HttpMethod;
 import com.danielpacak.jenkins.ci.core.http.client.ClientHttpRequest;
 import com.danielpacak.jenkins.ci.core.http.client.ClientHttpRequestFactory;
 import com.danielpacak.jenkins.ci.core.http.client.ClientHttpResponse;
+import com.danielpacak.jenkins.ci.core.http.client.DefaultResponseErrorHandler;
+import com.danielpacak.jenkins.ci.core.http.client.ResponseErrorHandler;
 import com.danielpacak.jenkins.ci.core.http.client.SimpleClientHttpRequestFactory;
 import com.danielpacak.jenkins.ci.core.http.converter.BuildHttpMessageConverter;
 import com.danielpacak.jenkins.ci.core.http.converter.HttpMessageConverter;
@@ -51,24 +52,21 @@ import com.danielpacak.jenkins.ci.core.util.Base64;
  */
 public class JenkinsClient {
 
-	public static final String HEADER_ACCEPT = "Accept";
-	public static final String HEADER_CONTENT_TYPE = "Content-Type";
-	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
-	public static final String HEADER_AUTHORIZATION = "Authorization";
-	public static final String HEADER_USER_AGENT = "User-Agent";
+	private static final String DEFAULT_JENKINS_SCHEME = "http";
 
-	public static final String METHOD_POST = "POST";
-	public static final String METHOD_GET = "GET";
+	public static final String DEFAULT_JENKINS_HOST = "localhost";
 
-	public static final String JOB_SEGMENT = "/job";
-	public static final String CREATE_ITEM_SEGMENT = "/createItem";
-	public static final String DO_DELETE_SEGMENT = "/doDelete";
+	public static final int DEFAULT_JENKINS_PORT = 8080;
+
+	public static final String SEGMENT_JOB = "/job";
+
+	public static final String SEGMENT_CREATE_ITEM = "/createItem";
+
+	public static final String SEGMENT_DO_DELETE = "/doDelete";
+
 	public static final String SEGMENT_API_XML = "/api/xml";
 
-	/**
-	 * Default user agent request header value
-	 */
-	protected static final String USER_AGENT = "JenkinsJavaAPI";
+	public static final String USER_AGENT = "JenkinsJavaAPI";
 
 	private String baseUri;
 
@@ -76,16 +74,18 @@ public class JenkinsClient {
 
 	private String credentials;
 
-	private ClientHttpRequestFactory httpRequestFactory;
+	private ClientHttpRequestFactory clientHttpRequestFactory;
+
+	private ResponseErrorHandler responseErrorHandler;
 
 	private List<HttpMessageConverter<?>> messageConverters = new LinkedList<HttpMessageConverter<?>>();
 
 	public JenkinsClient() {
-		this("localhost", 8080);
+		this(DEFAULT_JENKINS_HOST, DEFAULT_JENKINS_PORT);
 	}
 
 	public JenkinsClient(String host, Integer port) {
-		this("http", host, port, null);
+		this(DEFAULT_JENKINS_SCHEME, host, port, null);
 	}
 
 	/**
@@ -108,7 +108,8 @@ public class JenkinsClient {
 			.append(port);
 		// @formatter:on
 		this.baseUri = prefix != null ? uri.append(prefix).toString() : uri.toString();
-		this.httpRequestFactory = new SimpleClientHttpRequestFactory();
+		this.clientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+		this.responseErrorHandler = new DefaultResponseErrorHandler();
 		this.messageConverters.add(new JobHttpMessageConverter());
 		this.messageConverters.add(new JobArrayHttpMessageConverter());
 		this.messageConverters.add(new JobConfigurationHttpMessageConverter());
@@ -117,74 +118,34 @@ public class JenkinsClient {
 		this.messageConverters.add(new BuildHttpMessageConverter());
 	}
 
-	public void setClientHttpRequestFactory(ClientHttpRequestFactory httpRequestFactory) {
-		this.httpRequestFactory = httpRequestFactory;
-	}
-
-	public ClientHttpRequestFactory getClientHttpRequestFactory() {
-		return httpRequestFactory;
-	}
-
 	public <T> T getForObject(String uri, Class<T> clazz) throws IOException {
-		ClientHttpRequest httpRequest = httpRequestFactory.createRequest(newURI(baseUri + uri), HttpMethod.GET);
+		ClientHttpRequest httpRequest = clientHttpRequestFactory.createRequest(newURI(baseUri + uri), HttpMethod.GET);
+		setImplicitHeaders(httpRequest);
 		ClientHttpResponse httpResponse = httpRequest.execute();
+		if (responseErrorHandler.hasError(httpResponse)) {
+			responseErrorHandler.handleError(httpResponse);
+		}
 		HttpMessageConverter<T> converter = findReadConverter(clazz);
 		return converter.read(clazz, httpResponse);
 	}
 
-	private <T> HttpMessageConverter<T> findReadConverter(Class<T> clazz) {
-		Iterator<HttpMessageConverter<?>> iterator = messageConverters.iterator();
-		while (iterator.hasNext()) {
-			HttpMessageConverter<?> converter = iterator.next();
-			if (converter.canRead(clazz)) {
-				return (HttpMessageConverter<T>) converter;
-			}
-		}
-		throw new IllegalArgumentException("Cannot find message converter for class [" + clazz + "]");
-	}
-
-	private <T> HttpMessageConverter<T> findWriteConverter(Class<T> clazz) {
-		Iterator<HttpMessageConverter<?>> iterator = messageConverters.iterator();
-		while (iterator.hasNext()) {
-			HttpMessageConverter<?> converter = iterator.next();
-			if (converter.canWrite(clazz)) {
-				return (HttpMessageConverter<T>) converter;
-			}
-		}
-		throw new IllegalArgumentException("Cannot find message converter for class [" + clazz + "]");
-	}
-
-	private URI newURI(String uri) {
-		try {
-			return new URI(uri);
-		} catch (URISyntaxException e) {
-			throw new IllegalArgumentException("Invalid uri [" + uri + "]", e);
-		}
-	}
-
 	public void post(String uri) throws IOException {
-		ClientHttpRequest httpRequest = httpRequestFactory.createRequest(newURI(baseUri + uri), HttpMethod.POST);
+		ClientHttpRequest httpRequest = clientHttpRequestFactory.createRequest(newURI(baseUri + uri), HttpMethod.POST);
 		setImplicitHeaders(httpRequest);
 		ClientHttpResponse httpResponse = httpRequest.execute();
-		validateHttpResponse(httpResponse);
+		if (responseErrorHandler.hasError(httpResponse)) {
+			responseErrorHandler.handleError(httpResponse);
+		}
 	}
 
 	public void post(String uri, Object request) throws IOException {
-		ClientHttpRequest httpRequest = httpRequestFactory.createRequest(newURI(baseUri + uri), HttpMethod.POST);
+		ClientHttpRequest httpRequest = clientHttpRequestFactory.createRequest(newURI(baseUri + uri), HttpMethod.POST);
 		setImplicitHeaders(httpRequest);
 		HttpMessageConverter converter = findWriteConverter(request.getClass());
 		converter.write(request, null, httpRequest);
 		ClientHttpResponse httpResponse = httpRequest.execute();
-		validateHttpResponse(httpResponse);
-	}
-
-	// it can be a strategy for validating HTTP response
-	private void validateHttpResponse(ClientHttpResponse httpResponse) throws IOException {
-		// TODO In case of errors throw a JenkinsClientException exception with as much info as possible!
-		// TODO Distinguish between client / server error codes and use appropriate exception subclass
-		if (!isOk(httpResponse.getRawStatusCode())) {
-			throw new JenkinsClientException(httpResponse.getStatusCode(), httpResponse.getStatusText(),
-					httpResponse.getHeaders());
+		if (responseErrorHandler.hasError(httpResponse)) {
+			responseErrorHandler.handleError(httpResponse);
 		}
 	}
 
@@ -193,17 +154,6 @@ public class JenkinsClient {
 		headers.setUserAgent(userAgent);
 		if (credentials != null) {
 			headers.setAuthorization(credentials);
-		}
-	}
-
-	private boolean isOk(int responseCode) {
-		switch (responseCode) {
-		case HttpURLConnection.HTTP_OK:
-		case HttpURLConnection.HTTP_CREATED:
-		case HttpURLConnection.HTTP_MOVED_TEMP:
-			return true;
-		default:
-			return false;
 		}
 	}
 
@@ -242,14 +192,50 @@ public class JenkinsClient {
 		return this;
 	}
 
-	/**
-	 * Set OAuth2 token.
-	 * 
-	 * @param token
-	 * @return this client
-	 */
-	public JenkinsClient setOAuth2Token(String token) {
-		throw new UnsupportedOperationException("The OAuth2 authentication mechanism is not yet implemented");
+	public ClientHttpRequestFactory getClientHttpRequestFactory() {
+		return clientHttpRequestFactory;
+	}
+
+	public void setClientHttpRequestFactory(ClientHttpRequestFactory clientHttpRequestFactory) {
+		this.clientHttpRequestFactory = clientHttpRequestFactory;
+	}
+
+	public ResponseErrorHandler getResponseErrorHandler() {
+		return responseErrorHandler;
+	}
+
+	public void setResponseErrorHandler(ResponseErrorHandler responseErrorHandler) {
+		this.responseErrorHandler = responseErrorHandler;
+	}
+
+	private <T> HttpMessageConverter<T> findReadConverter(Class<T> clazz) {
+		Iterator<HttpMessageConverter<?>> iterator = messageConverters.iterator();
+		while (iterator.hasNext()) {
+			HttpMessageConverter<?> converter = iterator.next();
+			if (converter.canRead(clazz)) {
+				return (HttpMessageConverter<T>) converter;
+			}
+		}
+		throw new IllegalArgumentException("Cannot find message converter for class [" + clazz + "]");
+	}
+
+	private <T> HttpMessageConverter<T> findWriteConverter(Class<T> clazz) {
+		Iterator<HttpMessageConverter<?>> iterator = messageConverters.iterator();
+		while (iterator.hasNext()) {
+			HttpMessageConverter<?> converter = iterator.next();
+			if (converter.canWrite(clazz)) {
+				return (HttpMessageConverter<T>) converter;
+			}
+		}
+		throw new IllegalArgumentException("Cannot find message converter for class [" + clazz + "]");
+	}
+
+	private URI newURI(String uri) {
+		try {
+			return new URI(uri);
+		} catch (URISyntaxException e) {
+			throw new IllegalArgumentException("Invalid uri [" + uri + "]", e);
+		}
 	}
 
 }

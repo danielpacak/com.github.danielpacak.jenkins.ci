@@ -28,45 +28,38 @@ public enum HttpStatus {
 
 	/**
 	 * {@code 200 OK}.
-	 * 
-	 * @see <a href="http://tools.ietf.org/html/rfc2616#section-10.2.1">HTTP/1.1</a>
 	 */
 	OK(200, "OK"),
 
 	/**
 	 * {@code 201 Created}.
-	 * 
-	 * @see <a href="http://tools.ietf.org/html/rfc2616#section-10.2.2">HTTP/1.1</a>
 	 */
 	CREATED(201, "Created"),
 
 	/**
 	 * {@code 202 Accepted}.
-	 * 
-	 * @see <a href="http://tools.ietf.org/html/rfc2616#section-10.2.3">HTTP/1.1</a>
 	 */
 	ACCEPTED(202, "Accepted"),
 
 	/**
 	 * {@code 302 Found}.
-	 * 
-	 * @see <a href="http://tools.ietf.org/html/rfc2616#section-10.3.3">HTTP/1.1</a>
 	 */
 	FOUND(302, "Found"),
 
 	/**
 	 * {@code 400 Bad Request}.
-	 * 
-	 * @see <a href="http://tools.ietf.org/html/rfc2616#section-10.4.1">HTTP/1.1</a>
 	 */
 	BAD_REQUEST(400, "Bad Request"),
 
 	/**
 	 * {@code 404 Not Found}.
-	 * 
-	 * @see <a href="http://tools.ietf.org/html/rfc2616#section-10.4.5">HTTP/1.1</a>
 	 */
-	NOT_FOUND(404, "Not Found");
+	NOT_FOUND(404, "Not Found"),
+
+	/**
+	 * {@code 500 Internal Server Error}.
+	 */
+	INTERNAL_SERVER_ERROR(500, "Internal Server Error");
 
 	private final int value;
 
@@ -112,6 +105,41 @@ public enum HttpStatus {
 			}
 		}
 		throw new IllegalArgumentException("No matching constant for [" + statusCode + "]");
+	}
+
+	public Series series() {
+		return Series.valueOf(this);
+	}
+
+	public static enum Series {
+		INFORMATIONAL(1), SUCCESSFUL(2), REDIRECTION(3), CLIENT_ERROR(4), SERVER_ERROR(5);
+
+		private final int value;
+
+		private Series(int value) {
+			this.value = value;
+		}
+
+		/**
+		 * Return the integer value of this status series. Ranges from 1 to 5.
+		 */
+		public int value() {
+			return this.value;
+		}
+
+		public static Series valueOf(int status) {
+			int seriesCode = status / 100;
+			for (Series series : values()) {
+				if (series.value == seriesCode) {
+					return series;
+				}
+			}
+			throw new IllegalArgumentException("No matching constant for [" + status + "]");
+		}
+
+		public static Series valueOf(HttpStatus status) {
+			return valueOf(status.value);
+		}
 	}
 
 }

@@ -31,10 +31,15 @@ public class Job implements Serializable {
 	private static final long serialVersionUID = 6280410389222694298L;
 
 	private String name;
+
 	private String displayName;
+
 	private String url;
+
 	private Boolean buildable;
+
 	private Boolean inQueue;
+
 	private Long nextBuildNumber;
 
 	public String getName() {

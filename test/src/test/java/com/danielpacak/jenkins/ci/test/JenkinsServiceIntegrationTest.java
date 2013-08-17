@@ -22,6 +22,7 @@ package com.danielpacak.jenkins.ci.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.danielpacak.jenkins.ci.core.Jenkins;
@@ -38,6 +39,7 @@ public class JenkinsServiceIntegrationTest extends AbstractJenkinsIntegrationTes
 		assertEquals(Jenkins.MODE.NORMAL, jenkins.getMode());
 		assertEquals(new Integer(2), jenkins.getNumExecutors());
 		assertEquals("the master Jenkins node", jenkins.getNodeDescription());
+		Assert.assertFalse(jenkins.getUseSecurity());
 		assertNull(jenkins.getNodeName());
 	}
 

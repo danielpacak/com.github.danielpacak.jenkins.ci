@@ -57,7 +57,7 @@ public class JenkinsHttpMessageConverterTest {
 	@Test
 	public void read() throws Exception {
 		// @formatter:off
-		HttpInputMessage inputMessage = new TestHttpInputMessage(""
+		HttpInputMessage inputMessage = new MockHttpInputMessage(""
 			+	"<hudson>"
 			+		"<mode>NORMAL</mode>"
 			+		"<nodeDescription>Node description</nodeDescription>"
