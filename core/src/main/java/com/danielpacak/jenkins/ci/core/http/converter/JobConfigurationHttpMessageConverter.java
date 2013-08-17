@@ -32,34 +32,34 @@ import com.danielpacak.jenkins.ci.core.util.Streams;
 
 public class JobConfigurationHttpMessageConverter implements HttpMessageConverter<JobConfiguration> {
 
-	@Override
-	public boolean canRead(Class<?> clazz) {
-		return JobConfiguration.class.equals(clazz);
-	}
+   @Override
+   public boolean canRead(Class<?> clazz) {
+      return JobConfiguration.class.equals(clazz);
+   }
 
-	@Override
-	public boolean canWrite(Class<?> clazz) {
-		// FIXME This is hacky!
-		return JobConfiguration.class.equals(clazz) || ClassPathJobConfiguration.class.equals(clazz);
-	}
+   @Override
+   public boolean canWrite(Class<?> clazz) {
+      // FIXME This is hacky!
+      return JobConfiguration.class.equals(clazz) || ClassPathJobConfiguration.class.equals(clazz);
+   }
 
-	@Override
-	public JobConfiguration read(Class<? extends JobConfiguration> clazz, HttpInputMessage inputMessage)
-			throws IOException {
-		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		Streams.copy(inputMessage.getBody(), output);
-		return new JobConfiguration() {
-			@Override
-			public InputStream getInputStream() throws IOException {
-				return new ByteArrayInputStream(output.toByteArray());
-			}
-		};
-	}
+   @Override
+   public JobConfiguration read(Class<? extends JobConfiguration> clazz, HttpInputMessage inputMessage)
+         throws IOException {
+      final ByteArrayOutputStream output = new ByteArrayOutputStream();
+      Streams.copy(inputMessage.getBody(), output);
+      return new JobConfiguration() {
+         @Override
+         public InputStream getInputStream() throws IOException {
+            return new ByteArrayInputStream(output.toByteArray());
+         }
+      };
+   }
 
-	@Override
-	public void write(JobConfiguration t, String contentType, HttpOutputMessage outputMessage) throws IOException {
-		outputMessage.getHeaders().setContentType("application/xml");
-		Streams.copy(t.getInputStream(), outputMessage.getBody());
-	}
+   @Override
+   public void write(JobConfiguration t, String contentType, HttpOutputMessage outputMessage) throws IOException {
+      outputMessage.getHeaders().setContentType("application/xml");
+      Streams.copy(t.getInputStream(), outputMessage.getBody());
+   }
 
 }

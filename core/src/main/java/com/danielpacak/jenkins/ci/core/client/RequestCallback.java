@@ -29,6 +29,6 @@ import com.danielpacak.jenkins.ci.core.http.client.ClientHttpRequest;
  */
 public interface RequestCallback {
 
-	void doWithRequest(ClientHttpRequest request) throws IOException;
+   void doWithRequest(ClientHttpRequest request) throws IOException;
 
 }

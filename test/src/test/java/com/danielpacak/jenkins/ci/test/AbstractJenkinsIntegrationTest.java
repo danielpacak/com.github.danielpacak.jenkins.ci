@@ -27,36 +27,45 @@ import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
 
 public abstract class AbstractJenkinsIntegrationTest {
 
-	private static String host = "localhost";
+   private static String host = "localhost";
 
-	private static Integer port = 8080;
+   private static Integer port = 8080;
 
-	private static String user = "dpacak";
+   private static String user = "dpacak";
 
-	private static String password = "passw0rd";
+   private static String password = "passw0rd";
 
-	@BeforeClass
-	public static void beforeClass() {
-		System.out.printf("Starting Jenkins CI on %s:%s...%n", host, port);
-	}
+   @BeforeClass
+   public static void beforeClass() {
+      System.out.printf("Starting Jenkins CI on %s:%s...%n", host, port);
+   }
 
-	@AfterClass
-	public static void afterClass() {
-		System.out.println("Stopping Jenkins CI...");
-	}
+   @AfterClass
+   public static void afterClass() {
+      System.out.println("Stopping Jenkins CI...");
+   }
 
-	protected JenkinsClient getJenkinsClient() {
-		return new JenkinsClient(host, port).setCredentials(user, password);
-	}
+   protected JenkinsClient getJenkinsClient() {
+      return new JenkinsClient(host, port).setCredentials(user, password);
+   }
 
-	/**
-	 * Return a new instance of the {@link Job} class with a random name. The name has the following patter
-	 * <code>junit-{currentTimeMillis}</code>.
-	 * 
-	 * @return job
-	 */
-	protected Job newJobWithRandomName() {
-		return new Job().setName("junit-" + System.currentTimeMillis());
-	}
+   /**
+    * Return a new instance of the {@link Job} class with a random name.
+    * 
+    * @return new job with a random name
+    * @see #newRandomName()
+    */
+   protected Job newJobWithRandomName() {
+      return new Job().setName(newRandomName());
+   }
+
+   /**
+    * Return a new random name. The name has the following pattern {@code junit-currentTimeMillis}.
+    * 
+    * @return random name
+    */
+   protected String newRandomName() {
+      return "junit-" + System.currentTimeMillis();
+   }
 
 }

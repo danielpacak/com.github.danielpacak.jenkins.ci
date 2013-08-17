@@ -37,21 +37,21 @@ import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
 @RunWith(MockitoJUnitRunner.class)
 public class JenkinsServiceTest {
 
-	@Mock
-	private JenkinsClient client;
+   @Mock
+   private JenkinsClient client;
 
-	private JenkinsService service;
+   private JenkinsService service;
 
-	@Before
-	public void beforeTest() throws Exception {
-		service = new JenkinsService(client);
-	}
+   @Before
+   public void beforeTest() throws Exception {
+      service = new JenkinsService(client);
+   }
 
-	@Test
-	public void getJenkins() throws Exception {
-		Jenkins jenkins = new Jenkins();
-		when(client.getForObject("/api/xml", Jenkins.class)).thenReturn(jenkins);
-		assertEquals(jenkins, service.getJenkins());
-	}
+   @Test
+   public void getJenkins() throws Exception {
+      Jenkins jenkins = new Jenkins();
+      when(client.getForObject("/api/xml", Jenkins.class)).thenReturn(jenkins);
+      assertEquals(jenkins, service.getJenkins());
+   }
 
 }

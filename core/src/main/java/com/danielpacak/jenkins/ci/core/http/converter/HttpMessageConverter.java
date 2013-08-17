@@ -26,12 +26,12 @@ import com.danielpacak.jenkins.ci.core.http.HttpOutputMessage;
 
 public interface HttpMessageConverter<T> {
 
-	boolean canRead(Class<?> clazz); // i can also pass content type.......
+   boolean canRead(Class<?> clazz);
 
-	boolean canWrite(Class<?> clazz);
+   boolean canWrite(Class<?> clazz);
 
-	T read(Class<? extends T> clazz, HttpInputMessage inputMessage) throws IOException;
+   T read(Class<? extends T> clazz, HttpInputMessage inputMessage) throws IOException;
 
-	void write(T t, String contentType, HttpOutputMessage outputMessage) throws IOException;
+   void write(T t, String contentType, HttpOutputMessage outputMessage) throws IOException;
 
 }

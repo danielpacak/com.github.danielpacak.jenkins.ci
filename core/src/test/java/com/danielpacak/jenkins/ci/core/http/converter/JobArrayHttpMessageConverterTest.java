@@ -34,30 +34,30 @@ import com.danielpacak.jenkins.ci.core.http.HttpInputMessage;
  */
 public class JobArrayHttpMessageConverterTest {
 
-	private JobArrayHttpMessageConverter converter;
+   private JobArrayHttpMessageConverter converter;
 
-	@Before
-	public void beforeTest() {
-		converter = new JobArrayHttpMessageConverter();
-	}
+   @Before
+   public void beforeTest() {
+      converter = new JobArrayHttpMessageConverter();
+   }
 
-	@Test
-	public void canRead() throws Exception {
-		assertTrue(converter.canRead(Job[].class));
-		assertFalse(converter.canRead(Job.class));
-		assertFalse(converter.canRead(Object.class));
-	}
+   @Test
+   public void canRead() throws Exception {
+      assertTrue(converter.canRead(Job[].class));
+      assertFalse(converter.canRead(Job.class));
+      assertFalse(converter.canRead(Object.class));
+   }
 
-	@Test
-	public void canWrite() throws Exception {
-		assertFalse(converter.canWrite(Job[].class));
-		assertFalse(converter.canWrite(Job.class));
-		assertFalse(converter.canWrite(Object.class));
-	}
+   @Test
+   public void canWrite() throws Exception {
+      assertFalse(converter.canWrite(Job[].class));
+      assertFalse(converter.canWrite(Job.class));
+      assertFalse(converter.canWrite(Object.class));
+   }
 
-	@Test
-	public void read() throws Exception {
-		// @formatter:off
+   @Test
+   public void read() throws Exception {
+      // @formatter:off
 		HttpInputMessage inputMessage = new MockHttpInputMessage(""
 			+	"<hudson>"
 			+		"<mode>NORMAL</mode>"
@@ -85,26 +85,26 @@ public class JobArrayHttpMessageConverterTest {
 		);
 		// @formatter:on
 
-		Job[] jobs = converter.read(Job[].class, inputMessage);
+      Job[] jobs = converter.read(Job[].class, inputMessage);
 
-		assertEquals("vacuum.my.room", jobs[0].getName());
-		assertEquals("Vacuum my room", jobs[0].getDisplayName());
-		assertEquals("http://localhost:8080/job/vacuum.my.room", jobs[0].getUrl());
-		assertTrue(jobs[0].getBuildable());
-		assertFalse(jobs[0].getInQueue());
-		assertEquals(new Long(69), jobs[0].getNextBuildNumber());
+      assertEquals("vacuum.my.room", jobs[0].getName());
+      assertEquals("Vacuum my room", jobs[0].getDisplayName());
+      assertEquals("http://localhost:8080/job/vacuum.my.room", jobs[0].getUrl());
+      assertTrue(jobs[0].getBuildable());
+      assertFalse(jobs[0].getInQueue());
+      assertEquals(new Long(69), jobs[0].getNextBuildNumber());
 
-		assertEquals("do.shopping", jobs[1].getName());
-		assertEquals("Do shopping", jobs[1].getDisplayName());
-		assertEquals("http://localhost:8080/job/do.shopping", jobs[1].getUrl());
-		assertFalse(jobs[1].getBuildable());
-		assertTrue(jobs[1].getInQueue());
-		assertEquals(new Long(13), jobs[1].getNextBuildNumber());
-	}
+      assertEquals("do.shopping", jobs[1].getName());
+      assertEquals("Do shopping", jobs[1].getDisplayName());
+      assertEquals("http://localhost:8080/job/do.shopping", jobs[1].getUrl());
+      assertFalse(jobs[1].getBuildable());
+      assertTrue(jobs[1].getInQueue());
+      assertEquals(new Long(13), jobs[1].getNextBuildNumber());
+   }
 
-	@Test(expected = UnsupportedOperationException.class)
-	public void write() throws Exception {
-		converter.write(new Job[] {}, null, null);
-	}
+   @Test(expected = UnsupportedOperationException.class)
+   public void write() throws Exception {
+      converter.write(new Job[] {}, null, null);
+   }
 
 }

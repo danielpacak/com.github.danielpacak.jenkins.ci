@@ -28,39 +28,39 @@ import com.danielpacak.jenkins.ci.core.util.XmlResponse;
 
 public class JobArrayHttpMessageConverter implements HttpMessageConverter<Job[]> {
 
-	@Override
-	public boolean canRead(Class<?> clazz) {
-		return Job[].class.equals(clazz);
-	}
+   @Override
+   public boolean canRead(Class<?> clazz) {
+      return Job[].class.equals(clazz);
+   }
 
-	@Override
-	public boolean canWrite(Class<?> clazz) {
-		return false;
-	}
+   @Override
+   public boolean canWrite(Class<?> clazz) {
+      return false;
+   }
 
-	@Override
-	public Job[] read(Class<? extends Job[]> clazz, HttpInputMessage inputMessage) throws IOException {
-		XmlResponse response = new XmlResponse(inputMessage.getBody());
-		Integer count = response.evaluateAsInteger("count(/hudson/job)");
-		Job[] jobs = new Job[count];
-		for (int i = 0; i < count; i++) {
-			String prefix = "/hudson/job[" + (i + 1) + "]";
-			// @formatter:off
-			jobs[i] = new Job()
-				.setName(response.evaluateAsString(prefix + "/name"))
-				.setDisplayName(response.evaluateAsString(prefix + "/displayName"))
-				.setUrl(response.evaluateAsString(prefix + "/url"))
-				.setBuildable(response.evaluateAsBoolean(prefix + "/buildable"))
-				.setInQueue(response.evaluateAsBoolean(prefix + "/inQueue"))
-				.setNextBuildNumber(response.evaluateAsLong(prefix + "/nextBuildNumber"));
-			// @formatter:on
-		}
-		return jobs;
-	}
+   @Override
+   public Job[] read(Class<? extends Job[]> clazz, HttpInputMessage inputMessage) throws IOException {
+      XmlResponse xml = new XmlResponse(inputMessage.getBody());
+      Integer count = xml.evaluateAsInteger("count(/hudson/job)");
+      Job[] jobs = new Job[count];
+      for (int i = 0; i < count; i++) {
+         String prefix = "/hudson/job[" + (i + 1) + "]";
+         // @formatter:off
+         jobs[i] = new Job()
+            .setName(xml.evaluateAsString(prefix + "/name"))
+            .setDisplayName(xml.evaluateAsString(prefix + "/displayName"))
+            .setUrl(xml.evaluateAsString(prefix + "/url"))
+            .setBuildable(xml.evaluateAsBoolean(prefix + "/buildable"))
+            .setInQueue(xml.evaluateAsBoolean(prefix + "/inQueue"))
+            .setNextBuildNumber(xml.evaluateAsLong(prefix + "/nextBuildNumber"));
+         // @formatter:on
+      }
+      return jobs;
+   }
 
-	@Override
-	public void write(Job[] t, String contentType, HttpOutputMessage outputMessage) throws IOException {
-		throw new UnsupportedOperationException();
-	}
+   @Override
+   public void write(Job[] t, String contentType, HttpOutputMessage outputMessage) throws IOException {
+      throw new UnsupportedOperationException();
+   }
 
 }

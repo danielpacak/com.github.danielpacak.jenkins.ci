@@ -32,14 +32,13 @@ import java.io.InputStream;
  */
 public interface HttpInputMessage extends HttpMessage {
 
-	/**
-	 * Get the body of this message as an input stream.
-	 * 
-	 * @return input stream
-	 * @throws IOException
-	 *             in case of I/O errors
-	 * @since 1.0.0
-	 */
-	InputStream getBody() throws IOException;
+   /**
+    * Get the body of this message as an input stream.
+    * 
+    * @return input stream
+    * @throws IOException in case of I/O errors
+    * @since 1.0.0
+    */
+   InputStream getBody() throws IOException;
 
 }

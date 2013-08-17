@@ -28,20 +28,20 @@ import com.danielpacak.jenkins.ci.core.http.HttpInputMessage;
 
 public class MockHttpInputMessage implements HttpInputMessage {
 
-	private String xml;
+   private String xml;
 
-	public MockHttpInputMessage(String xml) {
-		this.xml = xml;
-	}
+   public MockHttpInputMessage(String xml) {
+      this.xml = xml;
+   }
 
-	@Override
-	public HttpHeaders getHeaders() {
-		return new HttpHeaders();
-	}
+   @Override
+   public HttpHeaders getHeaders() {
+      return new HttpHeaders();
+   }
 
-	@Override
-	public InputStream getBody() throws IOException {
-		return new ByteArrayInputStream(xml.getBytes());
-	}
+   @Override
+   public InputStream getBody() throws IOException {
+      return new ByteArrayInputStream(xml.getBytes());
+   }
 
 }

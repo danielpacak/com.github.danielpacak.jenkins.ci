@@ -19,8 +19,11 @@
  */
 package com.danielpacak.jenkins.ci.core.http;
 
+/**
+ * Enumeration of HTTP request methods.
+ */
 public enum HttpMethod {
 
-	GET, POST, PUT, DELETE, PATCH
+   GET, POST, PUT, DELETE, PATCH
 
 }

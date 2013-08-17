@@ -26,27 +26,21 @@ package com.danielpacak.jenkins.ci.core.util;
  */
 public final class Preconditions {
 
-	private Preconditions() {
+   private Preconditions() {
 
-	}
+   }
 
-	public static <T> T checkArgumentNotNull(T argument, String errorMessage) {
-		if (argument == null) {
-			throw new IllegalArgumentException(errorMessage);
-		}
-		return argument;
-	}
+   public static <T> T checkArgumentNotNull(T argument, String errorMessage) {
+      if (argument == null) {
+         throw new IllegalArgumentException(errorMessage);
+      }
+      return argument;
+   }
 
-	public static void checkArgument(boolean condition, String messageFormat, Object... args) {
-		if (!condition) {
-			throw new IllegalArgumentException(String.format(messageFormat, args));
-		}
-	}
-
-	public static void checkState(boolean expression, String errorMessage) {
-		if (!expression) {
-			throw new IllegalStateException(errorMessage);
-		}
-	}
+   public static void checkArgument(boolean condition, String messageFormat, Object... args) {
+      if (!condition) {
+         throw new IllegalArgumentException(String.format(messageFormat, args));
+      }
+   }
 
 }

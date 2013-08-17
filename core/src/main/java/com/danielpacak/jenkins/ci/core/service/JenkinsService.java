@@ -32,33 +32,32 @@ import com.danielpacak.jenkins.ci.core.client.JenkinsClientException;
  */
 public class JenkinsService extends AbstractService {
 
-	/**
-	 * Create job service for the default client.
-	 * 
-	 * @since 1.0.0
-	 */
-	public JenkinsService() {
-		super();
-	}
+   /**
+    * Create job service for the default client.
+    * 
+    * @since 1.0.0
+    */
+   public JenkinsService() {
+      super();
+   }
 
-	/**
-	 * Create job service for the given client.
-	 * 
-	 * @param client
-	 * @since 1.0.0
-	 */
-	public JenkinsService(JenkinsClient client) {
-		super(client);
-	}
+   /**
+    * Create job service for the given client.
+    * 
+    * @param client
+    * @since 1.0.0
+    */
+   public JenkinsService(JenkinsClient client) {
+      super(client);
+   }
 
-	/**
-	 * @return
-	 * @throws JenkinsClientException
-	 *             if an error occurred connecting to Jenkins
-	 * @since 1.0.0
-	 */
-	public Jenkins getJenkins() throws JenkinsClientException {
-		return client.getForObject(SEGMENT_API_XML, Jenkins.class);
-	}
+   /**
+    * @return
+    * @throws JenkinsClientException if an error occurred connecting to Jenkins
+    * @since 1.0.0
+    */
+   public Jenkins getJenkins() throws JenkinsClientException {
+      return client.getForObject(SEGMENT_API_XML, Jenkins.class);
+   }
 
 }

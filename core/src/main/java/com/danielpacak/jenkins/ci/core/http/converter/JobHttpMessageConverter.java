@@ -28,33 +28,33 @@ import com.danielpacak.jenkins.ci.core.util.XmlResponse;
 
 public class JobHttpMessageConverter implements HttpMessageConverter<Job> {
 
-	@Override
-	public boolean canRead(Class<?> clazz) {
-		return Job.class.equals(clazz);
-	}
+   @Override
+   public boolean canRead(Class<?> clazz) {
+      return Job.class.equals(clazz);
+   }
 
-	@Override
-	public boolean canWrite(Class<?> clazz) {
-		return false;
-	}
+   @Override
+   public boolean canWrite(Class<?> clazz) {
+      return false;
+   }
 
-	@Override
-	public Job read(Class<? extends Job> clazz, HttpInputMessage inputMessage) throws IOException {
-		XmlResponse response = new XmlResponse(inputMessage.getBody());
-		// @formatter:off
-		return new Job()
-			.setName(response.evaluateAsString("/*/name"))
-			.setDisplayName(response.evaluateAsString("/*/displayName/text()"))
-			.setUrl(response.evaluateAsString("/*/url"))
-			.setBuildable(response.evaluateAsBoolean("/*/buildable"))
-			.setInQueue(response.evaluateAsBoolean("/*/inQueue"))
-			.setNextBuildNumber(response.evaluateAsLong("/*/nextBuildNumber"));
-		// @formatter:on
-	}
+   @Override
+   public Job read(Class<? extends Job> clazz, HttpInputMessage inputMessage) throws IOException {
+      XmlResponse response = new XmlResponse(inputMessage.getBody());
+      // @formatter:off
+      return new Job()
+         .setName(response.evaluateAsString("/*/name"))
+         .setDisplayName(response.evaluateAsString("/*/displayName/text()"))
+         .setUrl(response.evaluateAsString("/*/url"))
+         .setBuildable(response.evaluateAsBoolean("/*/buildable"))
+         .setInQueue(response.evaluateAsBoolean("/*/inQueue"))
+         .setNextBuildNumber(response.evaluateAsLong("/*/nextBuildNumber"));
+      // @formatter:on
+   }
 
-	@Override
-	public void write(Job t, String contentType, HttpOutputMessage outputMessage) throws IOException {
-		throw new UnsupportedOperationException();
-	}
+   @Override
+   public void write(Job t, String contentType, HttpOutputMessage outputMessage) throws IOException {
+      throw new UnsupportedOperationException();
+   }
 
 }

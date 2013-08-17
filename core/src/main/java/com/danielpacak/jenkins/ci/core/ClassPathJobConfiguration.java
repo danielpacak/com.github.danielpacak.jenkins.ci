@@ -31,16 +31,16 @@ import java.io.InputStream;
  */
 public class ClassPathJobConfiguration implements JobConfiguration {
 
-	private final String path;
+   private final String path;
 
-	public ClassPathJobConfiguration(String path) {
-		this.path = checkArgumentNotNull(path, "Path cannot be null");
-		checkArgument(getClass().getResource("/" + path) != null, "Class path resource [%s] does not exist", path);
-	}
+   public ClassPathJobConfiguration(String path) {
+      this.path = checkArgumentNotNull(path, "Path cannot be null");
+      checkArgument(getClass().getResource("/" + path) != null, "Class path resource [%s] does not exist", path);
+   }
 
-	@Override
-	public InputStream getInputStream() {
-		return getClass().getResourceAsStream("/" + path);
-	}
+   @Override
+   public InputStream getInputStream() {
+      return getClass().getResourceAsStream("/" + path);
+   }
 
 }

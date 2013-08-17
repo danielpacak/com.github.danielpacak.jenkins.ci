@@ -28,81 +28,81 @@ import java.io.Serializable;
  */
 public class Jenkins implements Serializable {
 
-	private static final long serialVersionUID = 3830206808903450100L;
+   private static final long serialVersionUID = 3830206808903450100L;
 
-	private String nodeName;
+   private String nodeName;
 
-	private String nodeDescription;
+   private String nodeDescription;
 
-	private Integer numExecutors;
+   private Integer numExecutors;
 
-	private MODE mode;
+   private MODE mode;
 
-	private Boolean useSecurity;
+   private Boolean useSecurity;
 
-	public String getNodeName() {
-		return nodeName;
-	}
+   public String getNodeName() {
+      return nodeName;
+   }
 
-	/**
-	 * @param nodeName
-	 * @return this jenkins
-	 */
-	public Jenkins setNodeName(String nodeName) {
-		this.nodeName = nodeName;
-		return this;
-	}
+   /**
+    * @param nodeName
+    * @return this jenkins
+    */
+   public Jenkins setNodeName(String nodeName) {
+      this.nodeName = nodeName;
+      return this;
+   }
 
-	public String getNodeDescription() {
-		return nodeDescription;
-	}
+   public String getNodeDescription() {
+      return nodeDescription;
+   }
 
-	/**
-	 * @param nodeDescription
-	 * @return this jenkins
-	 */
-	public Jenkins setNodeDescription(String nodeDescription) {
-		this.nodeDescription = nodeDescription;
-		return this;
-	}
+   /**
+    * @param nodeDescription
+    * @return this jenkins
+    */
+   public Jenkins setNodeDescription(String nodeDescription) {
+      this.nodeDescription = nodeDescription;
+      return this;
+   }
 
-	public Integer getNumExecutors() {
-		return numExecutors;
-	}
+   public Integer getNumExecutors() {
+      return numExecutors;
+   }
 
-	/**
-	 * @param numExecutors
-	 * @return this jenkins
-	 */
-	public Jenkins setNumExecutors(Integer numExecutors) {
-		this.numExecutors = numExecutors;
-		return this;
-	}
+   /**
+    * @param numExecutors
+    * @return this jenkins
+    */
+   public Jenkins setNumExecutors(Integer numExecutors) {
+      this.numExecutors = numExecutors;
+      return this;
+   }
 
-	public MODE getMode() {
-		return mode;
-	}
+   public MODE getMode() {
+      return mode;
+   }
 
-	/**
-	 * @param mode
-	 * @return this jenkins
-	 */
-	public Jenkins setMode(MODE mode) {
-		this.mode = mode;
-		return this;
-	}
+   /**
+    * @param mode
+    * @return this jenkins
+    */
+   public Jenkins setMode(MODE mode) {
+      this.mode = mode;
+      return this;
+   }
 
-	public Boolean getUseSecurity() {
-		return useSecurity;
-	}
+   public Boolean getUseSecurity() {
+      return useSecurity;
+   }
 
-	public Jenkins setUseSecurity(Boolean useSecurity) {
-		this.useSecurity = useSecurity;
-		return this;
-	}
+   public Jenkins setUseSecurity(Boolean useSecurity) {
+      this.useSecurity = useSecurity;
+      return this;
+   }
 
-	public static enum MODE {
-		NORMAL;
-	}
+   public static enum MODE {
+      NORMAL;
+   }
 
 }

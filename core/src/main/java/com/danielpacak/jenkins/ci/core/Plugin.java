@@ -28,142 +28,153 @@ import java.io.Serializable;
  */
 public class Plugin implements Serializable {
 
-	private static final long serialVersionUID = 189768219282490790L;
+   private static final long serialVersionUID = 189768219282490790L;
 
-	private Boolean active;
-	private Boolean bundled;
-	private Boolean deleted;
-	private Boolean downgradable;
-	private Boolean enabled;
-	private Boolean hasUpdate;
-	private String longName;
-	private Boolean pinned;
-	private String shortName;
-	private DynamicLoad supportsDynamicLoad;
-	private String url;
-	private String version;
+   private Boolean active;
 
-	public Boolean getActive() {
-		return active;
-	}
+   private Boolean bundled;
 
-	/**
-	 * @param active
-	 * @return this plugin
-	 */
-	public Plugin setActive(Boolean active) {
-		this.active = active;
-		return this;
-	}
+   private Boolean deleted;
 
-	public Boolean getBundled() {
-		return bundled;
-	}
+   private Boolean downgradable;
 
-	/**
-	 * @param bundled
-	 * @return this plugin
-	 */
-	public Plugin setBundled(Boolean bundled) {
-		this.bundled = bundled;
-		return this;
-	}
+   private Boolean enabled;
 
-	public Boolean getDeleted() {
-		return deleted;
-	}
+   private Boolean hasUpdate;
 
-	/**
-	 * @param deleted
-	 * @return this plugin
-	 */
-	public Plugin setDeleted(Boolean deleted) {
-		this.deleted = deleted;
-		return this;
-	}
+   private String longName;
 
-	public Boolean getDowngradable() {
-		return downgradable;
-	}
+   private Boolean pinned;
 
-	public Plugin setDowngradable(Boolean downgradable) {
-		this.downgradable = downgradable;
-		return this;
-	}
+   private String shortName;
 
-	public Boolean getEnabled() {
-		return enabled;
-	}
+   private DynamicLoad supportsDynamicLoad;
 
-	public Plugin setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-		return this;
-	}
+   private String url;
 
-	public Boolean getHasUpdate() {
-		return hasUpdate;
-	}
+   private String version;
 
-	public Plugin setHasUpdate(Boolean hasUpdate) {
-		this.hasUpdate = hasUpdate;
-		return this;
-	}
+   public Boolean getActive() {
+      return active;
+   }
 
-	public String getLongName() {
-		return longName;
-	}
+   /**
+    * @param active
+    * @return this plugin
+    */
+   public Plugin setActive(Boolean active) {
+      this.active = active;
+      return this;
+   }
 
-	public Plugin setLongName(String longName) {
-		this.longName = longName;
-		return this;
-	}
+   public Boolean getBundled() {
+      return bundled;
+   }
 
-	public Boolean getPinned() {
-		return pinned;
-	}
+   /**
+    * @param bundled
+    * @return this plugin
+    */
+   public Plugin setBundled(Boolean bundled) {
+      this.bundled = bundled;
+      return this;
+   }
 
-	public Plugin setPinned(Boolean pinned) {
-		this.pinned = pinned;
-		return this;
-	}
+   public Boolean getDeleted() {
+      return deleted;
+   }
 
-	public String getShortName() {
-		return shortName;
-	}
+   /**
+    * @param deleted
+    * @return this plugin
+    */
+   public Plugin setDeleted(Boolean deleted) {
+      this.deleted = deleted;
+      return this;
+   }
 
-	public Plugin setShortName(String shortName) {
-		this.shortName = shortName;
-		return this;
-	}
+   public Boolean getDowngradable() {
+      return downgradable;
+   }
 
-	public DynamicLoad getSupportsDynamicLoad() {
-		return supportsDynamicLoad;
-	}
+   public Plugin setDowngradable(Boolean downgradable) {
+      this.downgradable = downgradable;
+      return this;
+   }
 
-	public void setSupportsDynamicLoad(DynamicLoad supportsDynamicLoad) {
-		this.supportsDynamicLoad = supportsDynamicLoad;
-	}
+   public Boolean getEnabled() {
+      return enabled;
+   }
 
-	public String getUrl() {
-		return url;
-	}
+   public Plugin setEnabled(Boolean enabled) {
+      this.enabled = enabled;
+      return this;
+   }
 
-	public Plugin setUrl(String url) {
-		this.url = url;
-		return this;
-	}
+   public Boolean getHasUpdate() {
+      return hasUpdate;
+   }
 
-	public String getVersion() {
-		return version;
-	}
+   public Plugin setHasUpdate(Boolean hasUpdate) {
+      this.hasUpdate = hasUpdate;
+      return this;
+   }
 
-	public Plugin setVersion(String version) {
-		this.version = version;
-		return this;
-	}
+   public String getLongName() {
+      return longName;
+   }
 
-	public static enum DynamicLoad {
-		MAYBE
-	}
+   public Plugin setLongName(String longName) {
+      this.longName = longName;
+      return this;
+   }
+
+   public Boolean getPinned() {
+      return pinned;
+   }
+
+   public Plugin setPinned(Boolean pinned) {
+      this.pinned = pinned;
+      return this;
+   }
+
+   public String getShortName() {
+      return shortName;
+   }
+
+   public Plugin setShortName(String shortName) {
+      this.shortName = shortName;
+      return this;
+   }
+
+   public DynamicLoad getSupportsDynamicLoad() {
+      return supportsDynamicLoad;
+   }
+
+   public void setSupportsDynamicLoad(DynamicLoad supportsDynamicLoad) {
+      this.supportsDynamicLoad = supportsDynamicLoad;
+   }
+
+   public String getUrl() {
+      return url;
+   }
+
+   public Plugin setUrl(String url) {
+      this.url = url;
+      return this;
+   }
+
+   public String getVersion() {
+      return version;
+   }
+
+   public Plugin setVersion(String version) {
+      this.version = version;
+      return this;
+   }
+
+   public static enum DynamicLoad {
+      MAYBE
+   }
 
 }

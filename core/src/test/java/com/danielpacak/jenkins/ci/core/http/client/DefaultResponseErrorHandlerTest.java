@@ -39,64 +39,64 @@ import com.danielpacak.jenkins.ci.core.http.HttpStatus;
  */
 public class DefaultResponseErrorHandlerTest {
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
 
-	private DefaultResponseErrorHandler errorHandler;
+   private DefaultResponseErrorHandler errorHandler;
 
-	@Before
-	public void beforeTest() {
-		this.errorHandler = new DefaultResponseErrorHandler();
-	}
+   @Before
+   public void beforeTest() {
+      this.errorHandler = new DefaultResponseErrorHandler();
+   }
 
-	@Test
-	public void hasError() throws Exception {
-		assertTrue(errorHandler.hasError(new MockClientHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR)));
-		assertTrue(errorHandler.hasError(new MockClientHttpResponse(HttpStatus.BAD_REQUEST)));
-		assertFalse(errorHandler.hasError(new MockClientHttpResponse(HttpStatus.ACCEPTED)));
-	}
+   @Test
+   public void hasError() throws Exception {
+      assertTrue(errorHandler.hasError(new MockClientHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR)));
+      assertTrue(errorHandler.hasError(new MockClientHttpResponse(HttpStatus.BAD_REQUEST)));
+      assertFalse(errorHandler.hasError(new MockClientHttpResponse(HttpStatus.ACCEPTED)));
+   }
 
-	@Test
-	public void handleError() throws Exception {
-		thrown.expect(JenkinsClientException.class);
-		errorHandler.handleError(new MockClientHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR));
-	}
+   @Test
+   public void handleError() throws Exception {
+      thrown.expect(JenkinsClientException.class);
+      errorHandler.handleError(new MockClientHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR));
+   }
 
-	class MockClientHttpResponse implements ClientHttpResponse {
-		HttpStatus status;
+   class MockClientHttpResponse implements ClientHttpResponse {
+      HttpStatus status;
 
-		MockClientHttpResponse(HttpStatus status) {
-			this.status = status;
-		}
+      MockClientHttpResponse(HttpStatus status) {
+         this.status = status;
+      }
 
-		@Override
-		public HttpHeaders getHeaders() {
-			return new HttpHeaders();
-		}
+      @Override
+      public HttpHeaders getHeaders() {
+         return new HttpHeaders();
+      }
 
-		@Override
-		public int getRawStatusCode() throws IOException {
-			return status.value();
-		}
+      @Override
+      public int getRawStatusCode() throws IOException {
+         return status.value();
+      }
 
-		@Override
-		public HttpStatus getStatusCode() throws IOException {
-			return status;
-		}
+      @Override
+      public HttpStatus getStatusCode() throws IOException {
+         return status;
+      }
 
-		@Override
-		public String getStatusText() throws IOException {
-			return null;
-		}
+      @Override
+      public String getStatusText() throws IOException {
+         return null;
+      }
 
-		@Override
-		public InputStream getBody() throws IOException {
-			return null;
-		}
+      @Override
+      public InputStream getBody() throws IOException {
+         return null;
+      }
 
-		@Override
-		public void close() {
-		}
-	}
+      @Override
+      public void close() {
+      }
+   }
 
 }

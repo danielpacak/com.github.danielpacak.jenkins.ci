@@ -31,12 +31,12 @@ import com.danielpacak.jenkins.ci.core.http.HttpStatus;
  */
 public interface ClientHttpResponse extends HttpInputMessage {
 
-	void close();
+   void close();
 
-	int getRawStatusCode() throws IOException;
+   int getRawStatusCode() throws IOException;
 
-	HttpStatus getStatusCode() throws IOException;
+   HttpStatus getStatusCode() throws IOException;
 
-	String getStatusText() throws IOException;
+   String getStatusText() throws IOException;
 
 }

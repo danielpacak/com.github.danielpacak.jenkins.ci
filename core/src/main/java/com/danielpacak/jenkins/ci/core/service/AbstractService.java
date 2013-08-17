@@ -29,31 +29,31 @@ import com.danielpacak.jenkins.ci.core.util.Preconditions;
  */
 public abstract class AbstractService {
 
-	protected final JenkinsClient client;
+   protected final JenkinsClient client;
 
-	/**
-	 * Create service for the default client.
-	 */
-	public AbstractService() {
-		this(new JenkinsClient());
-	}
+   /**
+    * Create service for the default client.
+    */
+   public AbstractService() {
+      this(new JenkinsClient());
+   }
 
-	/**
-	 * Create service for the given client.
-	 * 
-	 * @param client
-	 */
-	public AbstractService(JenkinsClient client) {
-		this.client = Preconditions.checkArgumentNotNull(client, "Client cannot be null");
-	}
+   /**
+    * Create service for the given client.
+    * 
+    * @param client
+    */
+   public AbstractService(JenkinsClient client) {
+      this.client = Preconditions.checkArgumentNotNull(client, "Client cannot be null");
+   }
 
-	/**
-	 * Get configured {@link JenkinsClient}.
-	 * 
-	 * @return configured client
-	 */
-	public JenkinsClient getClient() {
-		return client;
-	}
+   /**
+    * Get configured {@link JenkinsClient}.
+    * 
+    * @return configured client
+    */
+   public JenkinsClient getClient() {
+      return client;
+   }
 
 }

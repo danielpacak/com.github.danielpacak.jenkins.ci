@@ -39,21 +39,21 @@ import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
 @RunWith(MockitoJUnitRunner.class)
 public class PluginServiceTest {
 
-	@Mock
-	private JenkinsClient client;
+   @Mock
+   private JenkinsClient client;
 
-	private PluginService service;
+   private PluginService service;
 
-	@Before
-	public void beforeTest() throws Exception {
-		service = new PluginService(client);
-	}
+   @Before
+   public void beforeTest() throws Exception {
+      service = new PluginService(client);
+   }
 
-	@Test
-	public void getPlugins() throws Exception {
-		Plugin[] somePlugins = new Plugin[] {};
-		when(client.getForObject("/pluginManager/api/xml?depth=1", Plugin[].class)).thenReturn(somePlugins);
-		assertEquals(Arrays.asList(somePlugins), service.getPlugins());
-	}
+   @Test
+   public void getPlugins() throws Exception {
+      Plugin[] somePlugins = new Plugin[] {};
+      when(client.getForObject("/pluginManager/api/xml?depth=1", Plugin[].class)).thenReturn(somePlugins);
+      assertEquals(Arrays.asList(somePlugins), service.getPlugins());
+   }
 
 }

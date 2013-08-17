@@ -32,25 +32,25 @@ import com.danielpacak.jenkins.ci.core.util.Streams;
  */
 public class ClassPathJobConfigurationTest {
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
 
-	@Test(expected = IllegalArgumentException.class)
-	public void init_WithNullPath_ThrowsException() throws Exception {
-		new ClassPathJobConfiguration(null);
-	}
+   @Test(expected = IllegalArgumentException.class)
+   public void init_WithNullPath_ThrowsException() throws Exception {
+      new ClassPathJobConfiguration(null);
+   }
 
-	@Test
-	public void init_WithNonExistingResource_ThrowsException() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Class path resource [non/existing/job/config.xml] does not exist");
-		new ClassPathJobConfiguration("non/existing/job/config.xml");
-	}
+   @Test
+   public void init_WithNonExistingResource_ThrowsException() throws Exception {
+      thrown.expect(IllegalArgumentException.class);
+      thrown.expectMessage("Class path resource [non/existing/job/config.xml] does not exist");
+      new ClassPathJobConfiguration("non/existing/job/config.xml");
+   }
 
-	@Test
-	public void getInputStream() throws Exception {
-		ClassPathJobConfiguration jobConfiguration = new ClassPathJobConfiguration("job/config/empty.xml");
-		assertEquals("<project></project>", Streams.toString(jobConfiguration.getInputStream()));
-	}
+   @Test
+   public void getInputStream() throws Exception {
+      ClassPathJobConfiguration jobConfiguration = new ClassPathJobConfiguration("job/config/empty.xml");
+      assertEquals("<project></project>", Streams.toString(jobConfiguration.getInputStream()));
+   }
 
 }

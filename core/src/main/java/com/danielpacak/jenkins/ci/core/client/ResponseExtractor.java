@@ -30,15 +30,13 @@ import com.danielpacak.jenkins.ci.core.http.client.ClientHttpResponse;
  */
 public interface ResponseExtractor<T> {
 
-	/**
-	 * Extract data from the given {@code ClientHttpResponse}.
-	 * 
-	 * @param response
-	 *            response
-	 * @return the extracted data
-	 * @throws IOException
-	 *             in case of I/O errors
-	 */
-	T extract(ClientHttpResponse response) throws IOException;
+   /**
+    * Extract data from the given {@code ClientHttpResponse}.
+    * 
+    * @param response response
+    * @return the extracted data
+    * @throws IOException in case of I/O errors
+    */
+   T extract(ClientHttpResponse response) throws IOException;
 
 }

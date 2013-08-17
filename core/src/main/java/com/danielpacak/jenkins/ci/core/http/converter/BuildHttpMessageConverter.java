@@ -28,35 +28,37 @@ import com.danielpacak.jenkins.ci.core.util.XmlResponse;
 
 public class BuildHttpMessageConverter implements HttpMessageConverter<Build> {
 
-	@Override
-	public boolean canRead(Class<?> clazz) {
-		return Build.class.equals(clazz);
-	}
+   @Override
+   public boolean canRead(Class<?> clazz) {
+      return Build.class.equals(clazz);
+   }
 
-	@Override
-	public boolean canWrite(Class<?> clazz) {
-		return false;
-	}
+   @Override
+   public boolean canWrite(Class<?> clazz) {
+      return false;
+   }
 
-	@Override
-	public Build read(Class<? extends Build> clazz, HttpInputMessage inputMessage) throws IOException {
-		XmlResponse xmlResponse = new XmlResponse(inputMessage.getBody());
-		Build build = new Build();
-		build.setNumber(xmlResponse.evaluateAsLong("//number"));
+   @Override
+   public Build read(Class<? extends Build> clazz, HttpInputMessage inputMessage) throws IOException {
+      XmlResponse xml = new XmlResponse(inputMessage.getBody());
+      Build build = new Build();
+      build.setNumber(xml.evaluateAsLong("/*/number"));
+      build.setUrl(xml.evaluateAsString("/*/url"));
+      build.setDuration(xml.evaluateAsLong("/*/duration"));
 
-		Boolean building = xmlResponse.evaluateAsBoolean("//building");
-		if (building) {
-			build.setStatus(Build.Status.PENDING);
-		} else {
-			build.setStatus(Build.Status.valueOf(xmlResponse.evaluateAsString("//result")));
-		}
+      Boolean building = xml.evaluateAsBoolean("/*/building");
+      if (building) {
+         build.setStatus(Build.Status.PENDING);
+      } else {
+         build.setStatus(Build.Status.valueOf(xml.evaluateAsString("/*/result")));
+      }
 
-		return build;
-	}
+      return build;
+   }
 
-	@Override
-	public void write(Build t, String contentType, HttpOutputMessage outputMessage) throws IOException {
-		throw new UnsupportedOperationException();
-	}
+   @Override
+   public void write(Build t, String contentType, HttpOutputMessage outputMessage) throws IOException {
+      throw new UnsupportedOperationException();
+   }
 
 }

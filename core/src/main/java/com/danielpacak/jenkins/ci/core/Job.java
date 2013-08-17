@@ -28,76 +28,76 @@ import java.io.Serializable;
  */
 public class Job implements Serializable {
 
-	private static final long serialVersionUID = 6280410389222694298L;
+   private static final long serialVersionUID = 6280410389222694298L;
 
-	private String name;
+   private String name;
 
-	private String displayName;
+   private String displayName;
 
-	private String url;
+   private String url;
 
-	private Boolean buildable;
+   private Boolean buildable;
 
-	private Boolean inQueue;
+   private Boolean inQueue;
 
-	private Long nextBuildNumber;
+   private Long nextBuildNumber;
 
-	public String getName() {
-		return name;
-	}
+   public String getName() {
+      return name;
+   }
 
-	/**
-	 * @param name
-	 * @return this job
-	 */
-	public Job setName(String name) {
-		this.name = name;
-		return this;
-	}
+   /**
+    * @param name
+    * @return this job
+    */
+   public Job setName(String name) {
+      this.name = name;
+      return this;
+   }
 
-	public String getDisplayName() {
-		return displayName;
-	}
+   public String getDisplayName() {
+      return displayName;
+   }
 
-	public Job setDisplayName(String displayName) {
-		this.displayName = displayName;
-		return this;
-	}
+   public Job setDisplayName(String displayName) {
+      this.displayName = displayName;
+      return this;
+   }
 
-	public String getUrl() {
-		return url;
-	}
+   public String getUrl() {
+      return url;
+   }
 
-	public Job setUrl(String url) {
-		this.url = url;
-		return this;
-	}
+   public Job setUrl(String url) {
+      this.url = url;
+      return this;
+   }
 
-	public Boolean getBuildable() {
-		return buildable;
-	}
+   public Boolean getBuildable() {
+      return buildable;
+   }
 
-	public Job setBuildable(Boolean buildable) {
-		this.buildable = buildable;
-		return this;
-	}
+   public Job setBuildable(Boolean buildable) {
+      this.buildable = buildable;
+      return this;
+   }
 
-	public Boolean getInQueue() {
-		return inQueue;
-	}
+   public Boolean getInQueue() {
+      return inQueue;
+   }
 
-	public Job setInQueue(Boolean inQueue) {
-		this.inQueue = inQueue;
-		return this;
-	}
+   public Job setInQueue(Boolean inQueue) {
+      this.inQueue = inQueue;
+      return this;
+   }
 
-	public Long getNextBuildNumber() {
-		return nextBuildNumber;
-	}
+   public Long getNextBuildNumber() {
+      return nextBuildNumber;
+   }
 
-	public Job setNextBuildNumber(Long nextBuildNumber) {
-		this.nextBuildNumber = nextBuildNumber;
-		return this;
-	}
+   public Job setNextBuildNumber(Long nextBuildNumber) {
+      this.nextBuildNumber = nextBuildNumber;
+      return this;
+   }
 
 }

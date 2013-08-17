@@ -26,11 +26,11 @@ package com.danielpacak.jenkins.ci.core.http;
  */
 public interface HttpMessage {
 
-	/**
-	 * Get headers of this message.
-	 * 
-	 * @return headers
-	 */
-	HttpHeaders getHeaders();
+   /**
+    * Get headers of this message.
+    * 
+    * @return headers
+    */
+   HttpHeaders getHeaders();
 
 }

@@ -34,57 +34,57 @@ import com.danielpacak.jenkins.ci.core.util.Streams;
 
 public class SimpleClientHttpRequest implements ClientHttpRequest {
 
-	private HttpHeaders headers = new HttpHeaders();
+   private HttpHeaders headers = new HttpHeaders();
 
-	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+   private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-	private final HttpURLConnection connection;
+   private final HttpURLConnection connection;
 
-	public SimpleClientHttpRequest(HttpURLConnection connection) {
-		this.connection = connection;
-	}
+   public SimpleClientHttpRequest(HttpURLConnection connection) {
+      this.connection = connection;
+   }
 
-	@Override
-	public HttpMethod getMethod() {
-		return HttpMethod.valueOf(this.connection.getRequestMethod());
-	}
+   @Override
+   public HttpMethod getMethod() {
+      return HttpMethod.valueOf(this.connection.getRequestMethod());
+   }
 
-	@Override
-	public URI getURI() {
-		try {
-			return this.connection.getURL().toURI();
-		} catch (URISyntaxException e) {
-			throw new IllegalStateException("Could not get HttpURLConnection URI: " + e.getMessage(), e);
-		}
-	}
+   @Override
+   public URI getURI() {
+      try {
+         return this.connection.getURL().toURI();
+      } catch (URISyntaxException e) {
+         throw new IllegalStateException("Could not get HttpURLConnection URI: " + e.getMessage(), e);
+      }
+   }
 
-	@Override
-	public ClientHttpResponse execute() throws IOException {
-		for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-			String headerName = entry.getKey();
-			for (String headerValue : entry.getValue()) {
-				this.connection.addRequestProperty(headerName, headerValue);
-			}
-		}
-		if (this.connection.getDoOutput()) {
-			this.connection.setFixedLengthStreamingMode(outputStream.size());
-		}
-		this.connection.connect();
-		if (this.connection.getDoOutput()) {
-			Streams.copy(outputStream.toByteArray(), connection.getOutputStream());
-		}
+   @Override
+   public ClientHttpResponse execute() throws IOException {
+      for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+         String headerName = entry.getKey();
+         for (String headerValue : entry.getValue()) {
+            this.connection.addRequestProperty(headerName, headerValue);
+         }
+      }
+      if (this.connection.getDoOutput()) {
+         this.connection.setFixedLengthStreamingMode(outputStream.size());
+      }
+      this.connection.connect();
+      if (this.connection.getDoOutput()) {
+         Streams.copy(outputStream.toByteArray(), connection.getOutputStream());
+      }
 
-		return new SimpleClientHttpResponse(this.connection);
-	}
+      return new SimpleClientHttpResponse(this.connection);
+   }
 
-	@Override
-	public HttpHeaders getHeaders() {
-		return headers;
-	}
+   @Override
+   public HttpHeaders getHeaders() {
+      return headers;
+   }
 
-	@Override
-	public OutputStream getBody() throws IOException {
-		return outputStream;
-	}
+   @Override
+   public OutputStream getBody() throws IOException {
+      return outputStream;
+   }
 
 }

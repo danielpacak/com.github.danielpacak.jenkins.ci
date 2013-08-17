@@ -28,8 +28,8 @@ import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
  */
 public interface ResponseErrorHandler {
 
-	boolean hasError(ClientHttpResponse response) throws IOException;
+   boolean hasError(ClientHttpResponse response) throws IOException;
 
-	void handleError(ClientHttpResponse response) throws IOException;
+   void handleError(ClientHttpResponse response) throws IOException;
 
 }

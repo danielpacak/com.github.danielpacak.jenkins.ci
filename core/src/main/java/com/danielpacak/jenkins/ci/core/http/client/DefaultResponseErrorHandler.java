@@ -30,38 +30,38 @@ import com.danielpacak.jenkins.ci.core.util.Streams;
 
 public class DefaultResponseErrorHandler implements ResponseErrorHandler {
 
-	@Override
-	public boolean hasError(ClientHttpResponse response) throws IOException {
-		HttpStatus statusCode = response.getStatusCode();
-		return statusCode.series() == HttpStatus.Series.CLIENT_ERROR
-				|| statusCode.series() == HttpStatus.Series.SERVER_ERROR;
-	}
+   @Override
+   public boolean hasError(ClientHttpResponse response) throws IOException {
+      HttpStatus statusCode = response.getStatusCode();
+      return statusCode.series() == HttpStatus.Series.CLIENT_ERROR
+            || statusCode.series() == HttpStatus.Series.SERVER_ERROR;
+   }
 
-	@Override
-	public void handleError(ClientHttpResponse response) throws IOException {
-		HttpStatus statusCode = response.getStatusCode();
-		switch (statusCode.series()) {
-		case CLIENT_ERROR:
-			throw new HttpClientErrorException(statusCode, response.getStatusText(), response.getHeaders(),
-					getResponseBody(response));
-		case SERVER_ERROR:
-			throw new HttpServerErrorException(statusCode, response.getStatusText(), response.getHeaders(),
-					getResponseBody(response));
-		default:
-			throw new JenkinsClientException("Unknown status code [" + statusCode + "]");
-		}
-	}
+   @Override
+   public void handleError(ClientHttpResponse response) throws IOException {
+      HttpStatus statusCode = response.getStatusCode();
+      switch (statusCode.series()) {
+      case CLIENT_ERROR:
+         throw new HttpClientErrorException(statusCode, response.getStatusText(), response.getHeaders(),
+               getResponseBody(response));
+      case SERVER_ERROR:
+         throw new HttpServerErrorException(statusCode, response.getStatusText(), response.getHeaders(),
+               getResponseBody(response));
+      default:
+         throw new JenkinsClientException("Unknown status code [" + statusCode + "]");
+      }
+   }
 
-	private byte[] getResponseBody(ClientHttpResponse response) {
-		try {
-			InputStream responseBody = response.getBody();
-			if (responseBody != null) {
-				return Streams.toByteArray(responseBody);
-			}
-		} catch (IOException ex) {
-			// ignore
-		}
-		return new byte[0];
-	}
+   private byte[] getResponseBody(ClientHttpResponse response) {
+      try {
+         InputStream responseBody = response.getBody();
+         if (responseBody != null) {
+            return Streams.toByteArray(responseBody);
+         }
+      } catch (IOException ex) {
+         // ignore
+      }
+      return new byte[0];
+   }
 
 }

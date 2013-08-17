@@ -28,8 +28,8 @@ import java.net.URI;
  */
 public interface HttpRequest extends HttpMessage {
 
-	HttpMethod getMethod();
+   HttpMethod getMethod();
 
-	URI getURI();
+   URI getURI();
 
 }

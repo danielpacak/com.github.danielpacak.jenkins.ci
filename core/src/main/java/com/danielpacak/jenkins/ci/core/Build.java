@@ -28,40 +28,65 @@ import java.io.Serializable;
  */
 public class Build implements Serializable {
 
-	private static final long serialVersionUID = 5391287361325427962L;
+   private static final long serialVersionUID = 5391287361325427962L;
 
-	private Long number;
+   private Long number;
 
-	private Status status;
+   private Status status;
 
-	public static enum Status {
-		SUCCESS, PENDING, FAILED
-	}
+   private Long duration;
 
-	public Long getNumber() {
-		return number;
-	}
+   private String url;
 
-	/**
-	 * @param number
-	 * @return this build
-	 */
-	public Build setNumber(Long number) {
-		this.number = number;
-		return this;
-	}
+   /**
+    * Enumeration of build states.
+    */
+   public static enum Status {
+      SUCCESS, PENDING, FAILED
+   }
 
-	public Status getStatus() {
-		return status;
-	}
+   public Long getNumber() {
+      return number;
+   }
 
-	/**
-	 * @param status
-	 * @return this build
-	 */
-	public Build setStatus(Status status) {
-		this.status = status;
-		return this;
-	}
+   /**
+    * @param number
+    * @return this build
+    */
+   public Build setNumber(Long number) {
+      this.number = number;
+      return this;
+   }
+
+   public Status getStatus() {
+      return status;
+   }
+
+   /**
+    * @param status
+    * @return this build
+    */
+   public Build setStatus(Status status) {
+      this.status = status;
+      return this;
+   }
+
+   public Long getDuration() {
+      return duration;
+   }
+
+   public Build setDuration(Long duration) {
+      this.duration = duration;
+      return this;
+   }
+
+   public String getUrl() {
+      return url;
+   }
+
+   public Build setUrl(String url) {
+      this.url = url;
+      return this;
+   }
 
 }

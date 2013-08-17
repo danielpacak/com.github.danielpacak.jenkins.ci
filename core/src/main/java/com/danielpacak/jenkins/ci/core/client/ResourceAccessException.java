@@ -26,27 +26,25 @@ import java.io.IOException;
  */
 public class ResourceAccessException extends JenkinsClientException {
 
-	private static final long serialVersionUID = 5220056020114484316L;
+   private static final long serialVersionUID = 5220056020114484316L;
 
-	/**
-	 * Construct a new {@code ResourceAccessException} exception with the given message.
-	 * 
-	 * @param message
-	 */
-	public ResourceAccessException(String message) {
-		super(message);
-	}
+   /**
+    * Construct a new {@code ResourceAccessException} exception with the given message.
+    * 
+    * @param message
+    */
+   public ResourceAccessException(String message) {
+      super(message);
+   }
 
-	/**
-	 * Construct a new {@code ResourceAccessException} with the given message and {@link IOException}.
-	 * 
-	 * @param message
-	 *            message
-	 * @param exception
-	 *            {@code IOException}
-	 */
-	public ResourceAccessException(String message, IOException exception) {
-		super(message, exception);
-	}
+   /**
+    * Construct a new {@code ResourceAccessException} with the given message and {@link IOException}.
+    * 
+    * @param message message
+    * @param exception {@code IOException}
+    */
+   public ResourceAccessException(String message, IOException exception) {
+      super(message, exception);
+   }
 
 }

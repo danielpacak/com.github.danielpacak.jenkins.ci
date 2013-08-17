@@ -34,35 +34,34 @@ import com.danielpacak.jenkins.ci.core.client.JenkinsClientException;
  */
 public class PluginService extends AbstractService {
 
-	/**
-	 * Create plugin service for the default client.
-	 * 
-	 * @since 1.0.0
-	 */
-	public PluginService() {
-		super();
-	}
+   /**
+    * Create plugin service for the default client.
+    * 
+    * @since 1.0.0
+    */
+   public PluginService() {
+      super();
+   }
 
-	/**
-	 * Create plugin service for the given client.
-	 * 
-	 * @param client
-	 * @since 1.0.0
-	 */
-	public PluginService(JenkinsClient client) {
-		super(client);
-	}
+   /**
+    * Create plugin service for the given client.
+    * 
+    * @param client
+    * @since 1.0.0
+    */
+   public PluginService(JenkinsClient client) {
+      super(client);
+   }
 
-	/**
-	 * Get all plugins.
-	 * 
-	 * @return list of plugins
-	 * @throws JenkinsClientException
-	 *             if an error occurred connecting to Jenkins
-	 * @since 1.0.0
-	 */
-	public List<Plugin> getPlugins() throws JenkinsClientException {
-		return Arrays.asList(client.getForObject("/pluginManager/api/xml?depth=1", Plugin[].class));
-	}
+   /**
+    * Get all plugins.
+    * 
+    * @return list of plugins
+    * @throws JenkinsClientException if an error occurred connecting to Jenkins
+    * @since 1.0.0
+    */
+   public List<Plugin> getPlugins() throws JenkinsClientException {
+      return Arrays.asList(client.getForObject("/pluginManager/api/xml?depth=1", Plugin[].class));
+   }
 
 }

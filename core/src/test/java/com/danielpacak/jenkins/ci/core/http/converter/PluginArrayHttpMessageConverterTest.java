@@ -34,30 +34,30 @@ import com.danielpacak.jenkins.ci.core.http.HttpInputMessage;
  */
 public class PluginArrayHttpMessageConverterTest {
 
-	private PluginArrayHttpMessageConverter converter;
+   private PluginArrayHttpMessageConverter converter;
 
-	@Before
-	public void beforeTest() {
-		this.converter = new PluginArrayHttpMessageConverter();
-	}
+   @Before
+   public void beforeTest() {
+      this.converter = new PluginArrayHttpMessageConverter();
+   }
 
-	@Test
-	public void canRead() throws Exception {
-		assertTrue(converter.canRead(Plugin[].class));
-		assertFalse(converter.canRead(Plugin.class));
-		assertFalse(converter.canRead(Object.class));
-	}
+   @Test
+   public void canRead() throws Exception {
+      assertTrue(converter.canRead(Plugin[].class));
+      assertFalse(converter.canRead(Plugin.class));
+      assertFalse(converter.canRead(Object.class));
+   }
 
-	@Test
-	public void canWrite() throws Exception {
-		assertFalse(converter.canWrite(Plugin[].class));
-		assertFalse(converter.canWrite(Plugin.class));
-		assertFalse(converter.canWrite(Object.class));
-	}
+   @Test
+   public void canWrite() throws Exception {
+      assertFalse(converter.canWrite(Plugin[].class));
+      assertFalse(converter.canWrite(Plugin.class));
+      assertFalse(converter.canWrite(Object.class));
+   }
 
-	@Test
-	public void read() throws Exception {
-		// @formatter:off
+   @Test
+   public void read() throws Exception {
+      // @formatter:off
 		HttpInputMessage inputMessage = new MockHttpInputMessage(""
 			+	"<localPluginManager>"
 			+		"<plugin>"
@@ -89,25 +89,25 @@ public class PluginArrayHttpMessageConverterTest {
 			+	"</localPluginManager>");
 		// @formatter:on
 
-		Plugin[] plugins = converter.read(Plugin[].class, inputMessage);
+      Plugin[] plugins = converter.read(Plugin[].class, inputMessage);
 
-		assertEquals(2, plugins.length);
-		assertTrue(plugins[0].getActive());
-		assertTrue(plugins[0].getBundled());
-		assertFalse(plugins[0].getDeleted());
-		assertFalse(plugins[0].getDowngradable());
-		assertTrue(plugins[0].getEnabled());
-		assertFalse(plugins[0].getHasUpdate());
-		assertEquals("Jenkins Mailer Plugin", plugins[0].getLongName());
-		assertFalse(plugins[0].getPinned());
-		assertEquals("mailer", plugins[0].getShortName());
-		assertEquals("http://wiki.jenkins-ci.org/display/JENKINS/Mailer", plugins[0].getUrl());
-		assertEquals("1.5", plugins[0].getVersion());
-	}
+      assertEquals(2, plugins.length);
+      assertTrue(plugins[0].getActive());
+      assertTrue(plugins[0].getBundled());
+      assertFalse(plugins[0].getDeleted());
+      assertFalse(plugins[0].getDowngradable());
+      assertTrue(plugins[0].getEnabled());
+      assertFalse(plugins[0].getHasUpdate());
+      assertEquals("Jenkins Mailer Plugin", plugins[0].getLongName());
+      assertFalse(plugins[0].getPinned());
+      assertEquals("mailer", plugins[0].getShortName());
+      assertEquals("http://wiki.jenkins-ci.org/display/JENKINS/Mailer", plugins[0].getUrl());
+      assertEquals("1.5", plugins[0].getVersion());
+   }
 
-	@Test(expected = UnsupportedOperationException.class)
-	public void write() throws Exception {
-		converter.write(new Plugin[] {}, null, null);
-	}
+   @Test(expected = UnsupportedOperationException.class)
+   public void write() throws Exception {
+      converter.write(new Plugin[] {}, null, null);
+   }
 
 }

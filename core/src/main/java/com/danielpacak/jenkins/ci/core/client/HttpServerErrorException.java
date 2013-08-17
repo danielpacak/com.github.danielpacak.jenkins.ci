@@ -27,61 +27,51 @@ import com.danielpacak.jenkins.ci.core.http.HttpStatus;
  */
 public class HttpServerErrorException extends HttpStatusCodeException {
 
-	private static final long serialVersionUID = -5720154957280473608L;
+   private static final long serialVersionUID = -5720154957280473608L;
 
-	/**
-	 * Construct a new instance of {@code HttpServerErrorException} based on an {@link HttpStatus}.
-	 * 
-	 * @param statusCode
-	 *            the status code
-	 */
-	public HttpServerErrorException(HttpStatus statusCode) {
-		super(statusCode);
-	}
+   /**
+    * Construct a new instance of {@code HttpServerErrorException} based on an {@link HttpStatus}.
+    * 
+    * @param statusCode the status code
+    */
+   public HttpServerErrorException(HttpStatus statusCode) {
+      super(statusCode);
+   }
 
-	/**
-	 * Construct a new instance of {@code HttpServerErrorException} based on an {@link HttpStatus} and status text.
-	 * 
-	 * @param statusCode
-	 *            the status code
-	 * @param statusText
-	 *            the status text
-	 */
-	public HttpServerErrorException(HttpStatus statusCode, String statusText) {
-		super(statusCode, statusText);
-	}
+   /**
+    * Construct a new instance of {@code HttpServerErrorException} based on an {@link HttpStatus} and status text.
+    * 
+    * @param statusCode the status code
+    * @param statusText the status text
+    */
+   public HttpServerErrorException(HttpStatus statusCode, String statusText) {
+      super(statusCode, statusText);
+   }
 
-	/**
-	 * Construct a new instance of {@code HttpServerErrorException} based on an {@link HttpStatus}, status text, and
-	 * response body content.
-	 * 
-	 * @param statusCode
-	 *            the status code
-	 * @param statusText
-	 *            the status text
-	 * @param responseBody
-	 *            the response body content, may be {@code null}
-	 */
-	public HttpServerErrorException(HttpStatus statusCode, String statusText, byte[] responseBody) {
-		super(statusCode, statusText, responseBody);
-	}
+   /**
+    * Construct a new instance of {@code HttpServerErrorException} based on an {@link HttpStatus}, status text, and
+    * response body content.
+    * 
+    * @param statusCode the status code
+    * @param statusText the status text
+    * @param responseBody the response body content, may be {@code null}
+    */
+   public HttpServerErrorException(HttpStatus statusCode, String statusText, byte[] responseBody) {
+      super(statusCode, statusText, responseBody);
+   }
 
-	/**
-	 * Construct a new instance of {@code HttpServerErrorException} based on a {@link HttpStatus}, status text, and
-	 * response body content.
-	 * 
-	 * @param statusCode
-	 *            the status code
-	 * @param statusText
-	 *            the status text
-	 * @param responseHeaders
-	 *            the response headers, may be {@code null}
-	 * @param responseBody
-	 *            the response body content, may be {@code null}
-	 */
-	public HttpServerErrorException(HttpStatus statusCode, String statusText, HttpHeaders responseHeaders,
-			byte[] responseBody) {
-		super(statusCode, statusText, responseHeaders, responseBody);
-	}
+   /**
+    * Construct a new instance of {@code HttpServerErrorException} based on a {@link HttpStatus}, status text, and
+    * response body content.
+    * 
+    * @param statusCode the status code
+    * @param statusText the status text
+    * @param responseHeaders the response headers, may be {@code null}
+    * @param responseBody the response body content, may be {@code null}
+    */
+   public HttpServerErrorException(HttpStatus statusCode, String statusText, HttpHeaders responseHeaders,
+         byte[] responseBody) {
+      super(statusCode, statusText, responseHeaders, responseBody);
+   }
 
 }

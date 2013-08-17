@@ -36,33 +36,32 @@ import com.danielpacak.jenkins.ci.core.util.Streams;
  */
 public class JobConfigurationHttpMessageConverterTest {
 
-	private JobConfigurationHttpMessageConverter converter;
+   private JobConfigurationHttpMessageConverter converter;
 
-	@Before
-	public void beforeTest() {
-		converter = new JobConfigurationHttpMessageConverter();
-	}
+   @Before
+   public void beforeTest() {
+      converter = new JobConfigurationHttpMessageConverter();
+   }
 
-	@Test
-	public void canRead() throws Exception {
-		assertTrue(converter.canRead(JobConfiguration.class));
-		assertFalse(converter.canRead(JobConfiguration[].class));
-		assertFalse(converter.canRead(Object.class));
-	}
+   @Test
+   public void canRead() throws Exception {
+      assertTrue(converter.canRead(JobConfiguration.class));
+      assertFalse(converter.canRead(JobConfiguration[].class));
+      assertFalse(converter.canRead(Object.class));
+   }
 
-	@Test
-	public void canWrite() throws Exception {
-		assertTrue(converter.canWrite(JobConfiguration.class));
-		assertTrue(converter.canWrite(ClassPathJobConfiguration.class));
-		assertFalse(converter.canWrite(Object.class));
-	}
+   @Test
+   public void canWrite() throws Exception {
+      assertTrue(converter.canWrite(JobConfiguration.class));
+      assertTrue(converter.canWrite(ClassPathJobConfiguration.class));
+      assertFalse(converter.canWrite(Object.class));
+   }
 
-	@Test
-	public void read() throws Exception {
-		HttpInputMessage inputMessage = new MockHttpInputMessage("<freeStyleProject></freeStyleProject>");
-		JobConfiguration jobConfiguration = converter.read(JobConfiguration.class, inputMessage);
-		Assert.assertEquals("<freeStyleProject></freeStyleProject>",
-				Streams.toString(jobConfiguration.getInputStream()));
-	}
+   @Test
+   public void read() throws Exception {
+      HttpInputMessage inputMessage = new MockHttpInputMessage("<freeStyleProject></freeStyleProject>");
+      JobConfiguration jobConfiguration = converter.read(JobConfiguration.class, inputMessage);
+      Assert.assertEquals("<freeStyleProject></freeStyleProject>", Streams.toString(jobConfiguration.getInputStream()));
+   }
 
 }

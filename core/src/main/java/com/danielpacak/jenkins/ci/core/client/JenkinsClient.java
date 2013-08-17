@@ -51,282 +51,284 @@ import com.danielpacak.jenkins.ci.core.http.converter.PluginArrayHttpMessageConv
  */
 public class JenkinsClient {
 
-	private static final String DEFAULT_URL_SCHEME = "http";
+   private static final String DEFAULT_URL_SCHEME = "http";
 
-	public static final String DEFAULT_URL_HOST = "localhost";
+   public static final String DEFAULT_URL_HOST = "localhost";
 
-	public static final int DEFAULT_URL_PORT = 8080;
+   public static final int DEFAULT_URL_PORT = 8080;
 
-	public static final String SEGMENT_JOB = "/job";
+   public static final String SEGMENT_JOB = "/job";
 
-	public static final String SEGMENT_CREATE_ITEM = "/createItem";
+   public static final String SEGMENT_CREATE_ITEM = "/createItem";
 
-	public static final String SEGMENT_DO_DELETE = "/doDelete";
+   public static final String SEGMENT_DO_DELETE = "/doDelete";
 
-	public static final String SEGMENT_API_XML = "/api/xml";
+   public static final String SEGMENT_API_XML = "/api/xml";
 
-	public static final String DEFAULT_USER_AGENT = "JenkinsJavaAPI";
+   public static final String SEGMENT_CONFIG_XML = "/config.xml";
 
-	private ClientHttpRequestFactory clientHttpRequestFactory;
+   public static final String DEFAULT_USER_AGENT = "JenkinsJavaAPI";
 
-	private ResponseErrorHandler responseErrorHandler;
+   private ClientHttpRequestFactory clientHttpRequestFactory;
 
-	private List<HttpMessageConverter<?>> messageConverters;
+   private ResponseErrorHandler responseErrorHandler;
 
-	private String baseUri;
+   private List<HttpMessageConverter<?>> messageConverters;
 
-	public JenkinsClient() {
-		this(DEFAULT_URL_HOST, DEFAULT_URL_PORT);
-	}
+   private String baseUri;
 
-	public JenkinsClient(String host, Integer port) {
-		this(DEFAULT_URL_SCHEME, host, port, null);
-	}
+   public JenkinsClient() {
+      this(DEFAULT_URL_HOST, DEFAULT_URL_PORT);
+   }
 
-	/**
-	 * Create client for scheme, host, port, and prefix. {scheme}://{host}:{port}/{prefix} http://localhost:8080/jenkins
-	 * 
-	 * @param hostname
-	 * @param port
-	 * @param scheme
-	 */
-	public JenkinsClient(String scheme, String host, Integer port, String prefix) {
-		checkArgumentNotNull(scheme, "Scheme cannot be null");
-		checkArgumentNotNull(host, "Host cannot be null");
-		checkArgumentNotNull(port, "Port cannot be null");
-		// @formatter:off
-		StringBuilder uri = new StringBuilder()
-			.append(scheme)
-			.append("://")
-			.append(host)
-			.append(':')
-			.append(port);
-		// @formatter:on
-		this.baseUri = prefix != null ? uri.append(prefix).toString() : uri.toString();
+   public JenkinsClient(String host, Integer port) {
+      this(DEFAULT_URL_SCHEME, host, port, null);
+   }
 
-		this.clientHttpRequestFactory = new SimpleClientHttpRequestFactory();
-		this.responseErrorHandler = new DefaultResponseErrorHandler();
+   /**
+    * Create client for scheme, host, port, and prefix. {scheme}://{host}:{port}/{prefix} http://localhost:8080/jenkins
+    * 
+    * @param hostname
+    * @param port
+    * @param scheme
+    */
+   public JenkinsClient(String scheme, String host, Integer port, String prefix) {
+      checkArgumentNotNull(scheme, "Scheme cannot be null");
+      checkArgumentNotNull(host, "Host cannot be null");
+      checkArgumentNotNull(port, "Port cannot be null");
+      // @formatter:off
+      StringBuilder uri = new StringBuilder()
+         .append(scheme)
+         .append("://")
+         .append(host)
+         .append(':')
+         .append(port);
+      // @formatter:on
+      this.baseUri = prefix != null ? uri.append(prefix).toString() : uri.toString();
 
-		this.messageConverters = new LinkedList<HttpMessageConverter<?>>();
-		this.messageConverters.add(new JobHttpMessageConverter());
-		this.messageConverters.add(new JobArrayHttpMessageConverter());
-		this.messageConverters.add(new JobConfigurationHttpMessageConverter());
-		this.messageConverters.add(new JenkinsHttpMessageConverter());
-		this.messageConverters.add(new PluginArrayHttpMessageConverter());
-		this.messageConverters.add(new BuildHttpMessageConverter());
+      this.clientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+      this.responseErrorHandler = new DefaultResponseErrorHandler();
 
-		this.clientHttpRequestFactory.setUserAgent(DEFAULT_USER_AGENT);
-	}
+      this.messageConverters = new LinkedList<HttpMessageConverter<?>>();
+      this.messageConverters.add(new JobHttpMessageConverter());
+      this.messageConverters.add(new JobArrayHttpMessageConverter());
+      this.messageConverters.add(new JobConfigurationHttpMessageConverter());
+      this.messageConverters.add(new JenkinsHttpMessageConverter());
+      this.messageConverters.add(new PluginArrayHttpMessageConverter());
+      this.messageConverters.add(new BuildHttpMessageConverter());
 
-	public <T> T getForObject(String uri, Class<T> requestType) throws JenkinsClientException {
-		ResponseExtractor<T> extractor = new HttpMessageConverterResponseExtractor<T>(requestType, messageConverters);
-		return execute(newURI(baseUri + uri), HttpMethod.GET, null, extractor);
-	}
+      this.clientHttpRequestFactory.setUserAgent(DEFAULT_USER_AGENT);
+   }
 
-	public void post(String uri) throws JenkinsClientException {
-		HttpHeadersResponseExtractor responseExtractor = new HttpHeadersResponseExtractor();
-		execute(newURI(baseUri + uri), HttpMethod.POST, null, responseExtractor);
-	}
+   public <T> T getForObject(String uri, Class<T> requestType) throws JenkinsClientException {
+      ResponseExtractor<T> extractor = new HttpMessageConverterResponseExtractor<T>(requestType, messageConverters);
+      return execute(newURI(baseUri + uri), HttpMethod.GET, null, extractor);
+   }
 
-	public void post(String uri, Object request) throws JenkinsClientException {
-		RequestCallback requestCallback = new HttpMessageCoverterRequestCallback(request, messageConverters);
-		HttpHeadersResponseExtractor responseExtractor = new HttpHeadersResponseExtractor();
-		execute(newURI(baseUri + uri), HttpMethod.POST, requestCallback, responseExtractor);
-	}
+   public void post(String uri) throws JenkinsClientException {
+      HttpHeadersResponseExtractor responseExtractor = new HttpHeadersResponseExtractor();
+      execute(newURI(baseUri + uri), HttpMethod.POST, null, responseExtractor);
+   }
 
-	protected <T> T execute(URI url, HttpMethod method, RequestCallback requestCallback,
-			ResponseExtractor<T> responseExtractor) throws JenkinsClientException {
-		ClientHttpResponse response = null;
-		try {
-			ClientHttpRequest request = clientHttpRequestFactory.createRequest(url, method);
-			if (requestCallback != null) {
-				requestCallback.doWithRequest(request);
-			}
+   public void post(String uri, Object request) throws JenkinsClientException {
+      RequestCallback requestCallback = new HttpMessageCoverterRequestCallback(request, messageConverters);
+      HttpHeadersResponseExtractor responseExtractor = new HttpHeadersResponseExtractor();
+      execute(newURI(baseUri + uri), HttpMethod.POST, requestCallback, responseExtractor);
+   }
 
-			response = request.execute();
+   protected <T> T execute(URI url, HttpMethod method, RequestCallback requestCallback,
+         ResponseExtractor<T> responseExtractor) throws JenkinsClientException {
+      ClientHttpResponse response = null;
+      try {
+         ClientHttpRequest request = clientHttpRequestFactory.createRequest(url, method);
+         if (requestCallback != null) {
+            requestCallback.doWithRequest(request);
+         }
 
-			if (getResponseErrorHandler().hasError(response)) {
-				getResponseErrorHandler().handleError(response);
-			}
-			if (responseExtractor != null) {
-				return responseExtractor.extract(response);
-			} else {
-				return null;
-			}
-		} catch (IOException e) {
-			throw new ResourceAccessException("I/O error on " + method.name() + " request for \"" + url + "\": "
-					+ e.getMessage(), e);
-		} finally {
-			if (response != null) {
-				response.close();
-			}
-		}
-	}
+         response = request.execute();
 
-	/**
-	 * Set credentials for the basic access authentication.
-	 * <p>
-	 * The credentials are sent as the {@value HttpHeaders#HEADER_AUTHORIZATION} HTTP request header. The header is
-	 * constructed as follows:
-	 * <ul>
-	 * <li>User and password are combined into a string "user:password"</li>
-	 * <li>The resulting string is encoded using Base64</li>
-	 * <li>The authorization method and a space i.e. "Basic " is then put before the encoded string.</li>
-	 * </ul>
-	 * For example, if the user is 'dpacak' and the password is 'passw0rd' then the header is formed as follows:
-	 * 
-	 * <pre>
-	 * {@code Authentication: Basic ZHBhY2FrOnBhc3N3MHJk}
-	 * </pre>
-	 * 
-	 * The basic access authentication mechanism provides <b>no confidentiality protection</b> for the transmitted
-	 * credentials. They are merely encoded with Base64 in transit, but not encrypted or hashed in any way. It is,
-	 * therefore, typically used over HTTPS.
-	 * 
-	 * @param user
-	 * @param password
-	 * @return this client
-	 * @throws IllegalArgumentException
-	 *             if user or password is {@code null}
-	 * @see <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">Basic access authentication</a>
-	 * @since 1.0.0
-	 */
-	public JenkinsClient setCredentials(String user, String password) {
-		checkArgumentNotNull(user, "User cannot be null");
-		checkArgumentNotNull(password, "Password cannot be null");
-		getClientHttpRequestFactory().setCredentials(user, password);
-		return this;
-	}
+         if (getResponseErrorHandler().hasError(response)) {
+            getResponseErrorHandler().handleError(response);
+         }
+         if (responseExtractor != null) {
+            return responseExtractor.extract(response);
+         } else {
+            return null;
+         }
+      } catch (IOException e) {
+         throw new ResourceAccessException("I/O error on " + method.name() + " request for \"" + url + "\": "
+               + e.getMessage(), e);
+      } finally {
+         if (response != null) {
+            response.close();
+         }
+      }
+   }
 
-	/**
-	 * Set the identifier of this client which is sent as the value of the {@link HttpHeaders#USER_AGENT} HTTP request
-	 * header. The default identifier is {@value #DEFAULT_USER_AGENT}.
-	 * 
-	 * @param userAgent
-	 *            identifier
-	 * @since 1.0.0
-	 */
-	public JenkinsClient setUserAgent(String userAgent) {
-		getClientHttpRequestFactory().setUserAgent(userAgent);
-		return this;
-	}
+   /**
+    * Set credentials for the basic access authentication.
+    * <p>
+    * The credentials are sent as the {@value HttpHeaders#HEADER_AUTHORIZATION} HTTP request header. The header is
+    * constructed as follows:
+    * <ul>
+    * <li>User and password are combined into a string "user:password"</li>
+    * <li>The resulting string is encoded using Base64</li>
+    * <li>The authorization method and a space i.e. "Basic " is then put before the encoded string.</li>
+    * </ul>
+    * For example, if the user is 'dpacak' and the password is 'passw0rd' then the header is formed as follows:
+    * 
+    * <pre>
+    * {@code Authentication: Basic ZHBhY2FrOnBhc3N3MHJk}
+    * </pre>
+    * 
+    * The basic access authentication mechanism provides <b>no confidentiality protection</b> for the transmitted
+    * credentials. They are merely encoded with Base64 in transit, but not encrypted or hashed in any way. It is,
+    * therefore, typically used over HTTPS.
+    * 
+    * @param user the user
+    * @param password the password
+    * @return this client
+    * @throws IllegalArgumentException if the user or password is {@code null}
+    * @see <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">Basic access authentication</a>
+    * @since 1.0.0
+    */
+   public JenkinsClient setCredentials(String user, String password) {
+      checkArgumentNotNull(user, "User cannot be null");
+      checkArgumentNotNull(password, "Password cannot be null");
+      getClientHttpRequestFactory().setCredentials(user, password);
+      return this;
+   }
 
-	public ClientHttpRequestFactory getClientHttpRequestFactory() {
-		return clientHttpRequestFactory;
-	}
+   /**
+    * Set the identifier of this client which is sent as the value of the {@link HttpHeaders#USER_AGENT} HTTP request
+    * header. The default identifier is {@value #DEFAULT_USER_AGENT}.
+    * 
+    * @param userAgent the identifier
+    * @return this client
+    * @throws IllegalArgumentException if the identifier is {@code null}
+    * @since 1.0.0
+    */
+   public JenkinsClient setUserAgent(String identifier) {
+      checkArgumentNotNull(identifier, "Identifier cannot be null");
+      getClientHttpRequestFactory().setUserAgent(identifier);
+      return this;
+   }
 
-	public void setClientHttpRequestFactory(ClientHttpRequestFactory clientHttpRequestFactory) {
-		this.clientHttpRequestFactory = clientHttpRequestFactory;
-	}
+   public ClientHttpRequestFactory getClientHttpRequestFactory() {
+      return clientHttpRequestFactory;
+   }
 
-	/**
-	 * Get response error handler.
-	 * 
-	 * @return error handler
-	 */
-	public ResponseErrorHandler getResponseErrorHandler() {
-		return responseErrorHandler;
-	}
+   public void setClientHttpRequestFactory(ClientHttpRequestFactory clientHttpRequestFactory) {
+      this.clientHttpRequestFactory = clientHttpRequestFactory;
+   }
 
-	/**
-	 * Set the response error handler.
-	 * <p>
-	 * By default, {@code JenkinsClient} uses a {@link DefaultResponseErrorHandler}.
-	 * 
-	 * @param responseErrorHandler
-	 *            error handler
-	 */
-	public JenkinsClient setResponseErrorHandler(ResponseErrorHandler responseErrorHandler) {
-		this.responseErrorHandler = responseErrorHandler;
-		return this;
-	}
+   /**
+    * Get response error handler.
+    * 
+    * @return error handler
+    */
+   public ResponseErrorHandler getResponseErrorHandler() {
+      return responseErrorHandler;
+   }
 
-	private URI newURI(String uri) {
-		try {
-			return new URI(uri);
-		} catch (URISyntaxException e) {
-			throw new IllegalArgumentException("Invalid uri [" + uri + "]", e);
-		}
-	}
+   /**
+    * Set the response error handler.
+    * <p>
+    * By default, {@code JenkinsClient} uses a {@link DefaultResponseErrorHandler}.
+    * 
+    * @param responseErrorHandler error handler
+    */
+   public JenkinsClient setResponseErrorHandler(ResponseErrorHandler responseErrorHandler) {
+      this.responseErrorHandler = responseErrorHandler;
+      return this;
+   }
 
-	/**
-	 * Response extractor that extracts the response {@link HttpHeaders headers}.
-	 */
-	private class HttpHeadersResponseExtractor implements ResponseExtractor<HttpHeaders> {
-		@Override
-		public HttpHeaders extract(ClientHttpResponse response) throws IOException {
-			return response.getHeaders();
-		}
-	}
+   private URI newURI(String uri) {
+      try {
+         return new URI(uri);
+      } catch (URISyntaxException e) {
+         throw new IllegalArgumentException("Invalid uri [" + uri + "]", e);
+      }
+   }
 
-	/**
-	 * Response extractor that uses the given {@linkplain HttpMessageConverter entity converters} to convert the
-	 * response into a type {@code T}.
-	 */
-	private class HttpMessageConverterResponseExtractor<T> implements ResponseExtractor<T> {
+   /**
+    * Response extractor that extracts the response {@link HttpHeaders headers}.
+    */
+   private class HttpHeadersResponseExtractor implements ResponseExtractor<HttpHeaders> {
+      @Override
+      public HttpHeaders extract(ClientHttpResponse response) throws IOException {
+         return response.getHeaders();
+      }
+   }
 
-		private final Class<T> responseClass;
+   /**
+    * Response extractor that uses the given {@linkplain HttpMessageConverter entity converters} to convert the response
+    * into a type {@code T}.
+    */
+   private class HttpMessageConverterResponseExtractor<T> implements ResponseExtractor<T> {
 
-		private final List<HttpMessageConverter<?>> messageConverters;
+      private final Class<T> responseClass;
 
-		public HttpMessageConverterResponseExtractor(Class<T> responseClass,
-				List<HttpMessageConverter<?>> messageConverters) {
-			this.responseClass = responseClass;
-			this.messageConverters = messageConverters;
-		}
+      private final List<HttpMessageConverter<?>> messageConverters;
 
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		@Override
-		public T extract(ClientHttpResponse response) throws IOException {
-			if (!hasMessageBody(response)) {
-				return null;
-			}
+      public HttpMessageConverterResponseExtractor(Class<T> responseClass,
+            List<HttpMessageConverter<?>> messageConverters) {
+         this.responseClass = responseClass;
+         this.messageConverters = messageConverters;
+      }
 
-			for (HttpMessageConverter messageConverter : this.messageConverters) {
-				if (messageConverter.canRead(responseClass)) {
-					return (T) messageConverter.read(responseClass, response);
-				}
-			}
-			throw new JenkinsClientException(
-					"Could not read response: no suitable HttpMessageConverter found for response type ["
-							+ this.responseClass + "]");
-		}
+      @SuppressWarnings({ "rawtypes", "unchecked" })
+      @Override
+      public T extract(ClientHttpResponse response) throws IOException {
+         if (!hasMessageBody(response)) {
+            return null;
+         }
 
-		protected boolean hasMessageBody(ClientHttpResponse response) throws IOException {
-			HttpStatus responseStatus = response.getStatusCode();
-			if (responseStatus == HttpStatus.NO_CONTENT || responseStatus == HttpStatus.NOT_MODIFIED) {
-				return false;
-			}
-			long contentLength = response.getHeaders().getContentLength();
-			return contentLength != 0;
-		}
-	}
+         for (HttpMessageConverter messageConverter : this.messageConverters) {
+            if (messageConverter.canRead(responseClass)) {
+               return (T) messageConverter.read(responseClass, response);
+            }
+         }
+         throw new JenkinsClientException(
+               "Could not read response: no suitable HttpMessageConverter found for response type ["
+                     + this.responseClass + "]");
+      }
 
-	private class HttpMessageCoverterRequestCallback implements RequestCallback {
+      protected boolean hasMessageBody(ClientHttpResponse response) throws IOException {
+         HttpStatus responseStatus = response.getStatusCode();
+         if (responseStatus == HttpStatus.NO_CONTENT || responseStatus == HttpStatus.NOT_MODIFIED) {
+            return false;
+         }
+         long contentLength = response.getHeaders().getContentLength();
+         return contentLength != 0;
+      }
+   }
 
-		private final Object requestBody;
+   private class HttpMessageCoverterRequestCallback implements RequestCallback {
 
-		private List<HttpMessageConverter<?>> messageConverters;
+      private final Object requestBody;
 
-		public HttpMessageCoverterRequestCallback(Object requestBody, List<HttpMessageConverter<?>> messageConverters) {
-			this.requestBody = requestBody;
-			this.messageConverters = messageConverters;
-		}
+      private List<HttpMessageConverter<?>> messageConverters;
 
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		@Override
-		public void doWithRequest(ClientHttpRequest request) throws IOException {
-			for (HttpMessageConverter messageConverter : messageConverters) {
-				if (messageConverter.canWrite(requestBody.getClass())) {
-					messageConverter.write(requestBody, null, request);
-					return;
-				}
-			}
-			throw new JenkinsClientException(
-					"Could not write request: no suitable HttpMessageConverter found for request type ["
-							+ requestBody.getClass() + "]");
-		}
+      public HttpMessageCoverterRequestCallback(Object requestBody, List<HttpMessageConverter<?>> messageConverters) {
+         this.requestBody = requestBody;
+         this.messageConverters = messageConverters;
+      }
 
-	}
+      @SuppressWarnings({ "rawtypes", "unchecked" })
+      @Override
+      public void doWithRequest(ClientHttpRequest request) throws IOException {
+         for (HttpMessageConverter messageConverter : messageConverters) {
+            if (messageConverter.canWrite(requestBody.getClass())) {
+               messageConverter.write(requestBody, null, request);
+               return;
+            }
+         }
+         throw new JenkinsClientException(
+               "Could not write request: no suitable HttpMessageConverter found for request type ["
+                     + requestBody.getClass() + "]");
+      }
+
+   }
 
 }

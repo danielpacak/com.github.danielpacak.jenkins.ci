@@ -33,21 +33,21 @@ import com.danielpacak.jenkins.ci.core.service.JenkinsService;
  */
 public class JenkinsServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
 
-	private JenkinsService service;
+   private JenkinsService service;
 
-	@Before
-	public void beforeTest() {
-		service = new JenkinsService(getJenkinsClient());
-	}
+   @Before
+   public void beforeTest() {
+      service = new JenkinsService(getJenkinsClient());
+   }
 
-	@Test
-	public void getJenkins() throws Exception {
-		Jenkins jenkins = service.getJenkins();
-		assertEquals(Jenkins.MODE.NORMAL, jenkins.getMode());
-		assertEquals(new Integer(2), jenkins.getNumExecutors());
-		assertEquals("the master Jenkins node", jenkins.getNodeDescription());
-		//assertFalse(jenkins.getUseSecurity());
-		assertNull(jenkins.getNodeName());
-	}
+   @Test
+   public void getJenkins() throws Exception {
+      Jenkins jenkins = service.getJenkins();
+      assertEquals(Jenkins.MODE.NORMAL, jenkins.getMode());
+      assertEquals(new Integer(2), jenkins.getNumExecutors());
+      assertEquals("the master Jenkins node", jenkins.getNodeDescription());
+      // assertFalse(jenkins.getUseSecurity());
+      assertNull(jenkins.getNodeName());
+   }
 
 }

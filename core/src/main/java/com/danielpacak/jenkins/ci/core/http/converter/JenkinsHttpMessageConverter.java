@@ -28,32 +28,32 @@ import com.danielpacak.jenkins.ci.core.util.XmlResponse;
 
 public class JenkinsHttpMessageConverter implements HttpMessageConverter<Jenkins> {
 
-	@Override
-	public boolean canRead(Class<?> clazz) {
-		return Jenkins.class.equals(clazz);
-	}
+   @Override
+   public boolean canRead(Class<?> clazz) {
+      return Jenkins.class.equals(clazz);
+   }
 
-	@Override
-	public boolean canWrite(Class<?> clazz) {
-		return false;
-	}
+   @Override
+   public boolean canWrite(Class<?> clazz) {
+      return false;
+   }
 
-	@Override
-	public Jenkins read(Class<? extends Jenkins> clazz, HttpInputMessage inputMessage) throws IOException {
-		XmlResponse xmlResponse = new XmlResponse(inputMessage.getBody());
-		// @formatter:off
-		return new Jenkins()
-			.setMode(Jenkins.MODE.valueOf(xmlResponse.evaluateAsString("/*/mode")))
-			.setNodeDescription(xmlResponse.evaluateAsString("/*/nodeDescription"))
-			.setNodeName(xmlResponse.evaluateAsString("/*/nodeName"))
-			.setNumExecutors(xmlResponse.evaluateAsInteger("/*/numExecutors"))
-			.setUseSecurity(xmlResponse.evaluateAsBoolean("/*/useSecurity"));
-		// @formatter:on
-	}
+   @Override
+   public Jenkins read(Class<? extends Jenkins> clazz, HttpInputMessage inputMessage) throws IOException {
+      XmlResponse xml = new XmlResponse(inputMessage.getBody());
+      // @formatter:off
+      return new Jenkins()
+         .setMode(Jenkins.MODE.valueOf(xml.evaluateAsString("/*/mode")))
+         .setNodeDescription(xml.evaluateAsString("/*/nodeDescription"))
+         .setNodeName(xml.evaluateAsString("/*/nodeName"))
+         .setNumExecutors(xml.evaluateAsInteger("/*/numExecutors"))
+         .setUseSecurity(xml.evaluateAsBoolean("/*/useSecurity"));
+      // @formatter:on
+   }
 
-	@Override
-	public void write(Jenkins t, String contentType, HttpOutputMessage outputMessage) throws IOException {
-		throw new UnsupportedOperationException();
-	}
+   @Override
+   public void write(Jenkins t, String contentType, HttpOutputMessage outputMessage) throws IOException {
+      throw new UnsupportedOperationException();
+   }
 
 }

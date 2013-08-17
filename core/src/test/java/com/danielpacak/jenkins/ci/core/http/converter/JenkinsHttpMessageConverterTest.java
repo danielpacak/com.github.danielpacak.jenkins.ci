@@ -35,28 +35,28 @@ import com.danielpacak.jenkins.ci.core.http.HttpInputMessage;
  */
 public class JenkinsHttpMessageConverterTest {
 
-	private JenkinsHttpMessageConverter converter;
+   private JenkinsHttpMessageConverter converter;
 
-	@Before
-	public void beforeTest() {
-		converter = new JenkinsHttpMessageConverter();
-	}
+   @Before
+   public void beforeTest() {
+      converter = new JenkinsHttpMessageConverter();
+   }
 
-	@Test
-	public void canRead() throws Exception {
-		assertTrue(converter.canRead(Jenkins.class));
-		assertFalse(converter.canRead(String.class));
-	}
+   @Test
+   public void canRead() throws Exception {
+      assertTrue(converter.canRead(Jenkins.class));
+      assertFalse(converter.canRead(String.class));
+   }
 
-	@Test
-	public void canWrite() throws Exception {
-		assertFalse(converter.canWrite(Jenkins.class));
-		assertFalse(converter.canWrite(String.class));
-	}
+   @Test
+   public void canWrite() throws Exception {
+      assertFalse(converter.canWrite(Jenkins.class));
+      assertFalse(converter.canWrite(String.class));
+   }
 
-	@Test
-	public void read() throws Exception {
-		// @formatter:off
+   @Test
+   public void read() throws Exception {
+      // @formatter:off
 		HttpInputMessage inputMessage = new MockHttpInputMessage(""
 			+	"<hudson>"
 			+		"<mode>NORMAL</mode>"
@@ -68,18 +68,18 @@ public class JenkinsHttpMessageConverterTest {
 		);
 		// @formatter:on
 
-		Jenkins jenkins = converter.read(Jenkins.class, inputMessage);
+      Jenkins jenkins = converter.read(Jenkins.class, inputMessage);
 
-		assertEquals(Jenkins.MODE.NORMAL, jenkins.getMode());
-		assertEquals("Node description", jenkins.getNodeDescription());
-		assertNull(jenkins.getNodeName());
-		assertEquals(new Integer(2), jenkins.getNumExecutors());
-		assertFalse(jenkins.getUseSecurity());
-	}
+      assertEquals(Jenkins.MODE.NORMAL, jenkins.getMode());
+      assertEquals("Node description", jenkins.getNodeDescription());
+      assertNull(jenkins.getNodeName());
+      assertEquals(new Integer(2), jenkins.getNumExecutors());
+      assertFalse(jenkins.getUseSecurity());
+   }
 
-	@Test(expected = UnsupportedOperationException.class)
-	public void write() throws Exception {
-		converter.write(new Jenkins(), null, null);
-	}
+   @Test(expected = UnsupportedOperationException.class)
+   public void write() throws Exception {
+      converter.write(new Jenkins(), null, null);
+   }
 
 }

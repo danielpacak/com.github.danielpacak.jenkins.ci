@@ -28,64 +28,64 @@ import com.danielpacak.jenkins.ci.core.http.HttpStatus;
 
 public class SimpleClientHttpResponse implements ClientHttpResponse {
 
-	private HttpHeaders headers;
+   private HttpHeaders headers;
 
-	private final HttpURLConnection connection;
+   private final HttpURLConnection connection;
 
-	public SimpleClientHttpResponse(HttpURLConnection connection) {
-		this.connection = connection;
-	}
+   public SimpleClientHttpResponse(HttpURLConnection connection) {
+      this.connection = connection;
+   }
 
-	@Override
-	public HttpHeaders getHeaders() {
-		if (this.headers == null) {
-			this.headers = new HttpHeaders();
-			// Header field 0 is the status line for most HttpURLConnections, but not on GAE
-			String name = this.connection.getHeaderFieldKey(0);
-			if (hasLength(name)) {
-				this.headers.add(name, this.connection.getHeaderField(0));
-			}
-			int i = 1;
-			while (true) {
-				name = this.connection.getHeaderFieldKey(i);
-				if (!hasLength(name)) {
-					break;
-				}
-				this.headers.add(name, this.connection.getHeaderField(i));
-				i++;
-			}
-		}
-		return this.headers;
-	}
+   @Override
+   public HttpHeaders getHeaders() {
+      if (this.headers == null) {
+         this.headers = new HttpHeaders();
+         // Header field 0 is the status line for most HttpURLConnections, but not on GAE
+         String name = this.connection.getHeaderFieldKey(0);
+         if (hasLength(name)) {
+            this.headers.add(name, this.connection.getHeaderField(0));
+         }
+         int i = 1;
+         while (true) {
+            name = this.connection.getHeaderFieldKey(i);
+            if (!hasLength(name)) {
+               break;
+            }
+            this.headers.add(name, this.connection.getHeaderField(i));
+            i++;
+         }
+      }
+      return this.headers;
+   }
 
-	private boolean hasLength(String string) {
-		return string != null && !"".equals(string);
-	}
+   private boolean hasLength(String string) {
+      return string != null && !"".equals(string);
+   }
 
-	@Override
-	public int getRawStatusCode() throws IOException {
-		return this.connection.getResponseCode();
-	}
+   @Override
+   public int getRawStatusCode() throws IOException {
+      return this.connection.getResponseCode();
+   }
 
-	@Override
-	public HttpStatus getStatusCode() throws IOException {
-		return HttpStatus.valueOf(getRawStatusCode());
-	}
+   @Override
+   public HttpStatus getStatusCode() throws IOException {
+      return HttpStatus.valueOf(getRawStatusCode());
+   }
 
-	@Override
-	public String getStatusText() throws IOException {
-		return this.connection.getResponseMessage();
-	}
+   @Override
+   public String getStatusText() throws IOException {
+      return this.connection.getResponseMessage();
+   }
 
-	@Override
-	public InputStream getBody() throws IOException {
-		InputStream errorStream = this.connection.getErrorStream();
-		return (errorStream != null ? errorStream : this.connection.getInputStream());
-	}
+   @Override
+   public InputStream getBody() throws IOException {
+      InputStream errorStream = this.connection.getErrorStream();
+      return (errorStream != null ? errorStream : this.connection.getInputStream());
+   }
 
-	@Override
-	public void close() {
-		this.connection.disconnect();
-	}
+   @Override
+   public void close() {
+      this.connection.disconnect();
+   }
 
 }

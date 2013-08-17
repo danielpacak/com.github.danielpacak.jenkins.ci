@@ -29,6 +29,6 @@ import java.io.InputStream;
  */
 public interface JobConfiguration {
 
-	InputStream getInputStream() throws IOException;
+   InputStream getInputStream() throws IOException;
 
 }
