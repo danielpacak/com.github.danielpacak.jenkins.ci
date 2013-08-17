@@ -25,14 +25,20 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
+import com.danielpacak.jenkins.ci.core.http.HttpHeaders;
 import com.danielpacak.jenkins.ci.core.http.HttpMethod;
+import com.danielpacak.jenkins.ci.core.util.Base64;
 
 public class SimpleClientHttpRequestFactory implements ClientHttpRequestFactory {
+
+	private String credentials;
+	private String userAgent;
 
 	@Override
 	public ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) throws IOException {
 		HttpURLConnection connection = openConnection(uri.toURL());
 		prepareConnection(connection, httpMethod);
+
 		return new SimpleClientHttpRequest(connection);
 	}
 
@@ -49,11 +55,27 @@ public class SimpleClientHttpRequestFactory implements ClientHttpRequestFactory 
 		} else {
 			connection.setInstanceFollowRedirects(false);
 		}
-		if (HttpMethod.PUT == httpMethod || HttpMethod.POST == httpMethod || HttpMethod.PATCH == httpMethod) {
+		if (HttpMethod.PUT == httpMethod || HttpMethod.POST == httpMethod) {
 			connection.setDoOutput(true);
 		} else {
 			connection.setDoOutput(false);
 		}
+		if (credentials != null) {
+			connection.setRequestProperty(HttpHeaders.AUTHORIZATION, credentials);
+		}
+		if (userAgent != null) {
+			connection.setRequestProperty(HttpHeaders.USER_AGENT, userAgent);
+		}
+	}
+
+	@Override
+	public void setCredentials(String user, String password) {
+		this.credentials = "Basic " + Base64.encodeString(user + ':' + password);
+	}
+
+	@Override
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
 	}
 
 }

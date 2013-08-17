@@ -28,4 +28,8 @@ public interface ClientHttpRequestFactory {
 
 	ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) throws IOException;
 
+	void setCredentials(String user, String password);
+
+	void setUserAgent(String userAgent);
+
 }

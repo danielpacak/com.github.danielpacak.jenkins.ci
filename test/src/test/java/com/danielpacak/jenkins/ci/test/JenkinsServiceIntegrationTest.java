@@ -22,24 +22,31 @@ package com.danielpacak.jenkins.ci.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.danielpacak.jenkins.ci.core.Jenkins;
-import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
 import com.danielpacak.jenkins.ci.core.service.JenkinsService;
 
+/**
+ * Integration tests for {@link JenkinsService}.
+ */
 public class JenkinsServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
 
+	private JenkinsService service;
+
+	@Before
+	public void beforeTest() {
+		service = new JenkinsService(getJenkinsClient());
+	}
+
 	@Test
-	public void testGetJenkins() throws Exception {
-		JenkinsClient client = new JenkinsClient("localhost", 8080);
-		JenkinsService service = new JenkinsService(client);
+	public void getJenkins() throws Exception {
 		Jenkins jenkins = service.getJenkins();
 		assertEquals(Jenkins.MODE.NORMAL, jenkins.getMode());
 		assertEquals(new Integer(2), jenkins.getNumExecutors());
 		assertEquals("the master Jenkins node", jenkins.getNodeDescription());
-		Assert.assertFalse(jenkins.getUseSecurity());
+		//assertFalse(jenkins.getUseSecurity());
 		assertNull(jenkins.getNodeName());
 	}
 

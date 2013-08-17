@@ -19,20 +19,41 @@
  */
 package com.danielpacak.jenkins.ci.core.client;
 
-import com.danielpacak.jenkins.ci.core.http.HttpHeaders;
-import com.danielpacak.jenkins.ci.core.http.HttpStatus;
-
+/**
+ * Base class for exceptions thrown by {@link JenkinsClient} whenever it encounters client-server HTTP errors.
+ */
 public class JenkinsClientException extends RuntimeException {
 
 	private static final long serialVersionUID = 7198120052975691526L;
 
-	public JenkinsClientException(HttpStatus statusCode, String statusText, HttpHeaders headers) {
-		super(new StringBuilder().append(statusCode).append(" ").append(statusText).append(" ").append(headers)
-				.toString());
+	/**
+	 * Construct a new {@code JenkinsClientException} exception with the given message.
+	 * 
+	 * @param message
+	 */
+	public JenkinsClientException(String message) {
+		super(message);
 	}
 
+	/**
+	 * Construct a new {@code JenkinsClientException} exception with the given {@link Throwable}.
+	 * 
+	 * @param cause
+	 *            {@link Throwable}
+	 */
 	public JenkinsClientException(Throwable cause) {
 		super(cause);
+	}
+
+	/**
+	 * Construct a new {@code JenkinsClientException} exception with the given message and {@link Throwable}.
+	 * 
+	 * @param message
+	 * @param cause
+	 *            {@link Throwable}
+	 */
+	public JenkinsClientException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
 }

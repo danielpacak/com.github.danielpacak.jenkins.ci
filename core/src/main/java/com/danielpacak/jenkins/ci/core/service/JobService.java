@@ -34,7 +34,10 @@ import java.util.Map.Entry;
 import com.danielpacak.jenkins.ci.core.Build;
 import com.danielpacak.jenkins.ci.core.Job;
 import com.danielpacak.jenkins.ci.core.JobConfiguration;
+import com.danielpacak.jenkins.ci.core.client.HttpClientErrorException;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
+import com.danielpacak.jenkins.ci.core.client.JenkinsClientException;
+import com.danielpacak.jenkins.ci.core.http.HttpStatus;
 
 /**
  * Job service class.
@@ -56,7 +59,6 @@ public class JobService extends AbstractService {
 	 * Create job service for the given client.
 	 * 
 	 * @param client
-	 *            client
 	 * @since 1.0.0
 	 */
 	public JobService(JenkinsClient client) {
@@ -71,7 +73,7 @@ public class JobService extends AbstractService {
 	 *             if an error occurred connecting to Jenkins
 	 * @since 1.0.0
 	 */
-	public List<Job> getJobs() throws IOException {
+	public List<Job> getJobs() throws JenkinsClientException {
 		return Arrays.asList(client.getForObject(SEGMENT_API_XML + "?depth=2", Job[].class));
 	}
 
@@ -83,13 +85,13 @@ public class JobService extends AbstractService {
 	 * @param configuration
 	 *            the configuration of the job
 	 * @return the job that has been created
-	 * @throws IOException
+	 * @throws JenkinsClientException
 	 *             if an error occurred connecting to Jenkins
 	 * @throws IllegalArgumentException
 	 *             if job or the name of the job, or job configuration is {@code null}
 	 * @since 1.0.0
 	 **/
-	public Job createJob(Job job, JobConfiguration configuration) throws IOException {
+	public Job createJob(Job job, JobConfiguration configuration) throws JenkinsClientException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		checkArgumentNotNull(configuration, "JobConfiguration cannot be null");
@@ -102,11 +104,11 @@ public class JobService extends AbstractService {
 	 * 
 	 * @param job
 	 *            the job to be deleted
-	 * @throws IOException
+	 * @throws JenkinsClientException
 	 *             if an error occurred connecting to Jenkins
 	 * @since 1.0.0
 	 */
-	public void deleteJob(Job job) throws IOException {
+	public void deleteJob(Job job) throws JenkinsClientException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		client.post(SEGMENT_JOB + "/" + job.getName() + SEGMENT_DO_DELETE);
@@ -118,14 +120,21 @@ public class JobService extends AbstractService {
 	 * @param name
 	 *            the name of the job
 	 * @return job or {@code null} if a job with the given name does not exist
-	 * @throws IOException
+	 * @throws JenkinsClientException
 	 *             if an error occurred connecting to Jenkins
 	 * @throws IllegalArgumentException
 	 *             if name is {@code null}
 	 * @since 1.0.0
 	 */
-	public Job getJob(String name) throws IOException {
-		return client.getForObject(SEGMENT_JOB + "/" + name + SEGMENT_API_XML, Job.class);
+	public Job getJob(String name) throws JenkinsClientException {
+		try {
+			return client.getForObject(SEGMENT_JOB + "/" + name + SEGMENT_API_XML, Job.class);
+		} catch (HttpClientErrorException e) {
+			if (HttpStatus.NOT_FOUND == e.getStatusCode()) {
+				return null;
+			}
+			throw e;
+		}
 	}
 
 	/**
@@ -134,13 +143,13 @@ public class JobService extends AbstractService {
 	 * @param job
 	 *            job
 	 * @return job configuration or {@code null} if a job with the given name does not exist
-	 * @throws IOException
+	 * @throws JenkinsClientException
 	 *             if an error occurred connecting to Jenkins
 	 * @throws IllegalArgumentException
 	 *             if job or the name of the job is {@code null}
 	 * @since 1.0.0
 	 */
-	public JobConfiguration getJobConfiguration(Job job) throws IOException {
+	public JobConfiguration getJobConfiguration(Job job) throws JenkinsClientException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		return client.getForObject(SEGMENT_JOB + "/" + job.getName() + "/" + "config.xml", JobConfiguration.class);
@@ -152,13 +161,13 @@ public class JobService extends AbstractService {
 	 * @param job
 	 *            the job to be built
 	 * @return build number
-	 * @throws IOException
+	 * @throws JenkinsClientException
 	 *             if an error occurred connecting to Jenkins
 	 * @throws IllegalArgumentException
 	 *             if job or the name of the job is {@code null}
 	 * @since 1.0.0
 	 */
-	public Long triggerBuild(Job job) throws IOException {
+	public Long triggerBuild(Job job) throws JenkinsClientException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		client.post(SEGMENT_JOB + "/" + job.getName() + "/build");
@@ -173,11 +182,11 @@ public class JobService extends AbstractService {
 	 * @param parameters
 	 *            build parameters
 	 * @return build number
-	 * @throws IOException
+	 * @throws JenkinsClientException
 	 *             if an error occurred connecting to Jenkins
 	 * @since 1.0.0
 	 */
-	public Long triggerBuild(Job job, Map<String, String> parameters) throws IOException {
+	public Long triggerBuild(Job job, Map<String, String> parameters) throws JenkinsClientException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		checkArgumentNotNull(parameters, "Parameters cannot be null");
@@ -193,13 +202,13 @@ public class JobService extends AbstractService {
 	 * @param number
 	 *            build number
 	 * @return build or {@code null} if the build does not exist
-	 * @throws IOException
+	 * @throws JenkinsClientException
 	 *             if an error occurred connecting to Jenkins
 	 * @throws IllegalArgumentException
 	 *             if job or the name of the job, or build number is {@code null}
 	 * @since 1.0.0
 	 */
-	public Build getBuild(Job job, Long number) throws IOException {
+	public Build getBuild(Job job, Long number) throws JenkinsClientException {
 		checkArgumentNotNull(job, "Job cannot be null");
 		checkArgumentNotNull(job.getName(), "Job.name cannot be null");
 		checkArgumentNotNull(number, "Number cannot be null");
@@ -212,7 +221,7 @@ public class JobService extends AbstractService {
 		for (Entry<String, String> entry : parameters.entrySet()) {
 			queryParams.append("&").append(entry.getKey()).append("=").append(entry.getValue());
 		}
-		queryParams.deleteCharAt(0); // remove trailing &
+		queryParams.deleteCharAt(0);
 		return queryParams.toString();
 	}
 

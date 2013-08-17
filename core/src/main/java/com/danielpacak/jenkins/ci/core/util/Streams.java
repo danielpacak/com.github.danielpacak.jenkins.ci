@@ -21,6 +21,7 @@ package com.danielpacak.jenkins.ci.core.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -48,15 +49,20 @@ public final class Streams {
 	 * This method buffers the input internally, so there is no need to use {@link BufferedInputStream}.
 	 * 
 	 * @param input
-	 *            the {@link InputStream} to read fro
+	 *            the {@link InputStream} to read from
 	 * @return content string
 	 */
 	public static String toString(InputStream input) throws IOException {
-		Preconditions.checkArgumentNotNull(input, "Input cannot be null");
 		StringWriter output = new StringWriter();
 
 		copy(new InputStreamReader(input), output);
 		return output.toString();
+	}
+
+	public static byte[] toByteArray(InputStream input) throws IOException {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		copy(input, output);
+		return output.toByteArray();
 	}
 
 	public static int copy(Reader input, Writer output) throws IOException {

@@ -21,10 +21,10 @@ package com.danielpacak.jenkins.ci.test;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.danielpacak.jenkins.ci.core.Plugin;
-import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
 import com.danielpacak.jenkins.ci.core.service.PluginService;
 
 /**
@@ -32,10 +32,15 @@ import com.danielpacak.jenkins.ci.core.service.PluginService;
  */
 public class PluginServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
 
+	private PluginService service;
+
+	@Before
+	public void beforeTest() {
+		service = new PluginService(getJenkinsClient());
+	}
+
 	@Test
-	public void testGetPlugins() throws Exception {
-		JenkinsClient client = new JenkinsClient("localhost", 8080);
-		PluginService service = new PluginService(client);
+	public void getPlugins() throws Exception {
 		List<Plugin> plugins = service.getPlugins();
 		for (Plugin plugin : plugins) {
 			print(plugin);

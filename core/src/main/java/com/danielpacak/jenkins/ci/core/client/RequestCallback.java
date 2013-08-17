@@ -17,19 +17,18 @@
  * limitations under the License.
  * #L%
  */
-package com.danielpacak.jenkins.ci.core.http.client;
+package com.danielpacak.jenkins.ci.core.client;
 
 import java.io.IOException;
 
-import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
+import com.danielpacak.jenkins.ci.core.http.client.ClientHttpRequest;
 
 /**
- * Strategy interface used by {@link JenkinsClient} to determine whether a particular response has an error or not.
+ * Callback interface for code that operates on a {@link ClientHttpRequest}. Allows to manipulate the request headers,
+ * and write to the request body.
  */
-public interface ResponseErrorHandler {
+public interface RequestCallback {
 
-	boolean hasError(ClientHttpResponse response) throws IOException;
-
-	void handleError(ClientHttpResponse response) throws IOException;
+	void doWithRequest(ClientHttpRequest request) throws IOException;
 
 }

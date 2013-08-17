@@ -19,7 +19,11 @@
  */
 package com.danielpacak.jenkins.ci.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +35,6 @@ import com.danielpacak.jenkins.ci.core.Build;
 import com.danielpacak.jenkins.ci.core.ClassPathJobConfiguration;
 import com.danielpacak.jenkins.ci.core.Job;
 import com.danielpacak.jenkins.ci.core.JobConfiguration;
-import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
 import com.danielpacak.jenkins.ci.core.service.JobService;
 
 /**
@@ -45,12 +48,11 @@ public class JobServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
 
 	@Before
 	public void beforeTest() {
-		jobService = new JobService(new JenkinsClient().setCredentials("dpacak", "passw0rd"));
+		jobService = new JobService(getJenkinsClient());
 	}
 
 	@Test
-	public void testCreateSimpleProjectAndTriggerBuild() throws Exception {
-
+	public void createSimpleProjectAndTriggerBuild() throws Exception {
 		Job job = newJobWithRandomName();
 		JobConfiguration config = new ClassPathJobConfiguration("job/config/free-style.xml");
 
@@ -66,7 +68,7 @@ public class JobServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
 	}
 
 	@Test
-	public void testCreateParameterizedJobAndTriggerBuild() throws Exception {
+	public void createParameterizedJobAndTriggerBuild() throws Exception {
 		JobConfiguration jobConfiguration = new ClassPathJobConfiguration("job/config/free-style-parameterized.xml");
 
 		Job job = newJobWithRandomName();
@@ -85,14 +87,29 @@ public class JobServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
 
 		TimeUnit.SECONDS.sleep(WAIT_FOR_BUILD_COMPLETION_TIMEOUT);
 		Build build = jobService.getBuild(job, buildNumber);
-		Assert.assertEquals(Build.Status.SUCCESS, build.getStatus());
-		Assert.assertEquals(buildNumber, build.getNumber());
+		assertEquals(Build.Status.SUCCESS, build.getStatus());
+		assertEquals(buildNumber, build.getNumber());
 		jobService.deleteJob(job);
 	}
 
 	@Test
-	public void testGetJobs() throws Exception {
-		jobService.getJobs();
+	public void getJobs() throws Exception {
+		List<Job> jobs = jobService.getJobs();
+		assertTrue(jobs.isEmpty());
+
+		Job job = newJobWithRandomName();
+		JobConfiguration configuration = new ClassPathJobConfiguration("job/config/free-style.xml");
+		jobService.createJob(job, configuration);
+
+		jobs = jobService.getJobs();
+		assertEquals(1, jobs.size());
+
+		jobService.deleteJob(job);
+	}
+
+	@Test
+	public void getJob_WithNonExistingJob_ReturnsNull() throws Exception {
+		Assert.assertNull(jobService.getJob("non.existing.job"));
 	}
 
 }

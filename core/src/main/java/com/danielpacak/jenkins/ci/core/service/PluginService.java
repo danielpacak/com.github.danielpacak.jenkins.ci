@@ -19,12 +19,12 @@
  */
 package com.danielpacak.jenkins.ci.core.service;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import com.danielpacak.jenkins.ci.core.Plugin;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
+import com.danielpacak.jenkins.ci.core.client.JenkinsClientException;
 
 /**
  * Plugin service class.
@@ -36,6 +36,8 @@ public class PluginService extends AbstractService {
 
 	/**
 	 * Create plugin service for the default client.
+	 * 
+	 * @since 1.0.0
 	 */
 	public PluginService() {
 		super();
@@ -45,6 +47,7 @@ public class PluginService extends AbstractService {
 	 * Create plugin service for the given client.
 	 * 
 	 * @param client
+	 * @since 1.0.0
 	 */
 	public PluginService(JenkinsClient client) {
 		super(client);
@@ -54,10 +57,11 @@ public class PluginService extends AbstractService {
 	 * Get all plugins.
 	 * 
 	 * @return list of plugins
-	 * @throws IOException
+	 * @throws JenkinsClientException
+	 *             if an error occurred connecting to Jenkins
 	 * @since 1.0.0
 	 */
-	public List<Plugin> getPlugins() throws IOException {
+	public List<Plugin> getPlugins() throws JenkinsClientException {
 		return Arrays.asList(client.getForObject("/pluginManager/api/xml?depth=1", Plugin[].class));
 	}
 

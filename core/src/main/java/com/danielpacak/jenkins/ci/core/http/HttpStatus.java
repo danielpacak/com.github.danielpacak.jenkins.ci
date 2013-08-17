@@ -42,14 +42,29 @@ public enum HttpStatus {
 	ACCEPTED(202, "Accepted"),
 
 	/**
+	 * {@code 204 No Content}.
+	 */
+	NO_CONTENT(204, "No Content"),
+
+	/**
 	 * {@code 302 Found}.
 	 */
 	FOUND(302, "Found"),
 
 	/**
+	 * {@code 304 Not Modified}.
+	 */
+	NOT_MODIFIED(304, "Not Modified"),
+
+	/**
 	 * {@code 400 Bad Request}.
 	 */
 	BAD_REQUEST(400, "Bad Request"),
+
+	/**
+	 * {@code 403 Forbidden}.
+	 */
+	FORBIDDEN(403, "Forbidden"),
 
 	/**
 	 * {@code 404 Not Found}.

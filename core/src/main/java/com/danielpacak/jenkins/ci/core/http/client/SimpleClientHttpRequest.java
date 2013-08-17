@@ -35,6 +35,7 @@ import com.danielpacak.jenkins.ci.core.util.Streams;
 public class SimpleClientHttpRequest implements ClientHttpRequest {
 
 	private HttpHeaders headers = new HttpHeaders();
+
 	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 	private final HttpURLConnection connection;

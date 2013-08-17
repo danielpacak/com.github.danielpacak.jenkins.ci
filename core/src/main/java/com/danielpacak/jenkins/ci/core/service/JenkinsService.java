@@ -21,10 +21,9 @@ package com.danielpacak.jenkins.ci.core.service;
 
 import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.SEGMENT_API_XML;
 
-import java.io.IOException;
-
 import com.danielpacak.jenkins.ci.core.Jenkins;
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
+import com.danielpacak.jenkins.ci.core.client.JenkinsClientException;
 
 /**
  * Jenkins class service.
@@ -46,7 +45,6 @@ public class JenkinsService extends AbstractService {
 	 * Create job service for the given client.
 	 * 
 	 * @param client
-	 *            client
 	 * @since 1.0.0
 	 */
 	public JenkinsService(JenkinsClient client) {
@@ -55,10 +53,11 @@ public class JenkinsService extends AbstractService {
 
 	/**
 	 * @return
-	 * @throws IOException
+	 * @throws JenkinsClientException
+	 *             if an error occurred connecting to Jenkins
 	 * @since 1.0.0
 	 */
-	public Jenkins getJenkins() throws IOException {
+	public Jenkins getJenkins() throws JenkinsClientException {
 		return client.getForObject(SEGMENT_API_XML, Jenkins.class);
 	}
 

@@ -23,17 +23,30 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import com.danielpacak.jenkins.ci.core.Job;
+import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
 
 public abstract class AbstractJenkinsIntegrationTest {
 
+	private static String host = "localhost";
+
+	private static Integer port = 8080;
+
+	private static String user = "dpacak";
+
+	private static String password = "passw0rd";
+
 	@BeforeClass
 	public static void beforeClass() {
-		System.out.println("Starting Jenkins CI...");
+		System.out.printf("Starting Jenkins CI on %s:%s...%n", host, port);
 	}
 
 	@AfterClass
 	public static void afterClass() {
 		System.out.println("Stopping Jenkins CI...");
+	}
+
+	protected JenkinsClient getJenkinsClient() {
+		return new JenkinsClient(host, port).setCredentials(user, password);
 	}
 
 	/**
