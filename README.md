@@ -5,7 +5,7 @@ This project is a Java library for communicating with the [Jenkins REST API](htt
 
 * [Examples](#examples)
  * [Creating a job and launching a build](#creating-a-job-and-launching-a-build)
- * [Getting all jobs](#listing-all-jobs)
+ * [Getting all jobs](#getting-all-jobs)
  * [Getting a job with the given name](#getting-a-job-with-the-given-name)
  * [Getting the configuration of the given job](#getting-the-configuration-of-the-given-job)
  * [Deleting a job with the given name](#deleting-a-job-with-the-given-name)
@@ -64,9 +64,7 @@ Long buildNumber = jobService.triggerBuild(job, parameters);
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
-List<Job> jobs = jobService.getJobs();
-
-for (Job job : jobs) {
+for (Job job : jobService.getJobs()) {
 	System.out.printf("%s%n", job.getName());
 }
 ```
@@ -75,16 +73,15 @@ for (Job job : jobs) {
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
-Job vacuumMyRoom = jobService.getJob('vacuum.my.room');
+Job vacuumMyRoom = jobService.getJob("vacuum.my.room");
 ```
 
 ### Getting the configuration of the given job
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
-Job vacuumMyRoom = jobService.getJob('vacuum.my.room');
+Job vacuumMyRoom = jobService.getJob("vacuum.my.room");
 JobConfiguration vacuumMyRoomConfig = jobService.getJobConfiguration(vacuumMyRoom);
-
 System.out.println(Streams.toString(vacuumMyRoomConfig.getInputStream());
 ```
 
