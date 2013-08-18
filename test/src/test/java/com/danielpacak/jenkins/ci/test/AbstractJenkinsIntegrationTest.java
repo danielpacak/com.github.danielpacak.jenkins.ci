@@ -46,7 +46,7 @@ public abstract class AbstractJenkinsIntegrationTest {
    }
 
    protected JenkinsClient getJenkinsClient() {
-      return new JenkinsClient(host, port).setCredentials(user, password);
+      return new JenkinsClient("http", host, port, "/jenkins-war-1.523").setCredentials(user, password);
    }
 
    /**

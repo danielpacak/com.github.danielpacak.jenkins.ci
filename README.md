@@ -151,7 +151,7 @@ JenkinsClient client = new JenkinsClient("localhost", 8080);
 ScriptingService scriptingService = new ScriptingService(client);
 GroovyScript script = new StringGroovyScript("print 'Hello, Jenkins!'");
 GroovyResponse response = scriptingService.runScript(script);
-System.out.println(Streams.toString(response.getInputStream()); 
+System.out.println(Streams.toString(response.getInputStream())); 
 ```
 
 ## Packages
