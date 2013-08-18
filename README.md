@@ -34,18 +34,18 @@ The `job/config/free-style.xml` configuration template may look as follows.
 ```xml
 <?xml version='1.0' encoding='UTF-8'?>
 <project>
-	<keepDependencies>false</keepDependencies>
-	<properties />
-	<scm class="hudson.scm.NullSCM" />
-	<canRoam>false</canRoam>
-	<disabled>false</disabled>
-	<blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-	<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-	<triggers />
-	<concurrentBuild>false</concurrentBuild>
-	<builders />
-	<publishers />
-	<buildWrappers />
+   <keepDependencies>false</keepDependencies>
+   <properties />
+   <scm class="hudson.scm.NullSCM" />
+   <canRoam>false</canRoam>
+   <disabled>false</disabled>
+   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+   <triggers />
+   <concurrentBuild>false</concurrentBuild>
+   <builders />
+   <publishers />
+   <buildWrappers />
 </project>
 ```
 To launch a build call the `triggerBuild()` method of the `JobService` class.
@@ -56,7 +56,10 @@ If your project is [parameterized](https://wiki.jenkins-ci.org/display/JENKINS/P
 you would rather call the `triggerBuild()` method of the `JobService` class with an additional parameter
 which is a map of parameters/values.
 ```java
-Map<String, String> parameters = mapOf("FIRST_NAME", "Daniel", "LAST_NAME", "Pacak");
+Map<String, Object> parameters = mapOf(
+   "FIRST_NAME", "Daniel",
+   "LAST_NAME", "Pacak",
+   "IS_SMART", true);
 Long buildNumber = jobService.triggerBuild(job, parameters);
 ```
 
@@ -65,7 +68,7 @@ Long buildNumber = jobService.triggerBuild(job, parameters);
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
 for (Job job : jobService.getJobs()) {
-	System.out.printf("%s%n", job.getName());
+   System.out.printf("%s%n", job.getName());
 }
 ```
 

@@ -19,7 +19,8 @@
  */
 package com.danielpacak.jenkins.ci.core.service;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+
 import java.util.List;
 
 import com.danielpacak.jenkins.ci.core.Plugin;
@@ -60,8 +61,8 @@ public class PluginService extends AbstractService {
     * @throws JenkinsClientException if an error occurred connecting to Jenkins
     * @since 1.0.0
     */
-   public List<Plugin> getPlugins() throws JenkinsClientException {
-      return Arrays.asList(client.getForObject("/pluginManager/api/xml?depth=1", Plugin[].class));
+   public List<Plugin> getPlugins() {
+      return asList(client.getForObject("/pluginManager/api/xml?depth=1", Plugin[].class));
    }
 
 }

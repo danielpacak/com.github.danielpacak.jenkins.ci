@@ -80,11 +80,11 @@ public class JobServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
       String name = newRandomName();
       Job job = jobService.createJob(name, jobConfiguration);
 
-      Map<String, String> parameters = new HashMap<String, String>();
+      Map<String, Object> parameters = new HashMap<String, Object>();
       // Override default parameters values stored along with the job configuration.
       parameters.put("FIRST_NAME", "Mike");
       parameters.put("LAST_NAME", "Tyson");
-      parameters.put("IS_SMART", "true");
+      parameters.put("IS_SMART", true);
       parameters.put("SECRET_PASSWORD", "cypher");
 
       Long buildNumber = jobService.triggerBuild(job, parameters);

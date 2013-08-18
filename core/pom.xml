@@ -9,6 +9,10 @@
 	<artifactId>jenkins.ci.core</artifactId>
 	<packaging>bundle</packaging>
 
+	<properties>
+		<jettyVersion>8.1.12.v20130726</jettyVersion>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -23,6 +27,7 @@
 							com.danielpacak.jenkins.ci.core.service;version="${project.version}"
 						</Export-Package>
 						<Bundle-Vendor>Daniel Pacak</Bundle-Vendor>
+						<Bundle-DocURL>https://github.com/danielpacak/jenkins-ci-client</Bundle-DocURL>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -38,6 +43,18 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>${jettyVersion}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>${jettyVersion}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

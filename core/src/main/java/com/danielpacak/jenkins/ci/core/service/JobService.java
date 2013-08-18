@@ -27,6 +27,8 @@ import static com.danielpacak.jenkins.ci.core.client.JenkinsClient.SEGMENT_JOB;
 import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgumentNotNull;
 import static java.util.Arrays.asList;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -72,7 +74,7 @@ public class JobService extends AbstractService {
     * @throws JenkinsClientException if an error occurred connecting to Jenkins
     * @since 1.0.0
     */
-   public List<Job> getJobs() throws JenkinsClientException {
+   public List<Job> getJobs() {
       return asList(client.getForObject(SEGMENT_API_XML + "?depth=2", Job[].class));
    }
 
@@ -86,7 +88,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if the name of the job or job configuration is {@code null}
     * @since 1.0.0
     **/
-   public Job createJob(String name, JobConfiguration configuration) throws JenkinsClientException {
+   public Job createJob(String name, JobConfiguration configuration) {
       checkArgumentNotNull(name, "Name cannot be null");
       checkArgumentNotNull(configuration, "JobConfiguration cannot be null");
       client.post(SEGMENT_CREATE_ITEM + "?name=" + name, configuration);
@@ -103,7 +105,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if the name of the job or job configuration is {@code null}
     * @since 1.0.0
     */
-   public Job updateJob(String name, JobConfiguration configuration) throws JenkinsClientException {
+   public Job updateJob(String name, JobConfiguration configuration) {
       checkArgumentNotNull(name, "Name cannot be null");
       checkArgumentNotNull(configuration, "JobConfiguration cannot be null");
       client.post(SEGMENT_JOB + "/" + name + SEGMENT_CONFIG_XML, configuration);
@@ -120,7 +122,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if the job or the name of the job, or job configuration is {@code null}
     * @since 1.0.0
     */
-   public Job updateJob(Job job, JobConfiguration configuration) throws JenkinsClientException {
+   public Job updateJob(Job job, JobConfiguration configuration) {
       return updateJob(job.getName(), configuration);
    }
 
@@ -132,7 +134,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if the name of the job is {@code null}
     * @since 1.0.0
     */
-   public void deleteJob(String name) throws JenkinsClientException {
+   public void deleteJob(String name) {
       checkArgumentNotNull(name, "Name cannot be null");
       client.post(SEGMENT_JOB + "/" + name + SEGMENT_DO_DELETE);
    }
@@ -145,7 +147,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if the job or the name of the job is {@code null}
     * @since 1.0.0
     */
-   public void deleteJob(Job job) throws JenkinsClientException {
+   public void deleteJob(Job job) {
       checkArgumentNotNull(job, "Job cannot be null");
       deleteJob(job.getName());
    }
@@ -159,7 +161,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if name is {@code null}
     * @since 1.0.0
     */
-   public Job getJob(String name) throws JenkinsClientException {
+   public Job getJob(String name) {
       checkArgumentNotNull(name, "Name cannot be null");
       try {
          return client.getForObject(SEGMENT_JOB + "/" + name + SEGMENT_API_XML, Job.class);
@@ -180,7 +182,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if job or the name of the job is {@code null}
     * @since 1.0.0
     */
-   public JobConfiguration getJobConfiguration(Job job) throws JenkinsClientException {
+   public JobConfiguration getJobConfiguration(Job job) {
       checkArgumentNotNull(job, "Job cannot be null");
       return getJobConfiguration(job.getName());
    }
@@ -194,7 +196,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if the name of the job is {@code null}
     * @since 1.0.0
     */
-   public JobConfiguration getJobConfiguration(String name) throws JenkinsClientException {
+   public JobConfiguration getJobConfiguration(String name) {
       checkArgumentNotNull(name, "Name cannot be null");
       return client.getForObject(SEGMENT_JOB + "/" + name + SEGMENT_CONFIG_XML, JobConfiguration.class);
    }
@@ -208,7 +210,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if job or the name of the job is {@code null}
     * @since 1.0.0
     */
-   public Long triggerBuild(Job job) throws JenkinsClientException {
+   public Long triggerBuild(Job job) {
       checkArgumentNotNull(job, "Job cannot be null");
       checkArgumentNotNull(job.getName(), "Job.name cannot be null");
       client.post(SEGMENT_JOB + "/" + job.getName() + "/build");
@@ -216,19 +218,20 @@ public class JobService extends AbstractService {
    }
 
    /**
-    * Trigger a build of the given job with parameters.
+    * Trigger a build of the given job with the given parameters.
     * 
     * @param job the job to be built
-    * @param parameters build parameters
+    * @param parameters the build parameters
     * @return build number
     * @throws JenkinsClientException if an error occurred connecting to Jenkins
+    * @throws IllegalArgumentException if job or the name of the job, or parameters is {@code null}
     * @since 1.0.0
     */
-   public Long triggerBuild(Job job, Map<String, String> parameters) throws JenkinsClientException {
+   public Long triggerBuild(Job job, Map<String, Object> parameters) {
       checkArgumentNotNull(job, "Job cannot be null");
       checkArgumentNotNull(job.getName(), "Job.name cannot be null");
       checkArgumentNotNull(parameters, "Parameters cannot be null");
-      client.post(SEGMENT_JOB + "/" + job.getName() + "/buildWithParameters" + "?" + toQueryParams(parameters));
+      client.post(SEGMENT_JOB + "/" + job.getName() + "/buildWithParameters" + "?" + toQueryString(parameters));
       return job.getNextBuildNumber();
    }
 
@@ -242,7 +245,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if job or the name of the job, or build number is {@code null}
     * @since 1.0.0
     */
-   public Build getBuild(Job job, Long buildNumber) throws JenkinsClientException {
+   public Build getBuild(Job job, Long buildNumber) {
       checkArgumentNotNull(job, "Job cannot be null");
       return getBuild(job.getName(), buildNumber);
    }
@@ -257,7 +260,7 @@ public class JobService extends AbstractService {
     * @throws IllegalArgumentException if the name of the job or build number is {@code null}
     * @since 1.0.0
     */
-   public Build getBuild(String name, Long buildNumber) throws JenkinsClientException {
+   public Build getBuild(String name, Long buildNumber) {
       checkArgumentNotNull(name, "Name cannot be null");
       checkArgumentNotNull(buildNumber, "BuildNumber cannot be null");
       try {
@@ -270,14 +273,21 @@ public class JobService extends AbstractService {
       }
    }
 
-   // TODO Parameters need to be encoded properly!
-   private String toQueryParams(Map<String, String> parameters) {
+   private String toQueryString(Map<String, Object> parameters) {
       StringBuilder queryParams = new StringBuilder();
-      for (Entry<String, String> entry : parameters.entrySet()) {
-         queryParams.append("&").append(entry.getKey()).append("=").append(entry.getValue());
+      for (Entry<String, Object> entry : parameters.entrySet()) {
+         queryParams.append("&").append(entry.getKey()).append("=").append(encode(entry.getValue()));
       }
       queryParams.deleteCharAt(0);
       return queryParams.toString();
+   }
+
+   private String encode(Object value) {
+      try {
+         return URLEncoder.encode(String.valueOf(value), "UTF-8");
+      } catch (UnsupportedEncodingException e) {
+         throw new IllegalStateException(e);
+      }
    }
 
 }

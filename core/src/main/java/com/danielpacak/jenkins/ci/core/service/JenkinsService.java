@@ -56,7 +56,7 @@ public class JenkinsService extends AbstractService {
     * @throws JenkinsClientException if an error occurred connecting to Jenkins
     * @since 1.0.0
     */
-   public Jenkins getJenkins() throws JenkinsClientException {
+   public Jenkins getJenkins() {
       return client.getForObject(SEGMENT_API_XML, Jenkins.class);
    }
 

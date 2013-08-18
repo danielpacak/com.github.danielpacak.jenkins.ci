@@ -73,4 +73,8 @@ public class HttpHeaders extends HashMap<String, List<String>> {
       return new Long(-1);
    }
 
+   public void setContentLength(Integer length) {
+      add(CONTENT_LENGTH, String.valueOf(length));
+   }
+
 }

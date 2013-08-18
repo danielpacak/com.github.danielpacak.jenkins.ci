@@ -136,12 +136,12 @@ public class JobServiceTest {
 
    @Test(expected = IllegalArgumentException.class)
    public void triggerParameterizedBuild_withNullJob_throwsException() throws Exception {
-      service.triggerBuild(null, new HashMap<String, String>());
+      service.triggerBuild(null, new HashMap<String, Object>());
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void triggerParameterizedBuild_withNullJobName_throwsException() throws Exception {
-      service.triggerBuild(new Job(), new HashMap<String, String>());
+      service.triggerBuild(new Job(), new HashMap<String, Object>());
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -152,13 +152,16 @@ public class JobServiceTest {
    @Test
    public void triggerParameterizedBuild() throws Exception {
       Job job = new Job().setName("vacuum.my.room").setNextBuildNumber(new Long(69));
-      Map<String, String> parameters = new HashMap<String, String>();
+      Map<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("param1", "value1");
-      parameters.put("param2", "value2");
+      parameters.put("param2", "value 2");
+      parameters.put("param3", true);
+      parameters.put("param4", 69);
+      parameters.put("param5", "The string ü@foo-bar");
 
       Long buildNumber = service.triggerBuild(job, parameters);
 
-      verify(client).post("/job/vacuum.my.room/buildWithParameters?param1=value1&param2=value2");
+      verify(client).post("/job/vacuum.my.room/buildWithParameters?param1=value1&param2=value+2&param3=true&param4=69&param5=The+string+%C3%BC%40foo-bar");
       assertEquals(new Long(69), buildNumber);
    }
 

@@ -77,20 +77,35 @@ public class JenkinsClient {
 
    private String baseUri;
 
+   /**
+    * Create a new client for the default scheme {@value #DEFAULT_URL_SCHEME}, default host {@value #DEFAULT_URL_HOST},
+    * and the default port {@value #DEFAULT_URL_PORT}.
+    */
    public JenkinsClient() {
       this(DEFAULT_URL_HOST, DEFAULT_URL_PORT);
    }
 
+   /**
+    * Create a new client for the default scheme {@value #DEFAULT_URL_SCHEME} and the given host and port.
+    * 
+    * @param host the host
+    * @param port the port
+    * @throws IllegalArgumentException if the host or port is {@code null}
+    * @since 1.0.0
+    */
    public JenkinsClient(String host, Integer port) {
       this(DEFAULT_URL_SCHEME, host, port, null);
    }
 
    /**
-    * Create client for scheme, host, port, and prefix. {scheme}://{host}:{port}/{prefix} http://localhost:8080/jenkins
+    * Create a new client for the given scheme, host, port, and prefix.
     * 
-    * @param hostname
-    * @param port
-    * @param scheme
+    * @param scheme the scheme
+    * @param host the host
+    * @param port the port
+    * @param prefix the prefix
+    * @throws IllegalArgumentException if the scheme, host, or port is {@code null}
+    * @since 1.0.0
     */
    public JenkinsClient(String scheme, String host, Integer port, String prefix) {
       checkArgumentNotNull(scheme, "Scheme cannot be null");
@@ -120,17 +135,17 @@ public class JenkinsClient {
       this.clientHttpRequestFactory.setUserAgent(DEFAULT_USER_AGENT);
    }
 
-   public <T> T getForObject(String uri, Class<T> requestType) throws JenkinsClientException {
+   public <T> T getForObject(String uri, Class<T> requestType) {
       ResponseExtractor<T> extractor = new HttpMessageConverterResponseExtractor<T>(requestType, messageConverters);
       return execute(newURI(baseUri + uri), HttpMethod.GET, null, extractor);
    }
 
-   public void post(String uri) throws JenkinsClientException {
+   public void post(String uri) {
       HttpHeadersResponseExtractor responseExtractor = new HttpHeadersResponseExtractor();
       execute(newURI(baseUri + uri), HttpMethod.POST, null, responseExtractor);
    }
 
-   public void post(String uri, Object request) throws JenkinsClientException {
+   public void post(String uri, Object request) {
       RequestCallback requestCallback = new HttpMessageCoverterRequestCallback(request, messageConverters);
       HttpHeadersResponseExtractor responseExtractor = new HttpHeadersResponseExtractor();
       execute(newURI(baseUri + uri), HttpMethod.POST, requestCallback, responseExtractor);
