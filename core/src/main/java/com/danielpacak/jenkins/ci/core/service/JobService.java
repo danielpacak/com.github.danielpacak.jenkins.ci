@@ -49,7 +49,7 @@ import com.danielpacak.jenkins.ci.core.http.HttpStatus;
 public class JobService extends AbstractService {
 
    /**
-    * Create job service for the default client.
+    * Create a new job service for the {@link JenkinsClient#JenkinsClient() default} client.
     * 
     * @since 1.0.0
     */
@@ -58,9 +58,10 @@ public class JobService extends AbstractService {
    }
 
    /**
-    * Create job service for the given client.
+    * Create a new job service for the given client.
     * 
-    * @param client
+    * @param client the client
+    * @throws IllegalArgumentException if the client is {@code null}
     * @since 1.0.0
     */
    public JobService(JenkinsClient client) {
@@ -75,7 +76,7 @@ public class JobService extends AbstractService {
     * @since 1.0.0
     */
    public List<Job> getJobs() {
-      return asList(client.getForObject(SEGMENT_API_XML + "?depth=2", Job[].class));
+      return asList(client().getForObject(SEGMENT_API_XML + "?depth=2", Job[].class));
    }
 
    /**
@@ -91,7 +92,7 @@ public class JobService extends AbstractService {
    public Job createJob(String name, JobConfiguration configuration) {
       checkArgumentNotNull(name, "Name cannot be null");
       checkArgumentNotNull(configuration, "JobConfiguration cannot be null");
-      client.post(SEGMENT_CREATE_ITEM + "?name=" + name, configuration);
+      client().post(SEGMENT_CREATE_ITEM + "?name=" + name, configuration);
       return getJob(name);
    }
 
@@ -108,7 +109,7 @@ public class JobService extends AbstractService {
    public Job updateJob(String name, JobConfiguration configuration) {
       checkArgumentNotNull(name, "Name cannot be null");
       checkArgumentNotNull(configuration, "JobConfiguration cannot be null");
-      client.post(SEGMENT_JOB + "/" + name + SEGMENT_CONFIG_XML, configuration);
+      client().post(SEGMENT_JOB + "/" + name + SEGMENT_CONFIG_XML, configuration);
       return getJob(name);
    }
 
@@ -136,7 +137,7 @@ public class JobService extends AbstractService {
     */
    public void deleteJob(String name) {
       checkArgumentNotNull(name, "Name cannot be null");
-      client.post(SEGMENT_JOB + "/" + name + SEGMENT_DO_DELETE);
+      client().post(SEGMENT_JOB + "/" + name + SEGMENT_DO_DELETE);
    }
 
    /**
@@ -164,7 +165,7 @@ public class JobService extends AbstractService {
    public Job getJob(String name) {
       checkArgumentNotNull(name, "Name cannot be null");
       try {
-         return client.getForObject(SEGMENT_JOB + "/" + name + SEGMENT_API_XML, Job.class);
+         return client().getForObject(SEGMENT_JOB + "/" + name + SEGMENT_API_XML, Job.class);
       } catch (HttpClientErrorException e) {
          if (HttpStatus.NOT_FOUND == e.getStatusCode()) {
             return null;
@@ -198,7 +199,7 @@ public class JobService extends AbstractService {
     */
    public JobConfiguration getJobConfiguration(String name) {
       checkArgumentNotNull(name, "Name cannot be null");
-      return client.getForObject(SEGMENT_JOB + "/" + name + SEGMENT_CONFIG_XML, JobConfiguration.class);
+      return client().getForObject(SEGMENT_JOB + "/" + name + SEGMENT_CONFIG_XML, JobConfiguration.class);
    }
 
    /**
@@ -213,7 +214,7 @@ public class JobService extends AbstractService {
    public Long triggerBuild(Job job) {
       checkArgumentNotNull(job, "Job cannot be null");
       checkArgumentNotNull(job.getName(), "Job.name cannot be null");
-      client.post(SEGMENT_JOB + "/" + job.getName() + "/build");
+      client().post(SEGMENT_JOB + "/" + job.getName() + "/build");
       return job.getNextBuildNumber();
    }
 
@@ -231,7 +232,7 @@ public class JobService extends AbstractService {
       checkArgumentNotNull(job, "Job cannot be null");
       checkArgumentNotNull(job.getName(), "Job.name cannot be null");
       checkArgumentNotNull(parameters, "Parameters cannot be null");
-      client.post(SEGMENT_JOB + "/" + job.getName() + "/buildWithParameters" + "?" + toQueryString(parameters));
+      client().post(SEGMENT_JOB + "/" + job.getName() + "/buildWithParameters" + "?" + toQueryString(parameters));
       return job.getNextBuildNumber();
    }
 
@@ -264,7 +265,7 @@ public class JobService extends AbstractService {
       checkArgumentNotNull(name, "Name cannot be null");
       checkArgumentNotNull(buildNumber, "BuildNumber cannot be null");
       try {
-         return client.getForObject(SEGMENT_JOB + "/" + name + "/" + buildNumber + SEGMENT_API_XML, Build.class);
+         return client().getForObject(SEGMENT_JOB + "/" + name + "/" + buildNumber + SEGMENT_API_XML, Build.class);
       } catch (HttpClientErrorException e) {
          if (HttpStatus.NOT_FOUND == e.getStatusCode()) {
             return null;

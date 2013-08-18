@@ -36,7 +36,7 @@ import com.danielpacak.jenkins.ci.core.client.JenkinsClientException;
 public class PluginService extends AbstractService {
 
    /**
-    * Create plugin service for the default client.
+    * Create a new plugin service for the {@link JenkinsClient#JenkinsClient() default} client.
     * 
     * @since 1.0.0
     */
@@ -45,9 +45,10 @@ public class PluginService extends AbstractService {
    }
 
    /**
-    * Create plugin service for the given client.
+    * Create a new plugin service for the given client.
     * 
-    * @param client
+    * @param client the client
+    * @throws IllegalArgumentException if the client is {@code null}
     * @since 1.0.0
     */
    public PluginService(JenkinsClient client) {
@@ -62,7 +63,7 @@ public class PluginService extends AbstractService {
     * @since 1.0.0
     */
    public List<Plugin> getPlugins() {
-      return asList(client.getForObject("/pluginManager/api/xml?depth=1", Plugin[].class));
+      return asList(client().getForObject("/pluginManager/api/xml?depth=1", Plugin[].class));
    }
 
 }

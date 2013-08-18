@@ -19,8 +19,9 @@
  */
 package com.danielpacak.jenkins.ci.core.service;
 
+import static com.danielpacak.jenkins.ci.core.util.Preconditions.checkArgumentNotNull;
+
 import com.danielpacak.jenkins.ci.core.client.JenkinsClient;
-import com.danielpacak.jenkins.ci.core.util.Preconditions;
 
 /**
  * Base Jenkins API service.
@@ -29,22 +30,26 @@ import com.danielpacak.jenkins.ci.core.util.Preconditions;
  */
 public abstract class AbstractService {
 
-   protected final JenkinsClient client;
+   private final JenkinsClient client;
 
    /**
-    * Create service for the default client.
+    * Create a new service for the {@link JenkinsClient#JenkinsClient() default} client.
+    * 
+    * @since 1.0.0
     */
    public AbstractService() {
       this(new JenkinsClient());
    }
 
    /**
-    * Create service for the given client.
+    * Create a new service for the given client.
     * 
-    * @param client
+    * @param client the client
+    * @throws IllegalArgumentException if the client is {@code null}
+    * @since 1.0.0
     */
    public AbstractService(JenkinsClient client) {
-      this.client = Preconditions.checkArgumentNotNull(client, "Client cannot be null");
+      this.client = checkArgumentNotNull(client, "Client cannot be null");
    }
 
    /**
@@ -52,7 +57,7 @@ public abstract class AbstractService {
     * 
     * @return configured client
     */
-   public JenkinsClient getClient() {
+   protected JenkinsClient client() {
       return client;
    }
 

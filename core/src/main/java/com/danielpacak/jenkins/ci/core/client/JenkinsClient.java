@@ -37,6 +37,8 @@ import com.danielpacak.jenkins.ci.core.http.client.DefaultResponseErrorHandler;
 import com.danielpacak.jenkins.ci.core.http.client.ResponseErrorHandler;
 import com.danielpacak.jenkins.ci.core.http.client.SimpleClientHttpRequestFactory;
 import com.danielpacak.jenkins.ci.core.http.converter.BuildHttpMessageConverter;
+import com.danielpacak.jenkins.ci.core.http.converter.GroovyResponseHttpMessageConverter;
+import com.danielpacak.jenkins.ci.core.http.converter.GroovyScriptHttpMessageConverter;
 import com.danielpacak.jenkins.ci.core.http.converter.HttpMessageConverter;
 import com.danielpacak.jenkins.ci.core.http.converter.JenkinsHttpMessageConverter;
 import com.danielpacak.jenkins.ci.core.http.converter.JobArrayHttpMessageConverter;
@@ -66,6 +68,8 @@ public class JenkinsClient {
    public static final String SEGMENT_API_XML = "/api/xml";
 
    public static final String SEGMENT_CONFIG_XML = "/config.xml";
+
+   public static final String SEGMENT_SCRIPT_TEXT = "/scriptText";
 
    public static final String DEFAULT_USER_AGENT = "JenkinsJavaAPI";
 
@@ -131,13 +135,16 @@ public class JenkinsClient {
       this.messageConverters.add(new JenkinsHttpMessageConverter());
       this.messageConverters.add(new PluginArrayHttpMessageConverter());
       this.messageConverters.add(new BuildHttpMessageConverter());
+      this.messageConverters.add(new GroovyScriptHttpMessageConverter());
+      this.messageConverters.add(new GroovyResponseHttpMessageConverter());
 
       this.clientHttpRequestFactory.setUserAgent(DEFAULT_USER_AGENT);
    }
 
-   public <T> T getForObject(String uri, Class<T> requestType) {
-      ResponseExtractor<T> extractor = new HttpMessageConverterResponseExtractor<T>(requestType, messageConverters);
-      return execute(newURI(baseUri + uri), HttpMethod.GET, null, extractor);
+   public <T> T getForObject(String uri, Class<T> responseType) {
+      ResponseExtractor<T> responseExtractor = new HttpMessageConverterResponseExtractor<T>(responseType,
+            messageConverters);
+      return execute(newURI(baseUri + uri), HttpMethod.GET, null, responseExtractor);
    }
 
    public void post(String uri) {
@@ -149,6 +156,13 @@ public class JenkinsClient {
       RequestCallback requestCallback = new HttpMessageCoverterRequestCallback(request, messageConverters);
       HttpHeadersResponseExtractor responseExtractor = new HttpHeadersResponseExtractor();
       execute(newURI(baseUri + uri), HttpMethod.POST, requestCallback, responseExtractor);
+   }
+
+   public <T> T postForObject(String uri, Object request, Class<T> responseType) {
+      RequestCallback requestCallback = new HttpMessageCoverterRequestCallback(request, messageConverters);
+      ResponseExtractor<T> responseExtractor = new HttpMessageConverterResponseExtractor<T>(responseType,
+            messageConverters);
+      return execute(newURI(baseUri + uri), HttpMethod.POST, requestCallback, responseExtractor);
    }
 
    protected <T> T execute(URI url, HttpMethod method, RequestCallback requestCallback,

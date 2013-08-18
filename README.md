@@ -9,6 +9,7 @@ This project is a Java library for communicating with the [Jenkins REST API](htt
  * [Getting a job with the given name](#getting-a-job-with-the-given-name)
  * [Getting the configuration of the given job](#getting-the-configuration-of-the-given-job)
  * [Deleting a job with the given name](#deleting-a-job-with-the-given-name)
+ * [Executing the given Groovy script](#executing-the-given-groovy-script)
 * [Packages](#packages)
 * [Downloading](#downloading)
 
@@ -59,8 +60,57 @@ which is a map of parameters/values.
 Map<String, Object> parameters = mapOf(
    "FIRST_NAME", "Daniel",
    "LAST_NAME", "Pacak",
-   "IS_SMART", true);
+   "IS_SMART", true,
+   "SECRET_PASSWORD", "passw0rd");
 Long buildNumber = jobService.triggerBuild(job, parameters);
+```
+The configuration template for a parameterized project may look as follows.
+```xml
+<project>
+   <actions />
+   <description></description>
+   <keepDependencies>false</keepDependencies>
+   <properties>
+      <hudson.model.ParametersDefinitionProperty>
+         <parameterDefinitions>
+            <hudson.model.StringParameterDefinition>
+               <name>FIRST_NAME</name>
+               <description></description>
+               <defaultValue>Daniel</defaultValue>
+            </hudson.model.StringParameterDefinition>
+            <hudson.model.StringParameterDefinition>
+               <name>LAST_NAME</name>
+               <description></description>
+               <defaultValue>Pacak</defaultValue>
+            </hudson.model.StringParameterDefinition>
+            <hudson.model.BooleanParameterDefinition>
+               <name>IS_SMART</name>
+               <description></description>
+               <defaultValue>true</defaultValue>
+            </hudson.model.BooleanParameterDefinition>
+            <hudson.model.PasswordParameterDefinition>
+               <name>SECRET_PASSWORD</name>
+               <description></description>
+               <defaultValue>D+ug18M/zLBNdF+SEEOSMA==</defaultValue>
+            </hudson.model.PasswordParameterDefinition>
+         </parameterDefinitions>
+      </hudson.model.ParametersDefinitionProperty>
+   </properties>
+   <scm class="hudson.scm.NullSCM" />
+   <canRoam>true</canRoam>
+   <disabled>false</disabled>
+   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+   <triggers />
+   <concurrentBuild>false</concurrentBuild>
+   <builders>
+      <hudson.tasks.BatchFile>
+         <command>echo %FIRST_NAME% %LAST_NAME% %IS_SMART% %SECRET_PASSWORD% </command>
+      </hudson.tasks.BatchFile>
+   </builders>
+   <publishers />
+   <buildWrappers />
+</project>
 ```
 
 ### Getting all jobs
@@ -89,11 +139,19 @@ System.out.println(Streams.toString(vacuumMyRoomConfig.getInputStream());
 ```
 
 ### Deleting a job with the given name
-The following example deletes a job with the given name.
 ```java
 JenkinsClient client = new JenkinsClient("localhost", 8080);
 JobService jobService = new JobService(client);
 jobService.deleteJob("job.to.be.deleted");
+```
+
+### Executing the given Groovy script
+```java
+JenkinsClient client = new JenkinsClient("localhost", 8080);
+ScriptingService scriptingService = new ScriptingService(client);
+GroovyScript script = new StringGroovyScript("print 'Hello, Jenkins!'");
+GroovyResponse response = scriptingService.runScript(script);
+System.out.println(Streams.toString(response.getInputStream()); 
 ```
 
 ## Packages

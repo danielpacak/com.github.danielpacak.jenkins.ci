@@ -24,7 +24,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.danielpacak.jenkins.ci.core.ClassPathJobConfiguration;
 import com.danielpacak.jenkins.ci.core.JobConfiguration;
 import com.danielpacak.jenkins.ci.core.http.HttpInputMessage;
 import com.danielpacak.jenkins.ci.core.http.HttpOutputMessage;
@@ -39,8 +38,7 @@ public class JobConfigurationHttpMessageConverter implements HttpMessageConverte
 
    @Override
    public boolean canWrite(Class<?> clazz) {
-      // FIXME This is hacky!
-      return JobConfiguration.class.equals(clazz) || ClassPathJobConfiguration.class.equals(clazz);
+      return JobConfiguration.class.isAssignableFrom(clazz);
    }
 
    @Override

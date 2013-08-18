@@ -57,7 +57,7 @@ public class JenkinsService extends AbstractService {
     * @since 1.0.0
     */
    public Jenkins getJenkins() {
-      return client.getForObject(SEGMENT_API_XML, Jenkins.class);
+      return client().getForObject(SEGMENT_API_XML, Jenkins.class);
    }
 
 }

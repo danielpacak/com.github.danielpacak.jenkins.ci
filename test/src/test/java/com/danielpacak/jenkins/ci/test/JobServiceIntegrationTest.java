@@ -154,9 +154,11 @@ public class JobServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
       JobConfiguration configuration = new ClassPathJobConfiguration("job/config/free-style.xml");
       Job job = jobService.createJob(name, configuration);
 
-      thrown.expect(HttpClientErrorException.class);
-      jobService.createJob(name, configuration);
+      try {
+         jobService.createJob(name, configuration);
+      } catch (HttpClientErrorException expected) {
 
+      }
       jobService.deleteJob(job);
    }
 
