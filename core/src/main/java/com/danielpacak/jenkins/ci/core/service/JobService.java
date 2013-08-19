@@ -92,7 +92,7 @@ public class JobService extends AbstractService {
    public Job createJob(String name, JobConfiguration configuration) {
       checkArgumentNotNull(name, "Name cannot be null");
       checkArgumentNotNull(configuration, "JobConfiguration cannot be null");
-      client().post(SEGMENT_CREATE_ITEM + "?name=" + name, configuration);
+      client().postForLocation(SEGMENT_CREATE_ITEM + "?name=" + name, configuration);
       return getJob(name);
    }
 
@@ -109,7 +109,7 @@ public class JobService extends AbstractService {
    public Job updateJob(String name, JobConfiguration configuration) {
       checkArgumentNotNull(name, "Name cannot be null");
       checkArgumentNotNull(configuration, "JobConfiguration cannot be null");
-      client().post(SEGMENT_JOB + "/" + name + SEGMENT_CONFIG_XML, configuration);
+      client().postForLocation(SEGMENT_JOB + "/" + name + SEGMENT_CONFIG_XML, configuration);
       return getJob(name);
    }
 
@@ -137,7 +137,7 @@ public class JobService extends AbstractService {
     */
    public void deleteJob(String name) {
       checkArgumentNotNull(name, "Name cannot be null");
-      client().post(SEGMENT_JOB + "/" + name + SEGMENT_DO_DELETE);
+      client().postForLocation(SEGMENT_JOB + "/" + name + SEGMENT_DO_DELETE, null);
    }
 
    /**
@@ -214,7 +214,7 @@ public class JobService extends AbstractService {
    public Long triggerBuild(Job job) {
       checkArgumentNotNull(job, "Job cannot be null");
       checkArgumentNotNull(job.getName(), "Job.name cannot be null");
-      client().post(SEGMENT_JOB + "/" + job.getName() + "/build");
+      client().postForLocation(SEGMENT_JOB + "/" + job.getName() + "/build", null);
       return job.getNextBuildNumber();
    }
 
@@ -232,7 +232,8 @@ public class JobService extends AbstractService {
       checkArgumentNotNull(job, "Job cannot be null");
       checkArgumentNotNull(job.getName(), "Job.name cannot be null");
       checkArgumentNotNull(parameters, "Parameters cannot be null");
-      client().post(SEGMENT_JOB + "/" + job.getName() + "/buildWithParameters" + "?" + toQueryString(parameters));
+      client().postForLocation(
+            SEGMENT_JOB + "/" + job.getName() + "/buildWithParameters" + "?" + toQueryString(parameters), null);
       return job.getNextBuildNumber();
    }
 

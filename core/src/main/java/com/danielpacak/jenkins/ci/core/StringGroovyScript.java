@@ -39,6 +39,7 @@ public class StringGroovyScript implements GroovyScript {
     * 
     * @param script the script string
     * @throws IllegalArgumentException if the script is {@code null}
+    * @since 1.0.0
     */
    public StringGroovyScript(String script) {
       this.script = checkArgumentNotNull(script, "Script cannot be null");

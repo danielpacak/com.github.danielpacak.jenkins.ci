@@ -19,6 +19,7 @@
  */
 package com.danielpacak.jenkins.ci.core.http;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +37,8 @@ public class HttpHeaders extends HashMap<String, List<String>> {
 
    public static final String CONTENT_LENGTH = "Content-Length";
 
+   private static final String LOCATION = "Location";
+
    public static final String AUTHORIZATION = "Authorization";
 
    public static final String USER_AGENT = "User-Agent";
@@ -45,6 +48,17 @@ public class HttpHeaders extends HashMap<String, List<String>> {
          put(headerName, new LinkedList<String>());
       }
       get(headerName).add(headerValue);
+   }
+
+   /**
+    * Return the first header value for the given header name, if any.
+    * 
+    * @param headerName the header name
+    * @return the first header value; or {@code null}
+    */
+   public String getFirst(String headerName) {
+      List<String> headerValues = get(headerName);
+      return headerValues != null ? headerValues.get(0) : null;
    }
 
    public void setContentType(String mediaType) {
@@ -75,6 +89,21 @@ public class HttpHeaders extends HashMap<String, List<String>> {
 
    public void setContentLength(Integer length) {
       add(CONTENT_LENGTH, String.valueOf(length));
+   }
+
+   /**
+    * Return the (new) location of a resource, as specified by the {@code Location} header.
+    * 
+    * @return the location or {@code null} when the location is unknown
+    */
+   public URI getLocation() {
+      String value = getFirst(LOCATION);
+      return value != null ? URI.create(value) : null;
+   }
+
+   public HttpHeaders setLocation(URI location) {
+      add(LOCATION, location.toASCIIString());
+      return this;
    }
 
 }

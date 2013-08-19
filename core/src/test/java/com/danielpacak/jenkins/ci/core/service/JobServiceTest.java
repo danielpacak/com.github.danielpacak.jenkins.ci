@@ -49,6 +49,7 @@ public class JobServiceTest {
 
    @Mock
    private JenkinsClient client;
+
    @Mock
    private JobConfiguration jobConfiguration;
 
@@ -72,7 +73,7 @@ public class JobServiceTest {
    @Test
    public void createJob() throws Exception {
       service.createJob("vacuum.my.room", jobConfiguration);
-      verify(client).post("/createItem?name=vacuum.my.room", jobConfiguration);
+      verify(client).postForLocation("/createItem?name=vacuum.my.room", jobConfiguration);
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -89,7 +90,7 @@ public class JobServiceTest {
    public void deleteJob() throws Exception {
       Job job = new Job().setName("j");
       service.deleteJob(job);
-      verify(client).post("/job/j/doDelete");
+      verify(client).postForLocation("/job/j/doDelete", null);
    }
 
    @Test
@@ -130,7 +131,7 @@ public class JobServiceTest {
    public void triggerBuild() throws Exception {
       Job job = new Job().setName("vacuum.my.room").setNextBuildNumber(new Long(23));
       Long buildNumber = service.triggerBuild(job);
-      verify(client).post("/job/vacuum.my.room/build");
+      verify(client).postForLocation("/job/vacuum.my.room/build", null);
       assertEquals(new Long(23), buildNumber);
    }
 
@@ -161,7 +162,10 @@ public class JobServiceTest {
 
       Long buildNumber = service.triggerBuild(job, parameters);
 
-      verify(client).post("/job/vacuum.my.room/buildWithParameters?param1=value1&param2=value+2&param3=true&param4=69&param5=The+string+%C3%BC%40foo-bar");
+      verify(client)
+            .postForLocation(
+                  "/job/vacuum.my.room/buildWithParameters?param1=value1&param2=value+2&param3=true&param4=69&param5=The+string+%C3%BC%40foo-bar",
+                  null);
       assertEquals(new Long(69), buildNumber);
    }
 
@@ -236,6 +240,29 @@ public class JobServiceTest {
       } catch (HttpClientErrorException expected) {
          assertEquals(forbiddenError, expected);
       }
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void updateJob_WithNullName_ThrowsException() throws Exception {
+      service.updateJob((String) null, jobConfiguration);
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void updateJob_WithNullJobName_ThrowsException() throws Exception {
+      service.updateJob(new Job(), jobConfiguration);
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void updateJob_WithNullJobConfiguration_ThrowsException() throws Exception {
+      service.updateJob("my.job", null);
+
+   }
+
+   @Test
+   public void updateJob() throws Exception {
+      service.updateJob("my.job", jobConfiguration);
+      verify(client).postForLocation("/job/my.job/config.xml", jobConfiguration);
+
    }
 
 }

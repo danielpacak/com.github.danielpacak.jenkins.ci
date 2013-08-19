@@ -147,15 +147,10 @@ public class JenkinsClient {
       return execute(newURI(baseUri + uri), HttpMethod.GET, null, responseExtractor);
    }
 
-   public void post(String uri) {
-      HttpHeadersResponseExtractor responseExtractor = new HttpHeadersResponseExtractor();
-      execute(newURI(baseUri + uri), HttpMethod.POST, null, responseExtractor);
-   }
-
-   public void post(String uri, Object request) {
+   public URI postForLocation(String uri, Object request) {
       RequestCallback requestCallback = new HttpMessageCoverterRequestCallback(request, messageConverters);
       HttpHeadersResponseExtractor responseExtractor = new HttpHeadersResponseExtractor();
-      execute(newURI(baseUri + uri), HttpMethod.POST, requestCallback, responseExtractor);
+      return execute(newURI(baseUri + uri), HttpMethod.POST, requestCallback, responseExtractor).getLocation();
    }
 
    public <T> T postForObject(String uri, Object request, Class<T> responseType) {
@@ -272,6 +267,14 @@ public class JenkinsClient {
       return this;
    }
 
+   public List<HttpMessageConverter<?>> getMessageConverters() {
+      return messageConverters;
+   }
+
+   public void setMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
+      this.messageConverters = messageConverters;
+   }
+
    private URI newURI(String uri) {
       try {
          return new URI(uri);
@@ -291,8 +294,8 @@ public class JenkinsClient {
    }
 
    /**
-    * Response extractor that uses the given {@linkplain HttpMessageConverter entity converters} to convert the response
-    * into a type {@code T}.
+    * Response extractor that uses the given {@linkplain HttpMessageConverter message converters} to convert the HTTP
+    * response into an instance of type {@code T}.
     */
    private class HttpMessageConverterResponseExtractor<T> implements ResponseExtractor<T> {
 
@@ -320,7 +323,7 @@ public class JenkinsClient {
          }
          throw new JenkinsClientException(
                "Could not read response: no suitable HttpMessageConverter found for response type ["
-                     + this.responseClass + "]");
+                     + this.responseClass.getName() + "]");
       }
 
       protected boolean hasMessageBody(ClientHttpResponse response) throws IOException {
@@ -333,6 +336,10 @@ public class JenkinsClient {
       }
    }
 
+   /**
+    * Request callback that uses the given {@linkplain HttpMessageConverter message converters} to write the given
+    * object to the HTTP request stream.
+    */
    private class HttpMessageCoverterRequestCallback implements RequestCallback {
 
       private final Object requestBody;
@@ -347,6 +354,9 @@ public class JenkinsClient {
       @SuppressWarnings({ "rawtypes", "unchecked" })
       @Override
       public void doWithRequest(ClientHttpRequest request) throws IOException {
+         if (requestBody == null) {
+            return;
+         }
          for (HttpMessageConverter messageConverter : messageConverters) {
             if (messageConverter.canWrite(requestBody.getClass())) {
                messageConverter.write(requestBody, null, request);
@@ -355,7 +365,7 @@ public class JenkinsClient {
          }
          throw new JenkinsClientException(
                "Could not write request: no suitable HttpMessageConverter found for request type ["
-                     + requestBody.getClass() + "]");
+                     + requestBody.getClass().getName() + "]");
       }
 
    }
