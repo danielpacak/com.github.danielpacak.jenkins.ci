@@ -32,6 +32,7 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import com.danielpacak.jenkins.ci.core.Build;
 import com.danielpacak.jenkins.ci.core.Job;
@@ -273,6 +274,35 @@ public class JobService extends AbstractService {
          }
          throw e;
       }
+   }
+
+   /**
+    * Trigger a build of the given job and wait for its completion.
+    * 
+    * @param job the job to be built
+    * @return build
+    * @throws JenkinsClientException if an error occurred connecting to Jenkins
+    * @throws InterruptedException
+    * @since 1.0.0
+    */
+   public Build triggerBuildAndWait(Job job) throws InterruptedException {
+      Long buildNumber = triggerBuild(job);
+      Build build = null;
+      do {
+         TimeUnit.SECONDS.sleep(1);
+         build = getBuild(job, buildNumber);
+      } while (build == null || build.getStatus() == Build.Status.PENDING);
+      return build;
+   }
+
+   public Build triggerBuildAndWait(Job job, Map<String, Object> parameters) throws InterruptedException {
+      Long buildNumber = triggerBuild(job, parameters);
+      Build build = null;
+      do {
+         TimeUnit.SECONDS.sleep(1);
+         build = getBuild(job, buildNumber);
+      } while (build == null || build.getStatus() == Build.Status.PENDING);
+      return build;
    }
 
    private String toQueryString(Map<String, Object> parameters) {

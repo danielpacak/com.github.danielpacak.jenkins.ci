@@ -162,4 +162,15 @@ public class JobServiceIntegrationTest extends AbstractJenkinsIntegrationTest {
       jobService.deleteJob(job);
    }
 
+   @Test
+   public void triggerBuildAndWait() throws Exception {
+      String name = newRandomName();
+      JobConfiguration configuration = new ClassPathJobConfiguration("job/config/free-style.xml");
+
+      Job job = jobService.createJob(name, configuration);
+
+      Build build = jobService.triggerBuildAndWait(job);
+      assertEquals(Build.Status.SUCCESS, build.getStatus());
+   }
+
 }
