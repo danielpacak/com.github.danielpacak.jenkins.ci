@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.danielpacak</groupId>
-		<artifactId>com.danielpacak.jenkins.ci</artifactId>
+		<groupId>com.github.danielpacak.jenkins.ci</groupId>
+		<artifactId>com.github.danielpacak.jenkins.ci.parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>com.danielpacak.jenkins.ci.core</artifactId>
+	<artifactId>com.github.danielpacak.jenkins.ci.core</artifactId>
 	<name>Jenkins CI - Core</name>
 	<packaging>bundle</packaging>
 	<description>

@@ -8,11 +8,12 @@
 		<version>7</version>
 	</parent>
 
-	<groupId>com.danielpacak</groupId>
-	<artifactId>com.danielpacak.jenkins.ci</artifactId>
+	<groupId>com.github.danielpacak.jenkins.ci</groupId>
+	<artifactId>com.github.danielpacak.jenkins.ci.parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Jenkins CI - Aggregator</name>
+	<name>Jenkins CI - Parent</name>
+	<description>Jenkins CI - Parent</description>
 
 	<modules>
 		<module>core</module>
@@ -51,16 +52,6 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.15</version>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.9.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>license-maven-plugin</artifactId>
-					<version>1.5</version>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -69,8 +60,8 @@
 		<dependencies>
 			<!-- Internal Modules -->
 			<dependency>
-				<groupId>com.danielpacak</groupId>
-				<artifactId>com.danielpacak.jenkins.ci.core</artifactId>
+				<groupId>com.github.danielpacak.jenkins.ci</groupId>
+				<artifactId>com.github.danielpacak.jenkins.ci.core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- Testing -->

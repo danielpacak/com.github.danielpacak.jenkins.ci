@@ -1,0 +1,10 @@
+package com.github.danielpacak.jenkins.ci.core;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+public interface GroovyResponse {
+
+   InputStream getInputStream() throws IOException;
+
+}
