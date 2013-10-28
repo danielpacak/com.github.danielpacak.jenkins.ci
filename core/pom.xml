@@ -1,13 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>com.danielpacak</groupId>
-		<artifactId>jenkins.ci</artifactId>
+		<artifactId>com.danielpacak.jenkins.ci</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>jenkins.ci.core</artifactId>
+
+	<artifactId>com.danielpacak.jenkins.ci.core</artifactId>
+	<name>Jenkins CI - Core</name>
 	<packaging>bundle</packaging>
+	<description>
+		A Java library for communicating with the Jenkins REST API.
+	</description>
 
 	<properties>
 		<jettyVersion>8.1.12.v20130726</jettyVersion>
@@ -22,9 +28,9 @@
 				<configuration>
 					<instructions>
 						<Export-Package>
-							com.danielpacak.jenkins.ci.core;version="${project.version}",
-							com.danielpacak.jenkins.ci.core.client;version="${project.version}",
-							com.danielpacak.jenkins.ci.core.service;version="${project.version}"
+							com.danielpacak.jenkins.ci.core,
+							com.danielpacak.jenkins.ci.core.client,
+							com.danielpacak.jenkins.ci.core.service
 						</Export-Package>
 						<Bundle-Vendor>Daniel Pacak</Bundle-Vendor>
 						<Bundle-DocURL>https://github.com/danielpacak/jenkins-ci-client</Bundle-DocURL>
