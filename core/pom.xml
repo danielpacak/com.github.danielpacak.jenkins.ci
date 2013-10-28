@@ -4,11 +4,11 @@
 
 	<parent>
 		<groupId>com.github.danielpacak.jenkins.ci</groupId>
-		<artifactId>com.github.danielpacak.jenkins.ci.parent</artifactId>
+		<artifactId>jenkins.ci.parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>com.github.danielpacak.jenkins.ci.core</artifactId>
+	<artifactId>jenkins.ci.core</artifactId>
 	<name>Jenkins CI - Core</name>
 	<packaging>bundle</packaging>
 	<description>
@@ -27,13 +27,10 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>
-							com.danielpacak.jenkins.ci.core,
-							com.danielpacak.jenkins.ci.core.client,
-							com.danielpacak.jenkins.ci.core.service
-						</Export-Package>
+						<Bundle-Version>1.0.0</Bundle-Version>
+						<Bundle-SymbolicName>com.github.danielpacak.jenkins.ci.core</Bundle-SymbolicName>
 						<Bundle-Vendor>Daniel Pacak</Bundle-Vendor>
-						<Bundle-DocURL>https://github.com/danielpacak/jenkins-ci-client</Bundle-DocURL>
+						<Bundle-DocURL>https://github.com/danielpacak/com.github.danielpacak.jenkins.ci</Bundle-DocURL>
 					</instructions>
 				</configuration>
 			</plugin>

@@ -9,7 +9,7 @@
 	</parent>
 
 	<groupId>com.github.danielpacak.jenkins.ci</groupId>
-	<artifactId>com.github.danielpacak.jenkins.ci.parent</artifactId>
+	<artifactId>jenkins.ci.parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Jenkins CI - Parent</name>
@@ -61,7 +61,7 @@
 			<!-- Internal Modules -->
 			<dependency>
 				<groupId>com.github.danielpacak.jenkins.ci</groupId>
-				<artifactId>com.github.danielpacak.jenkins.ci.core</artifactId>
+				<artifactId>jenkins.ci.core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- Testing -->

@@ -4,11 +4,11 @@
 
 	<parent>
 		<groupId>com.github.danielpacak.jenkins.ci</groupId>
-		<artifactId>com.github.danielpacak.jenkins.ci.parent</artifactId>
+		<artifactId>jenkins.ci.parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>com.github.danielpacak.jenkins.ci.test</artifactId>
+	<artifactId>jenkins.ci.test</artifactId>
 	<name>Jenkins CI - Test</name>
 	<description>Jenkins CI - Test</description>
 
@@ -29,7 +29,7 @@
 		<!-- Internal Moduels -->
 		<dependency>
 			<groupId>com.github.danielpacak.jenkins.ci</groupId>
-			<artifactId>com.github.danielpacak.jenkins.ci.core</artifactId>
+			<artifactId>jenkins.ci.core</artifactId>
 		</dependency>
 		<!-- Testing -->
 		<dependency>
