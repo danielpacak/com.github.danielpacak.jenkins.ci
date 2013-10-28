@@ -90,9 +90,9 @@
 	</dependencyManagement>
 
 	<scm>
-		<connection>scm:git:https://github.com/danielpacak/jenkins-ci-client.git</connection>
-		<developerConnection>scm:git:https://github.com/danielpacak/jenkins-ci-client.git</developerConnection>
-		<url>https://github.com/danielpacak/jenkins-ci-client</url>
+		<connection>scm:git:https://github.com/danielpacak/com.danielpacak.jenkins.ci.git</connection>
+		<developerConnection>scm:git:https://github.com/danielpacak/com.danielpacak.jenkins.ci.git</developerConnection>
+		<url>https://github.com/danielpacak/com.danielpacak.jenkins.ci</url>
 		<tag>HEAD</tag>
 	</scm>
 
