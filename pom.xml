@@ -81,9 +81,9 @@
 	</dependencyManagement>
 
 	<scm>
-		<connection>scm:git:https://github.com/danielpacak/com.danielpacak.jenkins.ci.git</connection>
-		<developerConnection>scm:git:https://github.com/danielpacak/com.danielpacak.jenkins.ci.git</developerConnection>
-		<url>https://github.com/danielpacak/com.danielpacak.jenkins.ci</url>
+		<connection>scm:git:https://github.com/danielpacak/com.github.danielpacak.jenkins.ci.git</connection>
+		<developerConnection>scm:git:https://github.com/danielpacak/com.github.danielpacak.jenkins.ci.git</developerConnection>
+		<url>https://github.com/danielpacak/com.github.danielpacak.jenkins.ci/</url>
 		<tag>HEAD</tag>
 	</scm>
 

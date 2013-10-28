@@ -1,6 +1,6 @@
-# Jenkins Java API (com.danielpacak.jenkins.ci.core)
+# Jenkins Java API
 
-[![Build Status](https://buildhive.cloudbees.com/job/danielpacak/job/jenkins-ci-client/badge/icon)](https://buildhive.cloudbees.com/job/danielpacak/job/jenkins-ci-client/)
+[![Build Status](https://buildhive.cloudbees.com/job/danielpacak/job/com.github.danielpacak.jenkins.ci/badge/icon)](https://buildhive.cloudbees.com/job/danielpacak/job/com.github.danielpacak.jenkins.ci/)
 This project is a Java library for communicating with the [Jenkins REST API](https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API).
 
 * [Examples](#examples)
@@ -157,17 +157,17 @@ System.out.println(Streams.toString(response.getInputStream()));
 ## Packages
 The library is composed of 3 main packages.
 
-### Core (com.danielpacak.jenkins.ci.core)
+### Core (com.github.danielpacak.jenkins.ci.core)
 This package contains all the model classes representing the resources available through the API such as
 jobs, builds, and configurations. The model classes contain getters and setters for all the elements
 present in the Jenkins REST API XML response.
 
-### Client (com.danielpacak.jenkins.ci.core.client)
+### Client (com.github.danielpacak.jenkins.ci.core.client)
 This package contains classes which communicate with the Jenkins REST API over HTTP(S). The client
 package is also responsible for converting XML responses to appropriate Java model classes as well as
 generating request exceptions based on HTTP status codes.
 
-### Service (com.danielpacak.jenkins.ci.core.service)
+### Service (com.github.danielpacak.jenkins.ci.core.service)
 This package contains classes that invoke the API and return model classes representing resources
 that were created, read, updated, or deleted. Service classes are defined for the resources they
 interact with. For example, the `JobService` class interacts with the `Job` resource.
