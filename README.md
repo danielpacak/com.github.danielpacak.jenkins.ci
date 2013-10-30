@@ -1,6 +1,8 @@
 # Jenkins Java API
 
 [![Build Status](https://buildhive.cloudbees.com/job/danielpacak/job/com.github.danielpacak.jenkins.ci/badge/icon)](https://buildhive.cloudbees.com/job/danielpacak/job/com.github.danielpacak.jenkins.ci/)
+[![Coverage Status](https://coveralls.io/repos/danielpacak/com.github.danielpacak.jenkins.ci/badge.png)](https://coveralls.io/r/danielpacak/com.github.danielpacak.jenkins.ci)
+
 This project is a Java library for communicating with the [Jenkins REST API](https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API).
 
 * [Examples](#examples)
@@ -173,24 +175,30 @@ that were created, read, updated, or deleted. Service classes are defined for th
 interact with. For example, the `JobService` class interacts with the `Job` resource.
 
 ### Downloading
-The library has not yet been deployed to the [maven central repository](http://repo1.maven.org/maven/),
-so to use it, you need to fetch the source code, install it into your [local maven repository](http://maven.apache.org/guides/introduction/introduction-to-repositories.html),
-and add the following snippet to the `<dependencies />` section of your project's `pom.xml` file.
-
+The recommended way to get started using the library in your project is with a dependency management
+system - the snippet below can be copied and pasted into your build descriptor.
 ```xml
 <dependency>
-	<groupId>com.danielpacak</groupId>
+	<groupId>com.github.danielpacak.jenkins.ci</groupId>
 	<artifactId>jenkins.ci.core</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0-rc2</version>
 </dependency>
 ```
-Alternatively, you can use the latest build deployed to my private [snapshots](http://repository-pacak-daniel.forge.cloudbees.com/snapshot)
-repository. Just remember to reference this repository in your project's `pom.xml` file.
+Alternatively, you can use the latest build deployed to [sonatype-nexus-snapshots](https://oss.sonatype.org/content/repositories/snapshots)
+repository.
+```xml
+<dependency>
+	<groupId>com.github.danielpacak.jenkins.ci</groupId>
+	<artifactId>jenkins.ci.core</artifactId>
+	<version>1.0.0-rc3-SNAPSHOT</version>
+</dependency>
+```
+Just remember to reference this repository in your build descriptor.
 ```xml
 <repositories>
 	<repository>
-		<id>daniel.pacak.snapshots</id>
-		<url>http://repository-pacak-daniel.forge.cloudbees.com/snapshot</url>
+		<id>sonatype-nexus-snapshots</id>
+		<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 	</repository>
 </repositories>
 ```
