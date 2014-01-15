@@ -1,7 +1,8 @@
 # Jenkins Java API
 
-[![Build Status](https://buildhive.cloudbees.com/job/danielpacak/job/com.github.danielpacak.jenkins.ci/badge/icon)](https://buildhive.cloudbees.com/job/danielpacak/job/com.github.danielpacak.jenkins.ci/)
+[![Build Status](https://travis-ci.org/danielpacak/com.github.danielpacak.jenkins.ci.png?branch=master)](https://travis-ci.org/danielpacak/com.github.danielpacak.jenkins.ci)
 [![Coverage Status](https://coveralls.io/repos/danielpacak/com.github.danielpacak.jenkins.ci/badge.png)](https://coveralls.io/r/danielpacak/com.github.danielpacak.jenkins.ci)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/danielpacak/com.github.danielpacak.jenkins.ci/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 This project is a Java library for communicating with the [Jenkins REST API](https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API).
 
@@ -202,6 +203,3 @@ Just remember to reference this repository in your build descriptor.
 	</repository>
 </repositories>
 ```
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/danielpacak/com.github.danielpacak.jenkins.ci/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
