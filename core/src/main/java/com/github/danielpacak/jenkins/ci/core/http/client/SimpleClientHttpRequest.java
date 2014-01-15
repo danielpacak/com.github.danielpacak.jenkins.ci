@@ -68,9 +68,6 @@ public class SimpleClientHttpRequest implements ClientHttpRequest {
       }
       if (this.connection.getDoOutput()) {
          this.connection.setFixedLengthStreamingMode(outputStream.size());
-      }
-      this.connection.connect();
-      if (this.connection.getDoOutput()) {
          Streams.copy(outputStream.toByteArray(), connection.getOutputStream());
       }
 
