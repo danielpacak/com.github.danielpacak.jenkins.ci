@@ -202,3 +202,6 @@ Just remember to reference this repository in your build descriptor.
 	</repository>
 </repositories>
 ```
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/danielpacak/com.github.danielpacak.jenkins.ci/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
