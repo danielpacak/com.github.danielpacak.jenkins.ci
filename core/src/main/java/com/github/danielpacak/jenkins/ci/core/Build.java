@@ -42,7 +42,7 @@ public class Build implements Serializable {
     * Enumeration of build states.
     */
    public static enum Status {
-      SUCCESS, PENDING, FAILED
+      PENDING, SUCCESS, FAILURE, UNSTABLE, ABORTED, NOT_BUILT
    }
 
    public Long getNumber() {
