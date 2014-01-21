@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,10 @@ package com.github.danielpacak.jenkins.ci.core.http.converter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -80,6 +83,7 @@ public class JobHttpMessageConverterTest {
       assertTrue(job.getBuildable());
       assertEquals(new Long(23), job.getNextBuildNumber());
       assertFalse(job.getInQueue());
+      assertNull(job.getLastBuildNumber());
    }
 
    @Test
@@ -110,6 +114,27 @@ public class JobHttpMessageConverterTest {
    @Test(expected = UnsupportedOperationException.class)
    public void write() throws Exception {
       converter.write(new Job(), null, null);
+   }
+
+   @Test
+   public void read_JobWithLastBuild() throws IOException {
+	   // @formatter:off
+	   HttpInputMessage inputMessage = new MockHttpInputMessage(""
+			+	"<freeStyleProject>"
+			+		"<name>vacuum.my.room</name>"
+			+		"<displayName>Vacuum my room</displayName>"
+			+		"<url>http://localhost:8080/job/vacuum.my.room</url>"
+			+		"<buildable>true</buildable>"
+			+		"<nextBuildNumber>23</nextBuildNumber>"
+			+		"<inQueue>false</inQueue>"
+			+		"<lastBuild>"
+			+			"<number>42</number>"
+			+			"<url>http://localhost:8080/job/vacuum.my.room/42/</url>"
+			+		"</lastBuild>"
+			+	"</freeStyleProject>");
+	   // @formatter:on
+	   Job job = converter.read(Job.class, inputMessage);
+	   assertEquals(Long.valueOf(42L), job.getLastBuildNumber());
    }
 
 }
