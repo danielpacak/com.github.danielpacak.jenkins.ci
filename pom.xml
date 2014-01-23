@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -10,7 +9,7 @@
 
 	<groupId>com.github.danielpacak.jenkins.ci</groupId>
 	<artifactId>jenkins.ci.parent</artifactId>
-	<version>1.0.0-rc3-SNAPSHOT</version>
+	<version>1.0.0-rc3</version>
 	<packaging>pom</packaging>
 	<name>Jenkins CI - Parent</name>
 	<description>Jenkins CI - Parent</description>
@@ -119,7 +118,7 @@
 		<connection>scm:git:https://github.com/danielpacak/com.github.danielpacak.jenkins.ci.git</connection>
 		<developerConnection>scm:git:https://github.com/danielpacak/com.github.danielpacak.jenkins.ci.git</developerConnection>
 		<url>https://github.com/danielpacak/com.github.danielpacak.jenkins.ci/</url>
-		<tag>HEAD</tag>
+		<tag>jenkins.ci.parent-1.0.0-rc3</tag>
 	</scm>
 
 	<developers>
