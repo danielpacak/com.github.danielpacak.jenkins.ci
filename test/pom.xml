@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.github.danielpacak.jenkins.ci</groupId>
 		<artifactId>jenkins.ci.parent</artifactId>
-		<version>1.0.0-rc4-SNAPSHOT</version>
+		<version>1.0.0-rc4</version>
 	</parent>
 
 	<artifactId>jenkins.ci.test</artifactId>
