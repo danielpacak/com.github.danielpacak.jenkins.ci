@@ -182,7 +182,7 @@ system - the snippet below can be copied and pasted into your build descriptor.
 <dependency>
 	<groupId>com.github.danielpacak.jenkins.ci</groupId>
 	<artifactId>jenkins.ci.core</artifactId>
-	<version>1.0.0-rc2</version>
+	<version>1.0.0-rc4</version>
 </dependency>
 ```
 Alternatively, you can use the latest build deployed to [sonatype-nexus-snapshots](https://oss.sonatype.org/content/repositories/snapshots)
@@ -191,7 +191,7 @@ repository.
 <dependency>
 	<groupId>com.github.danielpacak.jenkins.ci</groupId>
 	<artifactId>jenkins.ci.core</artifactId>
-	<version>1.0.0-rc3-SNAPSHOT</version>
+	<version>1.0.0-rc5-SNAPSHOT</version>
 </dependency>
 ```
 Just remember to reference this repository in your build descriptor.
